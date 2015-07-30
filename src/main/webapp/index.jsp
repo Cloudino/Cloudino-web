@@ -15,11 +15,13 @@
     <body>
         <h1>Hello World!</h1>
 <%
-        SWBScriptEngine engine=DataMgr.getScriptEngine("/cloudino.js");
-        SWBDataSource ds=engine.getDataSource("Device");   
-        DataObject obj=ds.fetch();
-        out.println(obj);
-        engine.close();
+    DataObject user=(DataObject)session.getAttribute("_USER_");
+    out.println(user);
+    SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
+    SWBDataSource ds=engine.getDataSource("Device");   
+    DataObject obj=ds.fetch();
+    out.println(obj);
+    engine.close();
 %>        
     </body>
 </html>

@@ -14,8 +14,4 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    <login-config>
-        <auth-method>BASIC</auth-method>
-        <realm-name>Base</realm-name>
-    </login-config>
 </web-app>

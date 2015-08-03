@@ -1,4 +1,4 @@
-<%@page import="java.util.Iterator"%><%@page import="io.cloudino.engine.Device"%><%@page import="io.cloudino.engine.DeviceMgr"%><% System.out.println("in JSP");
+<%@page import="java.util.Iterator"%><%@page import="io.cloudino.engine.Device"%><%@page import="io.cloudino.engine.DeviceMgr"%><%
     String id=request.getParameter("ID");
     Device dev=null;
     if(id!=null)

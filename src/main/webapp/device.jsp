@@ -3,11 +3,14 @@
 <%@page import="io.cloudino.engine.DeviceMgr"%>
 <%
     String id=request.getParameter("ID");
+    Device dev=null;
     if(id!=null)
     {
         DeviceMgr mgr=DeviceMgr.getInstance();
-        Device dev=mgr.getDevice(id);
-        
+        dev=mgr.getDevice(id);
+    }else
+    {
+        return;
     }
 %>
 <?xml version="1.0" encoding="UTF-8"?>
@@ -20,6 +23,9 @@
     </script>
 </head>
 <body onload="WS.connect(url)"> 
+    
+    <%=dev.getData()%>
+    
     <div id="connect-container">
         <div>
             <button id="connect" onclick="WS.connect(url);">Connect</button>

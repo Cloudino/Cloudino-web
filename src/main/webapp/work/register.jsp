@@ -14,7 +14,7 @@
             obj.put("email", email);
             obj.put("password", password);
             ds.addObj(obj);
-            engine.close();
+            //engine.close();
             response.sendRedirect("login.jsp");
             return;
         }

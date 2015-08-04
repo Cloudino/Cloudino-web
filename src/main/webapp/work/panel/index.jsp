@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+<%@page import="io.cloudino.engine.DeviceMgr"%>
+<%@page import="org.semanticwb.datamanager.*"%><%
+    DataObject user=(DataObject)session.getAttribute("_USER_");
+    SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
+%><!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -246,14 +250,14 @@
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <img src="/static/dist/img/user2-160x160.jpg" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">Alexander Pierce</span>
+                  <span class="hidden-xs"><%=user.getString("fullname")%></span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
                     <img src="/static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" />
                     <p>
-                      Alexander Pierce - Web Developer
+                      <%=user.getString("fullname")%> - Web Developer
                       <small>Member since Nov. 2012</small>
                     </p>
                   </li>
@@ -298,7 +302,7 @@
               <img src="/static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
-              <p>Alexander Pierce</p>
+              <p><%=user.getString("fullname")%></p>
 
               <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
@@ -369,12 +373,30 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/UI/general.html"><i class="fa fa-gear"></i> Sensor temperatura</a></li>
-                <li><a href="pages/UI/icons.html"><i class="fa fa-gear"></i> Sensor humedad</a></li>
-                <li><a href="pages/UI/buttons.html"><i class="fa fa-gear"></i> Apagador</a></li>
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-gear"></i> Timer</a></li>
-                <li><a href="pages/UI/timeline.html"><i class="fa fa-gear"></i> Dimmer</a></li>
-                <li><a href="pages/UI/modals.html"><i class="fa fa-gear"></i> Blink</a></li>
+<%
+    SWBDataSource ds = engine.getDataSource("Device");
+    DataObject query=new DataObject();
+    DataObject data=new DataObject();
+    query.put("data", data);
+    data.put("user", user.getId());
+    DataObject ret=ds.fetch(query);
+    System.out.println(ret);
+    DataList<DataObject> devices=ret.getDataObject("response").getDataList("data");
+    if(devices!=null)
+    {
+        for (DataObject dev : devices)
+        {
+            String id=dev.getNumId();
+            out.print("<li><a href=\"deviceDetail?ID="+id+"\" data-target=\".content-wrapper\" data-load=\"ajax\"><i class=\"fa fa-circle-o\"></i><span>"+dev.getString("name")+"</span>");
+            if(DeviceMgr.getInstance().idDeviceConnected(id))
+            {
+                out.print("<small class=\"label pull-right bg-green\">online</small>");
+            }
+            out.println("</a></li>");
+        }
+    }
+%>                
+                <li><a href="addDevice" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Agregar Dispositivo</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -704,7 +726,7 @@
                     <p class="message">
                       <a href="#" class="name">
                         <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:15</small>
-                        Alexander Pierce
+                        <%=user.getString("fullname")%>
                       </a>
                       I would like to meet you to discuss the latest news about
                       the arrival of the new theme. They say it is going to be one the
@@ -1226,5 +1248,53 @@
     
     <!-- AdminLTE for demo purposes -->
     <script src="/static/dist/js/demo.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+        //Cloudino Script
+        
+        var cdino_parse=function(html)
+        {
+            var root=$;
+            if(html)root=$(html);
+            $(root.find('[data-load="ajax"]')).click(function(e) {
+                var $this = $(this),
+                    loadurl = $this.attr('href'),
+                    targ = $this.attr('data-target');
+
+                $.get(loadurl, function(data) {
+                    $(targ).html(cdino_parse(data));
+                });
+                return false;
+            });
+        
+            $(root.find('[role="form"]')).submit(function( event ) {
+                // Stop form from submitting normally
+                event.preventDefault();
+
+                // Get some values from elements on the page:
+                var $form = $(this);
+                var params=$form.serialize();
+                var url = $form.attr("action");
+                var targ = $form.attr('data-target');
+
+                // Send the data using post
+                var posting = $.post( url, params );
+
+                // Put the results in a div
+                posting.done(function( data ) {
+                  $(targ).html(cdino_parse(data));
+                });
+                return false;
+            });
+            return root;
+            
+        };
+        
+        cdino_parse();
+        
+        
+        
+    </script>    
+    
   </body>
 </html>

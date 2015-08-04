@@ -12,7 +12,7 @@
         data.put("email", email);
         data.put("password", password);
         DataObject ret=ds.fetch(r);
-        engine.close();
+        //engine.close();
  
         DataList rdata=ret.getDataObject("response").getDataList("data");
         if(!rdata.isEmpty())

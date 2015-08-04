@@ -1,7 +1,4 @@
-<%@page import="java.util.Iterator"%>
-<%@page import="io.cloudino.engine.Device"%>
-<%@page import="io.cloudino.engine.DeviceMgr"%>
-<%
+<%@page import="java.util.Iterator"%><%@page import="io.cloudino.engine.Device"%><%@page import="io.cloudino.engine.DeviceMgr"%><%
     String id=request.getParameter("ID");
     Device dev=null;
     if(id!=null)
@@ -12,8 +9,7 @@
     {
         return;
     }
-%>
-<?xml version="1.0" encoding="UTF-8"?>
+%><?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Cloudino Device</title>

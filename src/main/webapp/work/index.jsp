@@ -21,7 +21,7 @@
     SWBDataSource ds=engine.getDataSource("Device");   
     DataObject obj=ds.fetch();
     out.println(obj);
-    engine.close();
+    //engine.close();
 %>        
     </body>
 </html>

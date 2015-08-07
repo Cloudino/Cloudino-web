@@ -1267,7 +1267,7 @@
                 return false;
             });
         
-            $(root.find('[role="form"]')).submit(function( event ) {
+            $(root.find('[data-submit="ajax"]')).submit(function( event ) {
                 // Stop form from submitting normally
                 event.preventDefault();
 

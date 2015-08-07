@@ -61,22 +61,22 @@
                     <h3 class="box-title">General Data</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
-                <form data-target=".content-wrapper" action="addDevice" role="form">
+                <form data-target=".content-wrapper" action="addDevice" role="form" data-toggle="validator">
                     <div class="box-body">
                         <!-- text input -->
-                        <div class="form-group">
+                        <div class="form-group has-feedback">
                             <label>Name</label>
-                            <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ...">
+                            <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ..." required>
                         </div>
 
                         <!-- textarea -->
-                        <div class="form-group">
+                        <div class="form-group has-feedback">
                             <label>Description</label>
                             <textarea name="description" class="form-control" rows="3" placeholder="Enter ..."><%=description%></textarea>
                         </div>
 
                         <!-- select -->
-                        <div class="form-group">
+                        <div class="form-group has-feedback">
                             <label>Type</label>
                             <select name="type" class="form-control">
                                 <option value="cloudino-standalone">Cloudino Connector Standalone</option>

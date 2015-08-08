@@ -1248,7 +1248,7 @@
     
     <!-- AdminLTE for demo purposes -->
     <script src="/static/dist/js/demo.js" type="text/javascript"></script>
-    
+    <script src="/static/plugins/validator/validator.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         //Cloudino Script
         
@@ -1266,11 +1266,12 @@
                 });
                 return false;
             });
+            
+            $(root.find('[role="form"]')).validator();
         
             $(root.find('[data-submit="ajax"]')).submit(function( event ) {
                 // Stop form from submitting normally
                 event.preventDefault();
-
                 // Get some values from elements on the page:
                 var $form = $(this);
                 var params=$form.serialize();
@@ -1291,6 +1292,7 @@
         };
         
         cdino_parse();
+        
         
         
         

@@ -61,7 +61,7 @@
                     <h3 class="box-title">General Data</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
-                <form data-target=".content-wrapper" action="addDevice" role="form" data-toggle="validator">
+                <form data-target=".content-wrapper" data-submit="ajax" action="addDevice" role="form">
                     <div class="box-body">
                         <!-- text input -->
                         <div class="form-group has-feedback">

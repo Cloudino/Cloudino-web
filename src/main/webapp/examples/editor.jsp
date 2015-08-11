@@ -2,7 +2,8 @@
     Document   : Editor.jsp
     Created on : Feb 4, 2014, 4:33:43 PM
     Author     : javier.solis.g
---%><%@page import="io.cloudino.engine.DeviceMgr"%>
+--%><%@page import="io.cloudino.compiler.ArdCompiler"%>
+<%@page import="io.cloudino.engine.DeviceMgr"%>
 <%@page import="io.cloudino.engine.Device"%>
 <%@page import="java.util.ArrayList"%><%@page import="java.util.Iterator"%><%@page import="java.io.*"%><%@page import="java.net.URLEncoder"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%!
     byte[] readInputStream(InputStream in) throws IOException
@@ -69,7 +70,7 @@
                 String build="/Users/javiersolis/Documents/Arduino/build";
                 String path=dir+compile;
                 
-                io.cloudino.compiler.Compiler com=io.cloudino.compiler.Compiler.getInstance();
+                ArdCompiler com=ArdCompiler.getInstance();
                 com.compileCode(new String(code,"utf8"),path,type,build);
 
                 File fino=new File(path);

@@ -2,7 +2,9 @@
     Document   : Editor.jsp
     Created on : Feb 4, 2014, 4:33:43 PM
     Author     : javier.solis.g
---%><%@page import="java.util.ArrayList"%><%@page import="java.util.Iterator"%><%@page import="java.io.*"%><%@page import="java.net.URLEncoder"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%!
+--%><%@page import="io.cloudino.engine.DeviceMgr"%>
+<%@page import="io.cloudino.engine.Device"%>
+<%@page import="java.util.ArrayList"%><%@page import="java.util.Iterator"%><%@page import="java.io.*"%><%@page import="java.net.URLEncoder"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%!
     byte[] readInputStream(InputStream in) throws IOException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -52,16 +54,33 @@
         return;
     }
     
-    String compile = request.getParameter("cp");    
-    if(compile!=null)
+    String compile = request.getParameter("cp"); 
+    String dev = request.getParameter("dev"); 
+    Device device=DeviceMgr.getInstance().getDevice(dev);
+    if(device!=null && compile!=null)
     {
         System.out.println("cp:"+compile);
         byte code[]=readInputStream(request.getInputStream());
         try {
             try
             {
-                io.cloudino.compiler.Compiler com=new io.cloudino.compiler.Compiler("/Applications/Arduino.app/Contents/Java");
-                com.compileCode(new String(code,"utf8"),dir+compile,"pro.menu.cpu.8MHzatmega328","/Users/javiersolis/Documents/Arduino/build");
+                String type=device.getData().getString("type");
+                System.out.println("device.getData():"+device.getData());
+                String build="/Users/javiersolis/Documents/Arduino/build";
+                String path=dir+compile;
+                
+                io.cloudino.compiler.Compiler com=io.cloudino.compiler.Compiler.getInstance();
+                com.compileCode(new String(code,"utf8"),path,type,build);
+
+                File fino=new File(path);
+                String fname=fino.getName().split("\\.")[0];
+                String compiled=build+"/"+fname+".cpp.hex";
+                
+                if(device.isConnected())
+                {
+                    device.sendHex(new FileInputStream(compiled), out);
+                }
+                
             }catch(Exception e)
             {
                 e.printStackTrace();
@@ -262,7 +281,7 @@
                 if (code != null) {
             %>
             <input type="button" value="Guardar" onclick="r=getSynchData('?up=<%=filename!=null?URLEncoder.encode(filename):""%>',myCodeMirror.getValue(),'POST');console.log(r);if(r.response==='OK')alert('Archivo Gradado');else alert('Error al guardar archivo')">
-            <input type="button" value="Compilar" onclick="r=getSynchData('?cp=<%=filename!=null?URLEncoder.encode(filename):""%>',myCodeMirror.getValue(),'POST');console.log(r);if(r.response==='OK')alert('Archivo Compilado');else alert(r.response)">
+            <input type="button" value="Compilar" onclick="r=getSynchData('?cp=<%=filename!=null?URLEncoder.encode(filename):""%>&dev=<%=dev%>',myCodeMirror.getValue(),'POST');console.log(r);if(r.response==='OK')alert('Archivo Compilado');else alert(r.response)">
             <textarea name="code" id="code"><%=code%></textarea>           
             <script type="text/javascript">
                 

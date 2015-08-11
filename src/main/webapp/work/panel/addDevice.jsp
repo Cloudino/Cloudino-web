@@ -3,6 +3,7 @@
     Created on : 03-ago-2015, 21:13:52
     Author     : javiersolis
 --%>
+<%@page import="io.cloudino.compiler.ArdCompiler"%>
 <%@page import="org.semanticwb.datamanager.SWBDataSource"%>
 <%@page import="org.semanticwb.datamanager.DataMgr"%>
 <%@page import="org.semanticwb.datamanager.SWBScriptEngine"%>
@@ -63,6 +64,7 @@
                 <!-- form start -->
                 <form data-target=".content-wrapper" data-submit="ajax" action="addDevice" role="form">
                     <div class="box-body">
+                        
                         <!-- text input -->
                         <div class="form-group has-feedback">
                             <label>Name</label>
@@ -81,15 +83,16 @@
                             <select name="type" class="form-control">
                                 <option value="cloudino-standalone">Cloudino Connector Standalone</option>
                                 <%
-                                    io.cloudino.compiler.Compiler cmp = io.cloudino.compiler.Compiler.getInstance();
-                                    Iterator<io.cloudino.compiler.Device> it = cmp.listDevices();
+                                    ArdCompiler cmp = io.cloudino.compiler.ArdCompiler.getInstance();
+                                    Iterator<io.cloudino.compiler.ArdDevice> it = cmp.listDevices();
                                     while (it.hasNext()) {
-                                        io.cloudino.compiler.Device dev = it.next();
+                                        io.cloudino.compiler.ArdDevice dev = it.next();
                                         out.println("<option value=\"" + dev.key + "\">" + dev.toString() + "</option>");
                                     }
                                 %>                                
                             </select>
                         </div>  
+                            
                     </div><!-- /.box-body -->
 
                     <div class="box-footer">

@@ -388,7 +388,7 @@
         {
             String id=dev.getNumId();
             out.print("<li><a href=\"deviceDetail?ID="+id+"\" data-target=\".content-wrapper\" data-load=\"ajax\"><i class=\"fa fa-circle-o\"></i><span>"+dev.getString("name")+"</span>");
-            if(DeviceMgr.getInstance().idDeviceConnected(id))
+            if(DeviceMgr.getInstance().isDeviceConnected(id))
             {
                 out.print("<small class=\"label pull-right bg-green\">online</small>");
             }

@@ -50,6 +50,7 @@
     name = data.getString("name", "");
     String description = data.getString("description", "");
     String type = data.getString("type");
+    String token = data.getString("authToken","");
 
     boolean isConnected = false;
     long connectedTime = 0;
@@ -142,7 +143,12 @@
                                 <div class="form-group has-feedback">
                                     <label>Connected Time</label>
                                     <div><%=new Date(connectedTime)%></div>
-                                </div>      
+                                </div>   
+                                
+                                <div class="form-group has-feedback">
+                                    <label>Authentication Token</label>
+                                    <div><%=token%></div>
+                                </div>
 
                             </div><!-- /.box-body -->
 

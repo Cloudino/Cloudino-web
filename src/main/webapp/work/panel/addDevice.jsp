@@ -3,6 +3,7 @@
     Created on : 03-ago-2015, 21:13:52
     Author     : javiersolis
 --%>
+<%@page import="io.cloudino.utils.TokenGenerator"%>
 <%@page import="io.cloudino.compiler.ArdCompiler"%>
 <%@page import="org.semanticwb.datamanager.SWBDataSource"%>
 <%@page import="org.semanticwb.datamanager.DataMgr"%>
@@ -22,11 +23,13 @@
         DataObject user=(DataObject)session.getAttribute("_USER_");
         SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
         SWBDataSource ds=engine.getDataSource("Device");
+        String token = TokenGenerator.getNonExistentTokenByUserId(user.getId(), ds);
         DataObject data=new DataObject();
         data.put("user", user.getId());
         data.put("name", name);
         data.put("description", description);
         data.put("type", type);
+        data.put("authToken", token);
         DataObject ret=ds.addObj(data);
         //System.out.println(ret);
         DataObject obj=ret.getDataObject("response").getDataObject("data");

@@ -1,3 +1,4 @@
+<%@page import="java.io.File"%>
 <%@page import="io.cloudino.engine.DeviceMgr"%>
 <%@page import="org.semanticwb.datamanager.*"%><%
     DataObject user=(DataObject)session.getAttribute("_USER_");
@@ -38,6 +39,63 @@
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+    <link rel="stylesheet" href="/js/codemirror/lib/codemirror.css"> 
+        <link rel="stylesheet" href="/js/codemirror/addon/hint/show-hint.css">
+        <link rel="stylesheet" href="/js/codemirror/theme/eclipse.css">   
+        <link rel="stylesheet" href="/js/codemirror/addon/dialog/dialog.css">
+        <link rel="stylesheet" href="/js/codemirror/addon/lint/lint.css">  
+        
+
+        <script src="/js/codemirror/lib/codemirror.js"></script>  
+        <script src="/js/codemirror/addon/hint/show-hint.js"></script>
+        <script src="/js/codemirror/addon/selection/active-line.js"></script> 
+        <script src="/js/codemirror/addon/lint/lint.js"></script>       
+        <script src="/js/codemirror/addon/search/search.js"></script> 
+        <script src="/js/codemirror/addon/search/searchcursor.js"></script>
+        <script src="/js/codemirror/addon/dialog/dialog.js"></script>
+        
+        
+        <script src="/js/codemirror/mode/xml/xml.js"></script>
+        <script src="/js/codemirror/addon/hint/xml-hint.js"></script>
+        
+        <script src="/js/codemirror/mode/javascript/javascript.js"></script>
+        <script src="/js/codemirror/addon/hint/javascript-hint.js"></script>
+        <script src="/js/codemirror/addon/lint/javascript-lint.js"></script>
+        <script src="//ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js"></script>
+        
+        <script src="/js/codemirror/addon/lint/json-lint.js"></script>
+        <script src="https://rawgithub.com/zaach/jsonlint/79b553fb65c192add9066da64043458981b3972b/lib/jsonlint.js"></script>
+        
+        <script src="/js/codemirror/addon/edit/matchbrackets.js"></script>  
+        <script src="/js/codemirror/addon/edit/closebrackets.js"></script>  
+        <script src="/js/codemirror/addon/comment/continuecomment.js"></script>
+        <script src="/js/codemirror/addon/comment/comment.js"></script> 
+        
+        <script src="/js/codemirror/mode/css/css.js"></script>
+        <script src="/js/codemirror/addon/hint/css-hint.js"></script>
+        <script src="/js/codemirror/addon/lint/css-lint.js"></script>
+        <script src="https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"></script>        
+        
+        <script src="/js/codemirror/mode/clike/clike.js"></script>
+        
+        <script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+        <script src="/js/codemirror/mode/htmlembedded/htmlembedded.js"></script>
+        <script src="/js/codemirror/addon/hint/html-hint.js"></script>
+        <script src="/js/codemirror/addon/mode/multiplex.js"></script>
+        <script src="/js/codemirror/addon/fold/xml-fold.js"></script>
+        <script src="/js/codemirror/addon/edit/matchtags.js"></script>        
+        
+       <!--
+        <sc´ript src="/js/codemirror/addon/edit/closetag.js"></script>
+        -->
+                       
+
+        <style type="text/css">
+            .CodeMirror {border: 1px solid black; font-size:13px}
+        </style>  
+
+    
   </head>
   <body class="skin-blue sidebar-mini">
     <div class="wrapper">
@@ -380,7 +438,7 @@
     query.put("data", data);
     data.put("user", user.getId());
     DataObject ret=ds.fetch(query);
-    System.out.println(ret);
+    //System.out.println(ret);
     DataList<DataObject> devices=ret.getDataObject("response").getDataList("data");
     if(devices!=null)
     {
@@ -402,10 +460,37 @@
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-laptop"></i>
-                <span>Programas</span>
+                <span>Sketchers</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
+                  <%
+    //+ request.getRequestURI().substring(1, request.getRequestURI().lastIndexOf("/")) + "/"
+                  String dir = config.getServletContext().getRealPath("/") + "/work/"  ;
+                  // leer estructura de archivos del usuario
+                  String userBasePath = dir+engine.getScriptObject().get("config").getString("usersWorkPath")+"/"+user.getId()+"/sketchers"; 
+                  File f = new File(userBasePath);
+                  if(!f.exists()){
+                      f.mkdirs();
+                  }
+                  File[] listFiles = f.listFiles();
+                  for(File file : listFiles){
+                      if(file.isDirectory()&&!file.isHidden()){
+                        out.println("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>"+file.getName()+"<i class=\"fa fa-angle-left pull-right\"></i></a>");
+                        out.println("<ul class=\"treeview-menu\">");
+                        File[] sketcherFiles = file.listFiles();
+                        for(File sktFile : sketcherFiles){
+                            out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\"sketcherDetail?fn="+sktFile.getName()+"&skt="+file.getName()+"\"><i class=\"fa fa-code\"></i>"+sktFile.getName()+"</a></li>");
+                        }
+                        out.println("<li><a href=\"addSketcher?skt="+file.getName()+"&act=newfile\" data-target=\".content-wrapper\" data-load=\"ajax\"><i class=\"fa fa-gear\"></i> Nuevo Archivo</a></li> ");
+                        out.println("</ul>");
+                        out.println("</li>");
+                      }
+                  }
+                  %>
+                  
+                 <li><a href="addSketcher" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Agregar Sketcher</a></li> 
+                <!--  
                 <li><a href="#"><i class="fa fa-file-code-o"></i> Programa uno<i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
                     <li><a href="#"><i class="fa fa-code"></i> Version 1</a></li>
@@ -424,7 +509,7 @@
                       <li><a href="#"><i class="fa fa-code"></i> Version 2</a></li>
                       <li><a href="#"><i class="fa fa-code"></i> Version 3</a></li>
                     </ul>
-                  </li>
+                  </li> -->
               </ul>
             </li>
             <li class="treeview">

@@ -3,11 +3,10 @@
     Created on : 11/08/2015, 11:59:05 AM
     Author     : juan.fernandez
 --%>
+<%@page import="java.util.Properties"%>
 <%@page import="io.cloudino.compiler.ArdCompiler"%>
 <%@page import="io.cloudino.engine.*"%>
-<%@page import="java.util.ArrayList"%><%@page import="java.util.Iterator"%><%@page import="java.io.*"%><%@page import="java.net.URLEncoder"%><%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="org.semanticwb.datamanager.*"%>
-
+<%@page import="java.util.ArrayList"%><%@page import="java.util.Iterator"%><%@page import="java.io.*"%><%@page import="java.net.URLEncoder"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="org.semanticwb.datamanager.*"%>
 <%
     String name=request.getParameter("name");
     String sktname=request.getParameter("skt");
@@ -20,7 +19,7 @@
 
     if(name!=null) 
     {
-        
+        //if(null==sktname) sktname=name;
         // Generar carpeta dentro del FileSystem del usuario
         
         DataObject user=(DataObject)session.getAttribute("_USER_");
@@ -51,14 +50,21 @@
             }
             newf = new File(userBasePath+"/sketchers/"+name+"/"+name+".ino");
             if(!newf.exists()){
-                newf.setWritable(true);
                 newf.createNewFile();
+                newf.setWritable(true);                
             }
+            
+            File configf = new File(userBasePath+"/sketchers/"+name+"/config.properties");
+            if(!configf.exists()){
+                configf.createNewFile();
+                configf.setWritable(true);    
+            }          
+
         } else {
             newf = new File(userBasePath+"/sketchers/"+sktname+"/"+name);
             if(!newf.exists()){
-                newf.setWritable(true);
                 newf.createNewFile();
+                newf.setWritable(true);                
             } else {
                 msg="Existe un Archivo con el mismo nombre.";
                 return;
@@ -67,6 +73,7 @@
         
         if(newf!=null)
         {
+            if(null==sktname)sktname=name;
             response.sendRedirect("sketcherDetail?fn="+newf.getName()+"&skt="+sktname);
             
             return;
@@ -131,16 +138,6 @@
             </div>
 
         </div>
-<!--
-        <div class="col-md-4 callout callout-danger lead">
-            <h4>Tip!</h4>
-            <p>
-                If you go through the example pages and would like to copy a component, right-click on
-                the component and choose "inspect element" to get to the HTML quicker than scanning
-                the HTML page.
-            </p>
-        </div>
-                        -->
 
     </div>   <!-- /.row -->
 </section><!-- /.content -->

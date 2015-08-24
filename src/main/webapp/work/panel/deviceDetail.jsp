@@ -2,8 +2,7 @@
     Document   : deviceDetail
     Created on : 04-ago-2015, 0:03:07
     Author     : javiersolis
---%><%@page import="java.net.URLEncoder"%>
-<%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
+--%><%@page import="java.net.URLEncoder"%><%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
     SWBDataSource ds = engine.getDataSource("Device");
@@ -94,15 +93,18 @@
                 ArdCompiler com = ArdCompiler.getInstance();
                 com.compileCode(new String(code, "utf8"), path, type, build);
 
-                msg = "Ok\n\rArchivo compilado\n\r";
+                msg = "";
                 
                 File fino = new File(path);
                 String fname = fino.getName().split("\\.")[0];
                 String compiled = build + "/" + fname + ".cpp.hex";
 
                 if (device !=null && device.isConnected()) {
-                    device.sendHex(new FileInputStream(compiled), out);
-                    msg = msg + "Device programmed successfully.";
+                    CharArrayWriter pout=new CharArrayWriter();
+                    if(device.sendHex(new FileInputStream(compiled), pout))
+                    {
+                        msg = msg + "Device programmed successfully.";
+                    }
                 } else {
                     msg = msg + "Device offline, could not be programmed."; 
                 }
@@ -128,11 +130,11 @@
 %>
 
 <section class="content-header">
-    <h1>Device<small>Name</small></h1>
+    <h1>Device<small> <%=name%></small></h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Forms</a></li>
-        <li class="active">General Elements</li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Panel</a></li>
+        <li><a href="#">Devices</a></li>
+        <li class="active"><%=name%></li>
     </ol>
 </section>
 
@@ -146,19 +148,27 @@
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">General</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Code</a></li>
                     <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Messages</a></li>
+                    <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Console</a></li>
+                    <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">Controls</a></li>
+             <!--               
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                            Dropdown <span class="caret"></span>
+                            Actions <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete</a></li>
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
                             <li role="presentation" class="divider"></li>
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
                         </ul>
                     </li>
-                    <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+             -->
+                    <li class="pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"><i class="fa fa-gear"></i></a>
+                        <ul class="dropdown-menu">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
@@ -171,6 +181,11 @@
                                     <div><%=id%></div>
                                     <input type="hidden" name="ID" value="<%=id%>">
                                 </div>  
+                                
+                                <div class="form-group has-feedback">
+                                    <label>Authentication Token</label>
+                                    <div><%=token%></div>
+                                </div>                                
 
                                 <!-- text input -->
                                 <div class="form-group has-feedback">
@@ -208,12 +223,7 @@
                                 <div class="form-group has-feedback">
                                     <label>Connected Time</label>
                                     <div><%=new Date(connectedTime)%></div>
-                                </div>   
-                                
-                                <div class="form-group has-feedback">
-                                    <label>Authentication Token</label>
-                                    <div><%=token%></div>
-                                </div>
+                                </div>                                   
 
                             </div><!-- /.box-body -->
 
@@ -249,83 +259,64 @@
 
                                 <div class="form-group has-feedback">
                                     <label>Console</label>
+                                    <!--
                                     <div><textarea name="consoleLog" id="consoleLog" class="col-md-12" rows="10"></textarea></div>
+                                    -->
+                                    <div class="callout callout-info">
+                                        <div id="ws_cmp"></div>
+                                    </div>
                                 </div>     
+
 
 
                             </div><!-- /.box-body -->
 
                             <div class="box-footer">
-                                <input type="button" value="Compilar" onclick="document.getElementById('consoleLog').value = 'Compilando...\n\r';
-                                        r = getSynchData('?cp=compile&dev=<%=type%>&skt=' + document.getElementById('skt').value + '&ID=<%=id%>', ' myCodeMirror.getValue()', 'POST');
-                                        console.log(r);
-                                        document.getElementById('consoleLog').value = 'Compilando...\n\r' + r.response;
-                                        //if (r.response === 'OK'){
-                                        //    alert('Archivo Compilado');
-                                        //}
-                                        //else
-                                        //    alert(r.response)" class="btn btn-primary" >
-
+                                <input type="button" value="Send" onclick="WS.log('Compiling...','ws_cmp'); getAsynchData('deviceDetail?cp=compile&dev=<%=type%>&skt=' + document.getElementById('skt').value + '&ID=<%=id%>', 'myCodeMirror.getValue()', 'POST',function(data){WS.log(data,'ws_cmp');});" class="btn btn-primary" >
                             </div>
                         </form> 
-                        <script type="text/javascript">
-
-                            var getSynchData = function (url, data, method)
-                            {
-
-                                //alert(url + '\n\r' + data + '\n\r' + method);
-                                if (typeof XMLHttpRequest === "undefined")
-                                {
-                                    XMLHttpRequest = function () {
-                                        try {
-                                            return new ActiveXObject("Msxml2.XMLHTTP.6.0");
-                                        }
-                                        catch (e) {
-                                        }
-                                        try {
-                                            return new ActiveXObject("Msxml2.XMLHTTP.3.0");
-                                        }
-                                        catch (e) {
-                                        }
-                                        try {
-                                            return new ActiveXObject("Microsoft.XMLHTTP");
-                                        }
-                                        catch (e) {
-                                        }
-                                        // Microsoft.XMLHTTP points to Msxml2.XMLHTTP and is redundant
-                                        throw new Error("This browser does not support XMLHttpRequest.");
-                                    };
-                                }
-
-                                var aRequest = new XMLHttpRequest();
-                                if (!data)
-                                {
-                                    if (!method)
-                                        method = "GET";
-                                    aRequest.open(method, "deviceDetail" + url, false);
-                                    aRequest.send();
-                                } else
-                                {
-                                    //alert('post>>>>>>>>>>>>> ' + url);
-                                    if (!method)
-                                        method = "POST";
-                                    aRequest.open(method, "deviceDetail" + url, false);
-                                    aRequest.send(data);
-                                }
-                                return aRequest;
-                            };
-
-
-                        </script>   
                     </div><!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_3">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                        when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                        It has survived not only five centuries, but also the leap into electronic typesetting,
-                        remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                        sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
-                        like Aldus PageMaker including versions of Lorem Ipsum.
+    <script type="text/javascript">
+        var url='ws://' + window.location.host+ '/websocket/cdino?ID=<%=id%>';
+        WS.disconnect();
+        WS.connect(url);
+    </script>                        
+                        
+    <div id="connect-container">
+        <div>
+            <button class="btn btn-primary btn-flat" id="connect" onclick="WS.connect(url);">Connect</button>
+            <button class="btn btn-primary btn-flat" id="disconnect" disabled="disabled" onclick="WS.disconnect();">Disconnect</button>
+        </div>
+        <div>
+            Topic:<br/>
+            <input id="topic" type="text" style="width: 350px"/>
+        </div>
+        <div>
+            Message:<br/>
+            <textarea id="message" style="width: 350px">Here is a message!</textarea>
+        </div>
+        <div>
+            <button class="btn btn-primary btn-flat" id="send" onclick="WS.send();" disabled="disabled">Send</button>
+        </div>
+    </div>
+    <br/>    
+    <div class="callout callout-info">
+        <div id="ws_msg"></div>
+    </div>
+                    </div><!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_4">
+    <div class="callout callout-info">
+        <div id="ws_log"/>
+    </div>
+                    </div><!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_5">
+                        <div>
+                            <button class="btn btn-primary btn-flat" onclick="WS.post('sir','true')" >Alarm ON</button>
+                            <button class="btn btn-primary btn-flat" onclick="WS.post('sir','false')" >Alarm OFF</button>
+                            <button class="btn btn-primary btn-flat" onclick="WS.post('mov','true')" >Move On</button>
+                            <button class="btn btn-primary btn-flat" onclick="WS.post('mov','false')" >Move Off</button> 
+                        </div>
                     </div><!-- /.tab-pane -->
                 </div><!-- /.tab-content -->
             </div><!-- nav-tabs-custom -->

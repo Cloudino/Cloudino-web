@@ -2,8 +2,7 @@
     Document   : sketcherDetail
     Created on : 11/08/2015, 12:00:44 PM
     Author     : juan.fernandez
---%>
-<%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
+--%><%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
     String name = request.getParameter("fn");
     String newname = request.getParameter("name");
     String act = request.getParameter("act");
@@ -271,28 +270,13 @@
                         %>    
                     </select>
                     </div><div class="col-md-3 pull-left">
-                <input type="button" value="Save" onclick="document.getElementById('consoleLog').value = 'Guardando Archivo...\n\r';
-                        r = getSynchData('?up=<%=filename != null ? URLEncoder.encode(filename) : ""%>&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST');
-                        console.log(r);
-                        document.getElementById('consoleLog').value = 'Saving file...\n\r' + r.response;
-                        //if (r.response === 'OK')
-                        //    alert('Archivo Gradado');
-                        //else
-                        //    alert('Error al guardar archivo')" class="btn btn-primary">
+                <input type="button" value="Save" onclick="document.getElementById('consoleLog').value = 'Saving File...\n\r';getAsynchData('sketcherDetail?up=<%=filename != null ? URLEncoder.encode(filename) : ""%>&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary">
                 <%
 
                 String skt_mainFile = skt + ".ino";
                 if(filename.equals(skt_mainFile)){
                 %>
-                <input type="button" value="Compile" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';
-                        r = getSynchData('?cp=<%=filename != null ? URLEncoder.encode(filename) : ""%>&dev=' + document.getElementById('type').value + '&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST');
-                        console.log(r);
-                        document.getElementById('consoleLog').value = 'Compiling...\n\r' + r.response;
-                        //if (r.response === 'OK'){
-                        //    alert('Archivo Compilado');
-                        //}
-                        //else
-                        //    alert(r.response)" class="btn btn-primary" >
+                <input type="button" value="Compile" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('sketcherDetail?cp=<%=filename != null ? URLEncoder.encode(filename) : ""%>&dev=' + document.getElementById('type').value + '&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
                 
                 <%
                 }
@@ -345,50 +329,6 @@
                 </div>  
 
                 <script type="text/javascript">
-
-                    var getSynchData = function (url, data, method)
-                    {
-
-                        //alert(url + '\n\r' + data + '\n\r' + method);
-                        if (typeof XMLHttpRequest === "undefined")
-                        {
-                            XMLHttpRequest = function () {
-                                try {
-                                    return new ActiveXObject("Msxml2.XMLHTTP.6.0");
-                                }
-                                catch (e) {
-                                }
-                                try {
-                                    return new ActiveXObject("Msxml2.XMLHTTP.3.0");
-                                }
-                                catch (e) {
-                                }
-                                try {
-                                    return new ActiveXObject("Microsoft.XMLHTTP");
-                                }
-                                catch (e) {
-                                }
-                                // Microsoft.XMLHTTP points to Msxml2.XMLHTTP and is redundant
-                                throw new Error("This browser does not support XMLHttpRequest.");
-                            };
-                        }
-
-                        var aRequest = new XMLHttpRequest();
-                        if (!data)
-                        {
-                            if (!method)
-                                method = "GET";
-                            aRequest.open(method, "sketcherDetail" + url, false);
-                            aRequest.send();
-                        } else
-                        {
-                            if (!method)
-                                method = "POST";
-                            aRequest.open(method, "sketcherDetail" + url, false);
-                            aRequest.send(data);
-                        }
-                        return aRequest;
-                    };
 
                     var myCodeMirror = CodeMirror.fromTextArea(code, {
                         //mode: "application/x-jsp",

@@ -25,10 +25,13 @@ var WS = {
         WS.ws.onmessage = function (event) {
             if(event.data.startsWith("msg:"))
             {
-                WS.log(event.data.substring(4));
-            }else if(event.data.startsWith("log"))
+                WS.log(event.data.substring(4),"ws_msg");
+            }else if(event.data.startsWith("log:"))
             {
-                WS.log(event.data.substring(4));
+                WS.log(event.data.substring(4),"ws_log");
+            }else if(event.data.startsWith("cmp:"))
+            {
+                WS.log(event.data.substring(4),"ws_cmp");
             }
         };
         WS.ws.onclose = function (event) {
@@ -61,15 +64,29 @@ var WS = {
             alert('WebSocket connection not established, please connect.');
         }
     },
-
-    log:function (message) {
-        var console = document.getElementById('console');
-        var p = document.createElement('div');
-        //p.style.wordWrap = 'break-word';
-        p.appendChild(document.createTextNode(message));
-        console.appendChild(p);
-        while (console.childNodes.length > 25) {
-            console.removeChild(console.firstChild);
+    
+    post:function (topic, message){
+        if (WS.ws != null) {
+            var enc=WS.encodeMessage(topic,message);
+            WS.ws.send(enc);
+            WS.log(topic+"->"+message);
+        } else {
+            alert('WebSocket connection not established, please connect.');
+        }
+    },
+    
+    log:function (message,div) {
+        if(!div)div="ws_msg";
+        var console = document.getElementById(div);
+        if(console)
+        {
+            var p = document.createElement('div');
+            //p.style.wordWrap = 'break-word';
+            p.appendChild(document.createTextNode(message));
+            console.appendChild(p);
+            while (console.childNodes.length > 25) {
+                console.removeChild(console.firstChild);
+            }
         }
         //console.scrollTop = console.scrollHeight;
     },

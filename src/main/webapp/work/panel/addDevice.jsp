@@ -23,7 +23,7 @@
         DataObject user=(DataObject)session.getAttribute("_USER_");
         SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
         SWBDataSource ds=engine.getDataSource("Device");
-        String token = TokenGenerator.getNonExistentTokenByUserId(user.getId(), ds);
+        String token = TokenGenerator.getNonExistentTokenByUserId(user.getNumId(), ds);
         DataObject data=new DataObject();
         data.put("user", user.getId());
         data.put("name", name);

@@ -43,8 +43,20 @@
             <button id="send" onclick="WS.send();" disabled="disabled">Send</button>
         </div>
     </div>
+    
+    <p>
+    <button onclick="WS.post('sir','true')" >Alarm ON</button>
+    <button onclick="WS.post('sir','false')" >Alarm OFF</button>
+    <button onclick="WS.post('mov','true')" >Move On</button>
+    <button onclick="WS.post('mov','false')" >Move Off</button> 
+    </p>
+    
     <div id="console-container">
-        <div id="console"/>
+        <div id="ws_msg"/>
+        <div id="ws_log"/>
+        <div id="ws_cmp"/>
     </div>
+        
+
 </body>
 </html>

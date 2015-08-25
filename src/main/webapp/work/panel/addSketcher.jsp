@@ -3,10 +3,7 @@
     Created on : 11/08/2015, 11:59:05 AM
     Author     : juan.fernandez
 --%>
-<%@page import="java.util.Properties"%>
-<%@page import="io.cloudino.compiler.ArdCompiler"%>
-<%@page import="io.cloudino.engine.*"%>
-<%@page import="java.util.ArrayList"%><%@page import="java.util.Iterator"%><%@page import="java.io.*"%><%@page import="java.net.URLEncoder"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="org.semanticwb.datamanager.*"%>
+<%@page import="java.util.Properties"%><%@page import="io.cloudino.compiler.ArdCompiler"%><%@page import="io.cloudino.engine.*"%><%@page import="java.util.ArrayList"%><%@page import="java.util.Iterator"%><%@page import="java.io.*"%><%@page import="java.net.URLEncoder"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="org.semanticwb.datamanager.*"%>
 <%
     String name=request.getParameter("name");
     String sktname=request.getParameter("skt");
@@ -45,7 +42,7 @@
                 }
             } else {
                 // error ya existe el Sketcher
-                msg = "Existe un Sketcher con el mismo nombre";
+                msg = "There is a Sketcher with the same name.";
                 return;
             }
             newf = new File(userBasePath+"/sketchers/"+name+"/"+name+".ino");
@@ -66,7 +63,7 @@
                 newf.createNewFile();
                 newf.setWritable(true);                
             } else {
-                msg="Existe un Archivo con el mismo nombre.";
+                msg="There is a file with the same name.";
                 return;
             }
         }

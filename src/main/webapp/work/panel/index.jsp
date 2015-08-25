@@ -1,11 +1,9 @@
-<%@page import="io.cloudino.engine.DeviceMgr"%>
-<%@page import="java.io.File"%>
-<%@page import="org.semanticwb.datamanager.*"%>
-<%
+<%@page import="io.cloudino.engine.DeviceMgr"
+        %><%@page import="java.io.File"
+        %><%@page import="org.semanticwb.datamanager.*"%><%
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
-%>
-<!DOCTYPE html>
+%><!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -89,7 +87,7 @@
         <script src="/js/codemirror/addon/edit/matchtags.js"></script>        
         
        <!--
-        <sc´ript src="/js/codemirror/addon/edit/closetag.js"></script>
+        <script src="/js/codemirror/addon/edit/closetag.js"></script>
         -->
                        
 
@@ -354,7 +352,7 @@
       </header>
                       
       <!-- Left side column. contains the logo and sidebar -->
-      <jsp:include page="menu.jsp"/>
+      <jsp:include page="menu.jsp" />
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">

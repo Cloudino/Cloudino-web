@@ -54,7 +54,7 @@
     }
 
     if (upload != null) {
-        //System.out.println("up:" + upload);
+        System.out.println("up:" + upload);
         byte code[] = readInputStream(request.getInputStream());
 
         try {
@@ -110,11 +110,11 @@
                 ArdCompiler com = ArdCompiler.getInstance();
                 com.compileCode(new String(code, "utf8"), path, type, build);
             } catch (Exception e) {
-                out.print("Error:" + e.getMessage());
+                retmsg = "Error:" + e.getMessage();
                 e.printStackTrace(response.getWriter());
             }
         } catch (Exception e) {
-            out.print("Error:" + e.getMessage());
+            retmsg = "Error:" + e.getMessage();
             e.printStackTrace(response.getWriter());
         }
         out.print(retmsg);

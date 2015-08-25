@@ -77,8 +77,9 @@
     String msg = "";
     String compile = request.getParameter("cp");
 
-    if ( compile != null && null != skt) { //device != null &&
+    if ( compile != null && null != skt) { 
 
+        if(null!=data) data.put("sketcher", skt);
         String sktFile = skt + ".ino";
         File fin = new File(userBasePath + "/" + skt + "/" + sktFile);
         FileInputStream in = new FileInputStream(fin);
@@ -127,6 +128,11 @@
     }
 
             /////////////////////////////////////////////////////////////
+    
+    String sketcherDefault = null; 
+    if(null!=data){
+        sketcherDefault = data.getString("sketcher", null);
+    }
 %>
 
 <section class="content-header">
@@ -244,26 +250,45 @@
                             <div class="box-body">
                                 <!-- select -->
                                 <div class="form-group has-feedback">
+                                    <div class="col-md-1 pull-left">
                                     <label>Sketcher</label>
+                                    </div>
+                                    <div class="col-md-10 pull-left">
                                     <select name="skt" id="skt" class="form-control">                                        
                                         <%
                                             File[] listFiles = f.listFiles();
                                             for (File file : listFiles) {
                                                 if (file.isDirectory() && !file.isHidden()) {
-                                                    out.println("<option value=\"" + file.getName() + "\" >" + file.getName() + "</option>");
+                                                    out.println("<option value=\"" + file.getName() + "\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + "</option>");
                                                 }
                                             }
                                         %>    
                                     </select>
+                                    </div>
+                                    <div class="col-md-1 pull-left">
+                                    <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" onclick="editSketcher(this);" >Edit</a>
+                                    <script type="text/javascript">
+                                        function editSketcher(alink){
+                                            var sketcher = document.getElementById('skt');
+                                            var valSket = sketcher[sketcher.selectedIndex].value;
+                                            var urlEdit = 'sketcherDetail?fn=' + valSket + '.ino&skt=' + valSket ;
+                                            alink.href=urlEdit;
+                                            alink.click();
+                                        }
+                                        
+                                    </script>
+                                    </div>
                                 </div> 
 
                                 <div class="form-group has-feedback">
+                                    <div class="col-md-12 pull-left">
                                     <label>Console</label>
                                     <!--
                                     <div><textarea name="consoleLog" id="consoleLog" class="col-md-12" rows="10"></textarea></div>
                                     -->
                                     <div class="callout callout-info">
                                         <div id="ws_cmp"></div>
+                                    </div>
                                     </div>
                                 </div>     
 

@@ -133,7 +133,9 @@
                                 out.println("<ul class=\"treeview-menu\">");
                                 File[] sketcherFiles = file.listFiles();
                                 for (File sktFile : sketcherFiles) {
-                                    out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\"sketcherDetail?fn=" + sktFile.getName() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                    if(!sktFile.getName().equals("config.properties")){
+                                        out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\"sketcherDetail?fn=" + sktFile.getName() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                    }
                                 }
                                 out.println("<li><a href=\"addSketcher?skt=" + file.getName() + "&act=newfile\" data-target=\".content-wrapper\" data-load=\"ajax\"><i class=\"fa fa-gear\"></i> Nuevo Archivo</a></li> ");
                                 out.println("</ul>");

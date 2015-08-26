@@ -80,10 +80,17 @@
     
 %>
 <!-- Content Header (Page header) -->
+<script type="text/javascript">
+//    window.onload = function () {
+//    document.formAddSketcher.name.focus();
+//    document.formAddSketcher.addEventListener('submit', validateFileType);
+//}
+</script>
 <section class="content-header">
     <h1>
         <%
     String formName = "Add Sketcher";
+
         if(null!=sktname&&isNewFile){
             formName="New file";
         }
@@ -109,10 +116,13 @@
                     <h3 class="box-title">General Data</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
-                <form data-target=".content-wrapper" data-submit="ajax" action="addSketcher" role="form">
+                <form data-target=".content-wrapper" data-submit="ajax" action="addSketcher" role="form" <%//=(isNewFile?"onsubmit=\"if(validateFileType())return true;\"":"")%>>
                     <div class="box-body">
                         <%
+                        String placeHolderStr = "Enter Sketcher name ...";
+                        
                         if(isNewFile){
+                            placeHolderStr = "Enter file name ... (allowed types: c,cpp,h)";
                             %>
                             <input type="hidden" name="act" value="addFile"/>
                             <input type="hidden" name="skt" value="<%=sktname%>"/>
@@ -123,15 +133,99 @@
                         <!-- text input -->
                         <div class="form-group has-feedback">
                             <label>Name</label>
-                            <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ..." required>
+                            <input name="name" id="nombre" value="<%=name%>" type="text" class="form-control" placeholder="<%=placeHolderStr%>" required>
                         </div>
     
                     </div><!-- /.box-body -->
 
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary"  <%=(isNewFile?"onclick=\"if(validateFileType()){return true;}else{ return false;}\"":"")%> >Submit</button>
                     </div>
                 </form>
+                    
+                    <%
+                    if(isNewFile){
+                    %>
+                    
+                        <script type="text/javascript">
+                            
+                            function validateFileType(){
+                                
+                                var nombre = document.getElementById('nombre').value;
+                                nombre = nombre.replace(/ /g,'');
+                                var indice = nombre.indexOf(".");
+//                                alert(nombre+"("+nombre.length+","+indice+")");
+                                var isValid = false;
+
+                                if(nombre.length>4 && indice>-1){
+                                //validación de la extensión del nombre del archivo
+                                
+                                    if (nombre.length > 0) {
+                                        isValid = isValidName();
+                                        if(!isValid){
+                                            alert("The name of the file is invalid.");
+                                            document.getElementById('nombre').value="";
+                                            document.getElementById('nombre').focus();
+                                            return isValid;
+                                        }
+
+                                        isValid = valida_docs_type();
+                                        if (!isValid) {
+                                            alert("Error, " + nombre + " is invalid, allowed extensions are: c, cpp, h");
+                                            document.getElementById('nombre').focus();
+                                            return isValid;
+                                        }
+                                    } 
+                                    else {
+                                        document.getElementById('nombre').value="";
+                                        document.getElementById('nombre').focus();
+                                        alert("Name is required...");
+                                        return isValid;
+                                    }
+                                    return isValid;
+                                } else {
+                                    alert("The name of the file is invalid.");
+                                    document.getElementById('nombre').value="";
+                                    document.getElementById('nombre').focus();
+                                    return isValid;
+                                }
+                                
+                            }
+                            
+                             function isValidName() {
+                                var valid = false;
+                                var name = document.getElementById('nombre').value;
+                                var filter = /^[\w\d\_]+[.][cph]{1,3}$/;
+
+                                    if (name != null && name != '' && filter.test(name)) {
+                                        valid = true;
+                                    }
+
+                                return valid;
+                            }
+                            
+                            
+                            function valida_docs_type() {
+                                var valid = false;
+                                var input;
+                                nameFile = "nombre";
+                                input = document.getElementById(nameFile);
+                                if (input) {
+                                    var fileName = input.value;
+                                    var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                                    ext = ext.toLowerCase();
+                                    if (ext == "c" || ext == "cpp" || ext == "h")
+                                    {
+                                        valid = true;
+                                    }
+                                }
+                                return valid;
+                            }
+                            
+                        </script>
+                        <%
+                    }
+                        %>
             </div>
 
         </div>

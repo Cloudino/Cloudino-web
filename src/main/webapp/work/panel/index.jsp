@@ -160,7 +160,7 @@
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="/profile" class="btn btn-default btn-flat">Profile</a>
+                      <a href="/profile" class="btn btn-default btn-flat" data-target=".content-wrapper" data-load="ajax">Profile</a>
                     </div>
                     <div class="pull-right">
                       <a href="/login?logout=true" class="btn btn-default btn-flat">Sign out</a>

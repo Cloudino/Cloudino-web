@@ -2,7 +2,7 @@
     Document   : deviceDetail
     Created on : 04-ago-2015, 0:03:07
     Author     : javiersolis
---%><%@page import="java.net.URLEncoder"%><%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
+--%><%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.net.URLEncoder"%><%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
     SWBDataSource ds = engine.getDataSource("Device");
@@ -39,12 +39,13 @@
         //System.out.println(ret);
         DataObject obj = ret.getDataObject("response").getDataObject("data");
         if (obj != null) {
-            response.sendRedirect("deviceDetail?ID=" + obj.getNumId());
+            response.sendRedirect("deviceDetail?ID=" + obj.getNumId()+"&_rm=true");
             return;
         } else {
             out.println("Error updating object...");
             return;
         }
+        
     }
 
     name = data.getString("name", "");
@@ -65,11 +66,12 @@
     String appPath = config.getServletContext().getRealPath("/");
     String dir = appPath + "/work";
     String skt = request.getParameter("skt");
-    String sktPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId() + "/sketchers/" + skt + "/";
+    //String sktPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId() + "/sketchers/" + skt + "/";
 
     // leer estructura de archivos del usuario
-    String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId() + "/sketchers";
-    String userBuildPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId() + "/build";
+    String userPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId();
+    String userBasePath = userPath + "/sketchers";
+    String userBuildPath = userPath + "/build";
     File f = new File(userBasePath);
     if (!f.exists()) {
         f.mkdirs();
@@ -81,24 +83,26 @@
 
         if(null!=data) data.put("sketcher", skt);
         String sktFile = skt + ".ino";
-        File fin = new File(userBasePath + "/" + skt + "/" + sktFile);
-        FileInputStream in = new FileInputStream(fin);
-        byte code[] = readInputStream(in);
+        String path=userBasePath + "/" + skt + "/" + sktFile;
+        
+        //File fin = new File(path);
+        //FileInputStream in = new FileInputStream(fin);
+        //byte code[] = readInputStream(in);
         try {
             try {
                 //String type=device.getData().getString("type");
                 //System.out.println("device.getData():" + device.getData());
-                String build = userBuildPath;//"/Users/javiersolis/Documents/Arduino/build";
-                String path = sktPath + sktFile;
-
-                ArdCompiler com = ArdCompiler.getInstance();
-                com.compileCode(new String(code, "utf8"), path, type, build);
-
+                //String build = userBuildPath;//"/Users/javiersolis/Documents/Arduino/build";
+                //String path = sktPath + sktFile;
                 msg = "";
                 
+                ArdCompiler com = ArdCompiler.getInstance();
+                msg=com.compile(path, type, userBuildPath, userPath);
+                msg=msg.replace("\n", "<br>\n");
+
                 File fino = new File(path);
                 String fname = fino.getName().split("\\.")[0];
-                String compiled = build + "/" + fname + ".cpp.hex";
+                String compiled = userBuildPath + "/" + fname + ".cpp.hex";
 
                 if (device !=null && device.isConnected()) {
                     CharArrayWriter pout=new CharArrayWriter();
@@ -133,6 +137,11 @@
     if(null!=data){
         sketcherDefault = data.getString("sketcher", null);
     }
+    
+    if(request.getParameter("_rm")!=null)
+    {
+        out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=dev','.main-sidebar');</script>");
+    }    
 %>
 
 <section class="content-header">

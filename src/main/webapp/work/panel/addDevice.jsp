@@ -35,7 +35,7 @@
         DataObject obj=ret.getDataObject("response").getDataObject("data");
         if(obj!=null)
         {
-            response.sendRedirect("deviceDetail?ID="+obj.getNumId());
+            response.sendRedirect("deviceDetail?ID="+obj.getNumId()+"&_rm=true");
             return;
         }
     }
@@ -86,7 +86,7 @@
                             <select name="type" class="form-control">
                                 <option value="cloudino-standalone">Cloudino Connector Standalone</option>
                                 <%
-                                    ArdCompiler cmp = io.cloudino.compiler.ArdCompiler.getInstance();
+                                    ArdCompiler cmp = ArdCompiler.getInstance();
                                     Iterator<io.cloudino.compiler.ArdDevice> it = cmp.listDevices();
                                     while (it.hasNext()) {
                                         io.cloudino.compiler.ArdDevice dev = it.next();

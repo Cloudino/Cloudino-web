@@ -82,7 +82,7 @@ var WS = {
         {
             var p = document.createElement('div');
             //p.style.wordWrap = 'break-word';
-            p.appendChild(document.createTextNode(message));
+            p.innerHTML=message;
             console.appendChild(p);
             while (console.childNodes.length > 25) {
                 console.removeChild(console.firstChild);

@@ -4,9 +4,8 @@
 <%
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
+    String act=request.getParameter("act");
 %>
-<!-- Left side column. contains the logo and sidebar -->
-<aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <!-- Sidebar user panel -->
@@ -80,7 +79,7 @@
                 <li><a href="pages/charts/inline.html"><i class="fa fa-user"></i> Juan Fernández</a></li>
               </ul>
             </li> -->
-            <li class="treeview">
+            <li class="treeview<%=("dev".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-gears"></i>
                     <span>Devices</span>
@@ -110,7 +109,7 @@
                     <li><a href="addDevice" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Device</a></li>
                 </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview<%=("sket".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-laptop"></i>
                     <span>Sketchers</span>
@@ -167,7 +166,7 @@
                       </li> -->
                 </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview<%=("lib".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-book"></i>
                     <span>Libraries</span>
@@ -190,7 +189,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview<%=("ds".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-cubes"></i>
                     <span>Data Sets</span>
@@ -211,7 +210,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview<%=("dp".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-clock-o"></i>
                     <span>Data Procesors</span>
@@ -221,7 +220,7 @@
                     <li><a href="#"><i class="fa fa-clock-o"></i> Procesor uno</a></li>
                 </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview<%=("dsv".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-server"></i>
                     <span>Data Services</span>
@@ -237,7 +236,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview<%=("rul".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-eye"></i>
                     <span>Rules</span>
@@ -334,5 +333,3 @@
 -->
         </ul>
     </section>
-    <!-- /.sidebar -->
-</aside>

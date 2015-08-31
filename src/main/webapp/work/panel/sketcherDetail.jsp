@@ -18,9 +18,9 @@
     String dir = appPath + "/work";
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
-    String sktPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId() + "/sketchers/" + skt + "/";
-    String buildPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId() + "/build/";
     String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId();
+    String sktPath = userBasePath + "/sketchers/" + skt + "/";
+    String buildPath = userBasePath + "/build/";
     String msg = null;
     if (name != null && null != act && "rename".equals(act) && null != newname) {
         File oldfile = new File(sktPath + name);
@@ -51,6 +51,8 @@
     if (name == null) {
         name = "";
     }
+    
+    if(compile!=null)upload=compile;
 
     if (upload != null) {
         System.out.println("up:" + upload);
@@ -93,21 +95,22 @@
 
         }
 
-        out.print("File saved.");
-        return;
+        out.println("File saved.");
+        if(compile == null)return;
     }
 
     // COMPILAR ARCHIVO EDITADO
     if (devtype != null && compile != null) {
         String retmsg = "OK\n\rFile compiled.";
-        byte code[] = readInputStream(request.getInputStream());
+        //byte code[] = readInputStream(request.getInputStream());
+        
         try {
             try {
                 String type = devtype;
                 String build = buildPath; //"/Users/javiersolis/Documents/Arduino/build";
                 String path = sktPath + compile;
                 ArdCompiler com = ArdCompiler.getInstance();
-                com.compileCode(new String(code, "utf8"), path, type, build);
+                retmsg=com.compile(path, type, build,userBasePath);
             } catch (Exception e) {
                 retmsg = "Error:" + e.getMessage();
                 e.printStackTrace(response.getWriter());
@@ -144,7 +147,6 @@
             }
         }
         return;
-        
     }
 
     /////////////////////////////////////////////////////////////
@@ -203,6 +205,11 @@
             e.printStackTrace();
         }
     }
+    
+    if(request.getParameter("_rm")!=null)
+    {
+        out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=sket','.main-sidebar');</script>");
+    }      
 %>
 
 <script type="text/javascript">

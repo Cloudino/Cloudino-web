@@ -71,8 +71,7 @@
         if(newf!=null)
         {
             if(null==sktname)sktname=name;
-            response.sendRedirect("sketcherDetail?fn="+newf.getName()+"&skt="+sktname);
-            
+            response.sendRedirect("sketcherDetail?fn="+newf.getName()+"&skt="+sktname+"&_rm=true");
             return;
         }
     }

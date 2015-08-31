@@ -53,58 +53,13 @@
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
-    <link rel="stylesheet" href="/js/codemirror/lib/codemirror.css"> 
+
+        <link rel="stylesheet" href="/js/codemirror/lib/codemirror.css"> 
         <link rel="stylesheet" href="/js/codemirror/addon/hint/show-hint.css">
         <link rel="stylesheet" href="/js/codemirror/theme/eclipse.css">   
         <link rel="stylesheet" href="/js/codemirror/addon/dialog/dialog.css">
         <link rel="stylesheet" href="/js/codemirror/addon/lint/lint.css">  
         
-
-        <script src="/js/codemirror/lib/codemirror.js"></script>  
-        <script src="/js/codemirror/addon/hint/show-hint.js"></script>
-        <script src="/js/codemirror/addon/selection/active-line.js"></script> 
-        <script src="/js/codemirror/addon/lint/lint.js"></script>       
-        <script src="/js/codemirror/addon/search/search.js"></script> 
-        <script src="/js/codemirror/addon/search/searchcursor.js"></script>
-        <script src="/js/codemirror/addon/dialog/dialog.js"></script>
-        
-        
-        <script src="/js/codemirror/mode/xml/xml.js"></script>
-        <script src="/js/codemirror/addon/hint/xml-hint.js"></script>
-        
-        <script src="/js/codemirror/mode/javascript/javascript.js"></script>
-        <script src="/js/codemirror/addon/hint/javascript-hint.js"></script>
-        <script src="/js/codemirror/addon/lint/javascript-lint.js"></script>
-        <script src="//ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js"></script>
-        
-        <script src="/js/codemirror/addon/lint/json-lint.js"></script>
-        <script src="https://rawgithub.com/zaach/jsonlint/79b553fb65c192add9066da64043458981b3972b/lib/jsonlint.js"></script>
-        
-        <script src="/js/codemirror/addon/edit/matchbrackets.js"></script>  
-        <script src="/js/codemirror/addon/edit/closebrackets.js"></script>  
-        <script src="/js/codemirror/addon/comment/continuecomment.js"></script>
-        <script src="/js/codemirror/addon/comment/comment.js"></script> 
-        
-        <script src="/js/codemirror/mode/css/css.js"></script>
-        <script src="/js/codemirror/addon/hint/css-hint.js"></script>
-        <script src="/js/codemirror/addon/lint/css-lint.js"></script>
-        <script src="https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"></script>        
-        
-        <script src="/js/codemirror/mode/clike/clike.js"></script>
-        
-        <script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-        <script src="/js/codemirror/mode/htmlembedded/htmlembedded.js"></script>
-        <script src="/js/codemirror/addon/hint/html-hint.js"></script>
-        <script src="/js/codemirror/addon/mode/multiplex.js"></script>
-        <script src="/js/codemirror/addon/fold/xml-fold.js"></script>
-        <script src="/js/codemirror/addon/edit/matchtags.js"></script>        
-        
-       <!--
-        <script src="/js/codemirror/addon/edit/closetag.js"></script>
-        -->
-                       
-
         <style type="text/css">
             .CodeMirror {border: 1px solid black; font-size:13px}
         </style>  
@@ -177,8 +132,11 @@
         </nav>
       </header>
                       
-      <!-- Left side column. contains the logo and sidebar -->
-      <jsp:include page="menu.jsp" />
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        <jsp:include page="menu.jsp" />
+    <!-- /.sidebar -->
+    </aside>          
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
@@ -795,46 +753,96 @@
     </div><!-- ./wrapper -->
 
     <!-- jQuery 2.1.4 -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
     <script src="/static/plugins/jQuery/jQuery-2.1.4.min.js"></script>
-    <!-- jQuery UI 1.11.2 -->
+    <!-- jQuery UI 1.11.2 --
     <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip --
     <script>
       $.widget.bridge('uibutton', $.ui.button);
     </script>
     <!-- Bootstrap 3.3.2 JS -->
     <script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>    
-    <!-- Morris.js charts -->
+<!--
+    <!-- Morris.js charts --
     <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="/static/plugins/morris/morris.min.js" type="text/javascript"></script>
-    <!-- Sparkline -->
+    <!-- Sparkline --
     <script src="/static/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
-    <!-- jvectormap -->
+    <!-- jvectormap --
     <script src="/static/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
     <script src="/static/plugins/jvectormap/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
-    <!-- jQuery Knob Chart -->
+    <!-- jQuery Knob Chart --
     <script src="/static/plugins/knob/jquery.knob.js" type="text/javascript"></script>
-    <!-- daterangepicker -->
+    <!-- daterangepicker --
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js" type="text/javascript"></script>
     <script src="/static/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
-    <!-- datepicker -->
+    <!-- datepicker --
     <script src="/static/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
-    <!-- Bootstrap WYSIHTML5 -->
+    <!-- Bootstrap WYSIHTML5 --
     <script src="/static/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>
-    <!-- Slimscroll -->
+    <!-- Slimscroll --
     <script src="/static/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-    <!-- FastClick -->
+    <!-- FastClick --
     <script src='/static/plugins/fastclick/fastclick.min.js'></script>
+-->
+    <script src="/static/bootstrap/js/bootbox.min.js" type="text/javascript"></script>  
+
     <!-- AdminLTE App -->
     <script src="/static/dist/js/app.min.js" type="text/javascript"></script>    
     
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="/static/dist/js/pages/dashboard.js" type="text/javascript"></script>    
-    
-    <!-- AdminLTE for demo purposes -->
+<!--    
+    <script src="/static/dist/js/pages/dashboard.js" type="text/javascript"></script> 
     <script src="/static/dist/js/demo.js" type="text/javascript"></script>
+ -->   
+    
     <script src="/static/plugins/validator/validator.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/js/websockets.js"></script>
+    
+        <script src="/js/codemirror/lib/codemirror.js"></script>  
+        <script src="/js/codemirror/addon/hint/show-hint.js"></script>
+        <script src="/js/codemirror/addon/selection/active-line.js"></script> 
+        <script src="/js/codemirror/addon/lint/lint.js"></script>       
+        <script src="/js/codemirror/addon/search/search.js"></script> 
+        <script src="/js/codemirror/addon/search/searchcursor.js"></script>
+        <script src="/js/codemirror/addon/dialog/dialog.js"></script>
+        
+        <script src="/js/codemirror/addon/edit/matchbrackets.js"></script>  
+        <script src="/js/codemirror/addon/edit/closebrackets.js"></script>  
+        <script src="/js/codemirror/addon/comment/continuecomment.js"></script>
+        <script src="/js/codemirror/addon/comment/comment.js"></script> 
+        
+        <script src="/js/codemirror/mode/clike/clike.js"></script>        
+        
+-->        
+       <!--
+        <script src="/js/codemirror/mode/xml/xml.js"></script>
+        <script src="/js/codemirror/addon/hint/xml-hint.js"></script>
+
+       <script src="/js/codemirror/mode/javascript/javascript.js"></script>
+        <script src="/js/codemirror/addon/hint/javascript-hint.js"></script>
+        <script src="/js/codemirror/addon/lint/javascript-lint.js"></script>
+        <script src="//ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js"></script>
+
+        <script src="/js/codemirror/addon/lint/json-lint.js"></script>
+        <script src="https://rawgithub.com/zaach/jsonlint/79b553fb65c192add9066da64043458981b3972b/lib/jsonlint.js"></script>
+
+        <script src="/js/codemirror/mode/css/css.js"></script>
+        <script src="/js/codemirror/addon/hint/css-hint.js"></script>
+        <script src="/js/codemirror/addon/lint/css-lint.js"></script>
+        <script src="https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"></script>        
+
+        <script src="/js/codemirror/addon/mode/multiplex.js"></script>
+        <script src="/js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+        <script src="/js/codemirror/mode/htmlembedded/htmlembedded.js"></script>
+        <script src="/js/codemirror/addon/hint/html-hint.js"></script>
+        <script src="/js/codemirror/addon/fold/xml-fold.js"></script>
+        <script src="/js/codemirror/addon/edit/matchtags.js"></script>        
+        <script src="/js/codemirror/addon/edit/closetag.js"></script>
+        -->    
+    
+    
     <script type="text/javascript">
         //Cloudino Script
         
@@ -934,6 +942,16 @@
             }
             return aRequest;
         };
+        
+        var loadContent=function(url,target)
+        {
+            $.get(url, function(data) {
+                $(target).html(
+                        cdino_parse(data)
+                );
+                $.AdminLTE.tree($(target));
+            });
+        }
         
         var cdino_parse=function(html)
         {

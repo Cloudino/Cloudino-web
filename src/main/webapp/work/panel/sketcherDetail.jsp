@@ -18,7 +18,7 @@
     String dir = appPath + "/work";
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
-    String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId();
+    String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId();
     String sktPath = userBasePath + "/sketchers/" + skt + "/";
     String buildPath = userBasePath + "/build/";
     String msg = null;

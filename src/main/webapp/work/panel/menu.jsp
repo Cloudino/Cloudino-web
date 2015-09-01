@@ -120,7 +120,7 @@
                         //+ request.getRequestURI().substring(1, request.getRequestURI().lastIndexOf("/")) + "/"
                         String dir = config.getServletContext().getRealPath("/") + "/work/";
                         // leer estructura de archivos del usuario
-                        String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId() + "/sketchers";
+                        String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/sketchers";
                         File f = new File(userBasePath);
                         if (!f.exists()) {
                             f.mkdirs();

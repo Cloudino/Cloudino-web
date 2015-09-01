@@ -24,7 +24,7 @@
         
         String dir = config.getServletContext().getRealPath("/") + "/work/"  ;
         String msg =null;          
-        String userBasePath = dir+engine.getScriptObject().get("config").getString("usersWorkPath")+"/"+user.getId(); 
+        String userBasePath = dir+engine.getScriptObject().get("config").getString("usersWorkPath")+"/"+user.getNumId(); 
         File newf = null;
         if(sktname==null){
             //TODO: validar nombre del programa sin espacios

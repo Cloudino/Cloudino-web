@@ -66,10 +66,10 @@
     String appPath = config.getServletContext().getRealPath("/");
     String dir = appPath + "/work";
     String skt = request.getParameter("skt");
-    //String sktPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId() + "/sketchers/" + skt + "/";
+    //String sktPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/sketchers/" + skt + "/";
 
     // leer estructura de archivos del usuario
-    String userPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getId();
+    String userPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId();
     String userBasePath = userPath + "/sketchers";
     String userBuildPath = userPath + "/build";
     File f = new File(userBasePath);

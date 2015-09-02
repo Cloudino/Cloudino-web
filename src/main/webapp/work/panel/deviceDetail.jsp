@@ -345,12 +345,13 @@
     </div>
                     </div><!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_5">
-                        <div>
+                        <jsp:include page="controls.jsp" />
+<!--                        <div>
                             <button class="btn btn-primary btn-flat" onclick="WS.post('sir','true')" >Alarm ON</button>
                             <button class="btn btn-primary btn-flat" onclick="WS.post('sir','false')" >Alarm OFF</button>
                             <button class="btn btn-primary btn-flat" onclick="WS.post('mov','true')" >Move On</button>
                             <button class="btn btn-primary btn-flat" onclick="WS.post('mov','false')" >Move Off</button> 
-                        </div>
+                        </div>-->
                     </div><!-- /.tab-pane -->
                 </div><!-- /.tab-content -->
             </div><!-- nav-tabs-custom -->

@@ -66,18 +66,18 @@
     } else if(act.equals("update")){
 
         String ctrlid = request.getParameter("ctrlid");
-        DataObject query = new DataObject();
-        DataObject data = new DataObject();
-        query.put("data", data);
-        data.put("user", user.getId());
-        data.put("device", id);
-        data.put("_id",ds.getBaseUri()+ctrlid);
-        DataObject ret = ds.fetch(query);
+        //DataObject query = new DataObject();
+        //DataObject data = new DataObject();
+        //query.put("data", data);
+        //data.put("user", user.getId());
+        //data.put("device", id);
+        //data.put("_id",ds.getBaseUri()+ctrlid);
+        DataObject doctrl = ds.fetchObjByNumId(ctrlid);
 
         //Lista de controles asociados al dispositivo
         //DataObject doctrl = ret.getDataObject("response").getDataObject(ctrlid);
         
-        
+/*        
         DataObject doctrl = null; //ret.getDataObject("response").getDataObject("data");
         DataList<DataObject> controls = ret.getDataObject("response").getDataList("data");
         if (controls != null) {
@@ -90,7 +90,7 @@
                 //out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
             }
         }
-        
+*/        
         
         if (doctrl != null) {
             
@@ -117,6 +117,7 @@
         }
     } else if("".equals(act)){
     %>
+<div> 
    <div> 
     <%
                         DataObject query = new DataObject();
@@ -138,9 +139,10 @@
                             }
                         } 
 %>
+    </div>
+    <a href="controls?ID=<%=id%>&act=new" data-target="#tab_5" data-load="ajax" title="Add new control"><i class="fa fa-plus-square-o"></i></a>
+    <a href="controls?ID=<%=id%>&act=editlist" data-target="#tab_5" data-load="ajax" title="Edit controls"><i class="fa fa-edit"></i></a>
 </div>
-<a href="controls?ID=<%=id%>&act=new" data-target="#tab_5" data-load="ajax" title="Add new control"><i class="fa fa-plus-square-o"></i></a>
-<a href="controls?ID=<%=id%>&act=editlist" data-target="#tab_5" data-load="ajax" title="Edit controls"><i class="fa fa-edit"></i></a>
 <%
     } else if("new".equals(act)){
 %>
@@ -219,15 +221,15 @@
 <%
     }  else if("edit".equals(act)){
         String ctrlid = request.getParameter("ctrlid");
-        DataObject query = new DataObject();
-        DataObject data = new DataObject();
-        query.put("data", data);
-        data.put("user", user.getId());
-        data.put("device", id);
-        data.put("_id",ds.getBaseUri()+ctrlid);
-        DataObject ret = ds.fetch(query);
+        //DataObject query = new DataObject();
+        //DataObject data = new DataObject();
+        //query.put("data", data);
+        //data.put("user", user.getId());
+        //data.put("device", id);
+        //data.put("_id",ds.getBaseUri()+ctrlid);
+        DataObject doctrl = ds.fetchObjByNumId(ctrlid);
         //DataObject ret =  ds.fetchObjById(ds.getBaseUri()+ctrlid);
-        
+/*        
         System.out.println(ds.getBaseUri()+ctrlid);
         DataObject doctrl = null; //ret.getDataObject("response").getDataObject("data");
         DataList<DataObject> controls = ret.getDataObject("response").getDataList("data");
@@ -241,7 +243,7 @@
                 //out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
             }
         }
-        
+*/        
         
         
         //Lista de controles asociados al dispositivo

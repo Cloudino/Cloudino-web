@@ -15,17 +15,15 @@
     
     //id del dispositivo
     String id = request.getParameter("ID");
-    
 
-    String title=request.getParameter("name");
-    //String device=request.getParameter("device");     
+    String title=request.getParameter("name");   
     String type=request.getParameter("buttonType");
     String topic=request.getParameter("topic");
     String message=request.getParameter("message");
     String act = request.getParameter("act");
     if(null==act) act = "";
     
-    System.out.println("ACTION: "+act+"   ======================================================");
+//    System.out.println("ACCION: "+act+"  ==============================================================================");    
     
     if(act.equals("add")){
 
@@ -56,7 +54,7 @@
         control.put("data", data);
         
         DataObject ret=ds.addObj(control);
-        //System.out.println(ret);
+
         DataObject obj=ret.getDataObject("response").getDataObject("data");
         if(obj!=null)
         {
@@ -66,36 +64,12 @@
     } else if(act.equals("update")){
 
         String ctrlid = request.getParameter("ctrlid");
-        //DataObject query = new DataObject();
-        //DataObject data = new DataObject();
-        //query.put("data", data);
-        //data.put("user", user.getId());
-        //data.put("device", id);
-        //data.put("_id",ds.getBaseUri()+ctrlid);
         DataObject doctrl = ds.fetchObjByNumId(ctrlid);
 
         //Lista de controles asociados al dispositivo
-        //DataObject doctrl = ret.getDataObject("response").getDataObject(ctrlid);
-        
-/*        
-        DataObject doctrl = null; //ret.getDataObject("response").getDataObject("data");
-        DataList<DataObject> controls = ret.getDataObject("response").getDataList("data");
-        if (controls != null) {
-            for (DataObject contrl : controls) {
-                String localctrlid = contrl.getNumId();
-                if(localctrlid!=null&&localctrlid.equals(ctrlid)){
-                    doctrl = contrl;
-                }
-                //String titulo = contrl.getString("title");
-                //out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
-            }
-        }
-*/        
         
         if (doctrl != null) {
-            
-            System.out.println("Encontró registro UPDATE...");   
-            //doctrl.put("user", user.getId());
+   
             doctrl.put("title", title);
             doctrl.put("device", id);
             doctrl.put("type", type);
@@ -108,13 +82,26 @@
             ds.updateObj(doctrl);
         }
 
-        //System.out.println(ret);
-        //DataObject obj=ret.getDataObject("response").getDataObject("data");
         if(doctrl!=null)
         {
             response.sendRedirect("controls?ID="+id);
             return;
         }
+    } else if(act.equals("remove")){
+
+        String ctrlid = request.getParameter("ctrlid");
+        DataObject doctrl = ds.removeObjById(ds.getBaseUri()+ctrlid);
+
+        //System.out.println("Entro a REMOVE....");
+        
+        //Lista de controles asociados al dispositivo
+        
+        if (doctrl != null) {   
+            //System.out.println("Encontro Control a eliminar ....");
+            response.sendRedirect("controls?ID="+id);
+            return;
+        }
+
     } else if("".equals(act)){
     %>
 <div> 
@@ -192,10 +179,11 @@
 %>
         
 <div>  
-    <div class="box-header">
-        <h3 class="box-title">Existing Controls - select one of the list</h3>
-    </div>
-    <ul>
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Existing Controls - select one of the list</h3>
+        </div>
+        <ul>
 <%        
         DataObject query = new DataObject();
         DataObject data = new DataObject();
@@ -211,46 +199,23 @@
                 String titulo = contrl.getString("title");
                 out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
             }
-        }
-        
-        
+        }    
 %>
-    </ul>
+        </ul>
+    </div>
+    <div class="box-footer">
+        <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  href="controls?ID=<%=id%>&act=">Cancel</a>                       
+    </div>
 </div>
 
 <%
     }  else if("edit".equals(act)){
         String ctrlid = request.getParameter("ctrlid");
-        //DataObject query = new DataObject();
-        //DataObject data = new DataObject();
-        //query.put("data", data);
-        //data.put("user", user.getId());
-        //data.put("device", id);
-        //data.put("_id",ds.getBaseUri()+ctrlid);
         DataObject doctrl = ds.fetchObjByNumId(ctrlid);
-        //DataObject ret =  ds.fetchObjById(ds.getBaseUri()+ctrlid);
-/*        
-        System.out.println(ds.getBaseUri()+ctrlid);
-        DataObject doctrl = null; //ret.getDataObject("response").getDataObject("data");
-        DataList<DataObject> controls = ret.getDataObject("response").getDataList("data");
-        if (controls != null) {
-            for (DataObject contrl : controls) {
-                String localctrlid = contrl.getNumId();
-                if(localctrlid!=null&&localctrlid.equals(ctrlid)){
-                    doctrl = contrl;
-                }
-                //String titulo = contrl.getString("title");
-                //out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
-            }
-        }
-*/        
-        
         
         //Lista de controles asociados al dispositivo
         
         if (doctrl != null) {
-            
-            System.out.println("Encontró registro...");    
             
             title=doctrl.getString("title");
             type=doctrl.getString("type");
@@ -264,7 +229,6 @@
 %>
         
 <div >
-
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title">Edit Control - <%=title%></h3>
@@ -295,15 +259,28 @@
                     </div><!-- /.box-body -->
 
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary"  <%//=(isNewFile?"onclick=\"if(validateFileType()){return true;}else{ return false;}\"":"")%> >Submit</button>
-                        <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  href="controls?ID=<%=id%>&act=">Cancel</a>                       
+                        <button type="submit" class="btn btn-primary"  >Update</button>
+                        <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  onclick="removeControl(this)">Delete</a>                       
+                        <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  href="controls?ID=<%=id%>">Cancel</a>                       
                     </div>
                 </form>
-                    
+                    <script type="text/javascript">
+                        function removeControl(alink){
+                                if(confirm('Are you sure to remove this control?')){
+                                    var urlRemove = 'controls?ID=<%=id%>&act=remove&ctrlid=<%=ctrlid%>' ;
+                                    alink.href=urlRemove;
+                                    alink.click(); 
+                                } else {
+//                                    var urlRemove = 'controls?ID=<%=id%>' ;
+//                                    alink.href=urlRemove;
+//                                    alink.click();
+                                    return false;
+                                }    
+                            return false;
+                         }
+                    </script>
             </div>
-
         </div>
-
 <%
     } 
 %>

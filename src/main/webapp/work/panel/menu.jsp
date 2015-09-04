@@ -1,10 +1,44 @@
+<%@page import="java.io.IOException"%>
+<%@page import="java.io.PrintWriter"%>
 <%@page import="io.cloudino.engine.DeviceMgr"%>
 <%@page import="java.io.File"%>
 <%@page import="org.semanticwb.datamanager.*"%>
+<%!
+    void addFile(File file, JspWriter out, File base, String tool) throws IOException
+    {
+        if (file.isDirectory() && !file.isHidden()) {
+            out.println("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>" + file.getName() + "<i class=\"fa fa-angle-left pull-right\"></i></a>");
+            out.println("<ul class=\"treeview-menu\">");
+            File[] sketcherFiles = file.listFiles();
+            for (File sktFile : sketcherFiles) {
+                if(sktFile.isDirectory())
+                {
+                    addFile(sktFile, out,base,tool);
+                }
+                else
+                {
+                    if(!sktFile.getName().equals("config.properties")){
+                        if(base!=null)
+                        {
+                            out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fp=" + sktFile.getCanonicalPath() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                        }else
+                        {
+                            out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fn=" + sktFile.getName() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                        }
+                    }
+                }
+            }
+            out.println("</ul>");
+            out.println("</li>");
+        }        
+    }
+%>
 <%
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
     String act=request.getParameter("act");
+    File arduinoPath=new File(engine.getScriptObject().get("config").getString("arduinoPath"));
+    File usersWorkPath=new File(engine.getScriptObject().get("config").getString("usersWorkPath"));
 %>
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -19,66 +53,9 @@
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
         </div>
-        <!-- search form -->
-        <!--
-        <form action="#" method="get" class="sidebar-form">
-          <div class="input-group">
-            <input type="text" name="q" class="form-control" placeholder="Search..."/>
-            <span class="input-group-btn">
-              <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-            </span>
-          </div>
-        </form>
-        -->
-        <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
-
         <ul class="sidebar-menu">
             <li class="header">MENU</li>
-            <!--
-            <li class="active treeview">
-              <a href="#">
-                <i class="fa fa-dashboard"></i> <span>Tenant</span> <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i> Cloudino Dashboard v1</a></li>
-                <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-              </ul>
-            </li>
-            -->
-            <!--
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-files-o"></i>
-                <span>Layout Options</span>
-                <span class="label label-primary pull-right">4</span>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
-                <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
-                <li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
-                <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
-              </ul>
-            </li>
-            <li>
-              <a href="pages/widgets.html">
-                <i class="fa fa-th"></i> <span>Widgets</span> <small class="label pull-right bg-green">new</small>
-              </a>
-            </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-users"></i>
-                <span>Users</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="pages/charts/inline.html"><i class="fa fa-user-plus"></i> Nuevo usuario</a></li>
-                <li><a href="pages/charts/chartjs.html"><i class="fa fa-user"></i> Javier Solis</a></li>
-                <li><a href="pages/charts/morris.html"><i class="fa fa-user"></i> Sergio Martínez</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-user"></i> Alfredo Munguía</a></li>
-                <li><a href="pages/charts/inline.html"><i class="fa fa-user"></i> Juan Fernández</a></li>
-              </ul>
-            </li> -->
             <li class="treeview<%=("dev".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-gears"></i>
@@ -117,6 +94,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <%
+                    {
                         //+ request.getRequestURI().substring(1, request.getRequestURI().lastIndexOf("/")) + "/"
                         String dir = config.getServletContext().getRealPath("/") + "/work/";
                         // leer estructura de archivos del usuario
@@ -127,20 +105,28 @@
                         }
                         File[] listFiles = f.listFiles();
                         for (File file : listFiles) {
-                            if (file.isDirectory() && !file.isHidden()) {
-                                out.println("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>" + file.getName() + "<i class=\"fa fa-angle-left pull-right\"></i></a>");
-                                out.println("<ul class=\"treeview-menu\">");
-                                File[] sketcherFiles = file.listFiles();
-                                for (File sktFile : sketcherFiles) {
-                                    if(!sktFile.getName().equals("config.properties")){
-                                        out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\"sketcherDetail?fn=" + sktFile.getName() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
-                                    }
-                                }
-                                out.println("<li><a href=\"addSketcher?skt=" + file.getName() + "&act=newfile\" data-target=\".content-wrapper\" data-load=\"ajax\"><i class=\"fa fa-gear\"></i> Nuevo Archivo</a></li> ");
-                                out.println("</ul>");
-                                out.println("</li>");
-                            }
+                            addFile(file, out,null,"sketcherDetail");
                         }
+                    }
+                    %>
+                    <li><a href="addSketcher" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Agregar Sketcher</a></li> 
+                </ul>
+            </li>
+            <li class="treeview<%=("exa".equals(act)?" active":"")%>">
+                <a href="#">
+                    <i class="fa fa-laptop"></i>
+                    <span>Examples</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <%
+                    {
+                        File fexa = new File(arduinoPath+"/examples");
+                        File[] listFiles = fexa.listFiles();
+                        for (File file : listFiles) {
+                            addFile(file, out,fexa,"exampleDetail");
+                        }
+                    }
                     %>
 
                     <li><a href="addSketcher" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Agregar Sketcher</a></li> 
@@ -165,7 +151,8 @@
                         </ul>
                       </li> -->
                 </ul>
-            </li>
+            </li>            
+            
             <li class="treeview<%=("lib".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-book"></i>

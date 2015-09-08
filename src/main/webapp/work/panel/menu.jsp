@@ -20,7 +20,11 @@
                     if(!sktFile.getName().equals("config.properties")){
                         if(base!=null)
                         {
-                            out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fp=" + sktFile.getCanonicalPath() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                            if(sktFile.getName().endsWith(".txt")||sktFile.getName().endsWith(".ino")||sktFile.getName().endsWith(".c")||sktFile.getName().endsWith(".cpp")||sktFile.getName().endsWith(".h")){
+                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fp=" + sktFile.getCanonicalPath() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                            } else {
+                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fp=" + sktFile.getCanonicalPath() + "&skt=" + file.getName() + "&act=showImage\"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                            }
                         }else
                         {
                             out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fn=" + sktFile.getName() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
@@ -128,9 +132,9 @@
                         }
                     }
                     %>
-
+<!--  
                     <li><a href="addSketcher" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Agregar Sketcher</a></li> 
-                    <!--  
+                    
                     <li><a href="#"><i class="fa fa-file-code-o"></i> Programa uno<i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         <li><a href="#"><i class="fa fa-code"></i> Version 1</a></li>

@@ -1,5 +1,5 @@
 <%-- 
-    Document   : sketcherDetail
+    Document   : exampleDetail
     Created on : 11/08/2015, 12:00:44 PM
     Author     : juan.fernandez
 --%><%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
@@ -11,7 +11,17 @@
     String upload = request.getParameter("up");
     // Para compilar archivo editado
     String compile = request.getParameter("cp");
-    String devtype = request.getParameter("dev");
+    
+    String dev_type = request.getParameter("dev");
+    
+    String devtype = null;
+    String deviceID = null;
+    
+    if(null!=dev_type){
+        devtype = dev_type.substring(0,dev_type.indexOf("|"));
+        deviceID = dev_type.substring(dev_type.indexOf("|")+1);
+    }
+    
     ///////////////////////////////////////////
 
     String appPath = config.getServletContext().getRealPath("/");
@@ -20,7 +30,23 @@
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
     String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId();
     String sktPath = userBasePath + "/sketchers/" + skt + "/";
+    String arduinoPath = engine.getScriptObject().get("config").getString("arduinoPath"+"/");
     String buildPath = userBasePath + "/build/";
+    Device device = null;
+    if(null!=deviceID){
+        device = DeviceMgr.getInstance().getDeviceIfPresent(deviceID);
+        //devtype = device.getData().getString("type", "uno");
+        
+    }
+    boolean isConnected = false;
+    long connectedTime = 0;
+    long createdTime = 0;
+    if (device != null) {
+        isConnected = device.isConnected();
+        connectedTime = device.getConnectedTime();
+        createdTime = device.getCreatedTime();
+    }
+    
     String msg = null;
     if (name != null && null != act && "rename".equals(act) && null != newname) {
         File oldfile = new File(sktPath + name);
@@ -54,51 +80,6 @@
     
     if(compile!=null)upload=compile;
 
-    if (upload != null) {
-        System.out.println("up:" + upload);
-        byte code[] = readInputStream(request.getInputStream());
-
-        try {
-            FileOutputStream os = new FileOutputStream(sktPath + upload);
-            os.write(code);
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Properties properties = new Properties();
-        OutputStream outstream = null;
-        try {
-            File conff = new File(sktPath + "/config.properties");
-            if (!conff.exists()) {
-                conff.createNewFile();
-                conff.setWritable(true);
-            } else {
-                System.out.print("si existe");
-            }
-            outstream = new FileOutputStream(sktPath + "/config.properties");
-            properties.setProperty("compile", devtype);
-            properties.store(outstream, "Default Sketcher board type");
-        } catch (IOException e) {
-            e.printStackTrace();
-            out.println(e.getMessage());
-        } finally {
-            if (outstream != null) {
-                try {
-                    outstream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    out.println(e.getMessage());
-                }
-            }
-
-        }
-
-        out.println("File saved.");
-        if(compile == null)return;
-    }
-
     // COMPILAR ARCHIVO EDITADO
     if (devtype != null && compile != null) {
         String retmsg = "OK\n\rFile compiled.";
@@ -110,48 +91,41 @@
                 String build = buildPath; //"/Users/javiersolis/Documents/Arduino/build";
                 String path = sktPath + compile;
                 ArdCompiler com = ArdCompiler.getInstance();
-                retmsg=com.compile(path, type, build,userBasePath);
+                
+                retmsg=com.compile(path, type, build, userBasePath);
+                retmsg=msg.replace("\n", "<br>\n");
+
+                File fino = new File(path);
+                String fname = fino.getName().split("\\.")[0];
+                String compiled = build + "/" + fname + ".cpp.hex";
+        
+                if (device !=null && device.isConnected()) {
+                    CharArrayWriter pout=new CharArrayWriter();
+                    if(device.sendHex(new FileInputStream(compiled), pout))
+                    {
+                        retmsg = retmsg + "Device programmed successfully.";
+                    }
+                } else {
+                    retmsg = retmsg + "Device offline, could not be programmed."; 
+                }
+                
             } catch (Exception e) {
-                retmsg = "Error:" + e.getMessage();
+                retmsg = retmsg +"Error:" + e.getMessage();
                 e.printStackTrace(response.getWriter());
             }
         } catch (Exception e) {
-            retmsg = "Error:" + e.getMessage();
+            retmsg = retmsg +"Error:" + e.getMessage();
             e.printStackTrace(response.getWriter());
         }
         out.print(retmsg);
         
-        
-        Properties properties = new Properties();
-        OutputStream outstream = null;
-        try {
-            File conff = new File(sktPath + "/config.properties");
-            if (!conff.exists()) {
-                conff.createNewFile();
-                conff.setWritable(true);
-            } 
-            outstream = new FileOutputStream(sktPath + "/config.properties");
-            properties.setProperty("compile", devtype);
-            properties.store(outstream, "Default Sketcher board type");
-        } catch (IOException e) {
-            e.printStackTrace();
-            out.println(e.getMessage());
-        } finally {
-            if (outstream != null) {
-                try {
-                    outstream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    out.println(e.getMessage());
-                }
-            }
-        }
         return;
     }
 
     /////////////////////////////////////////////////////////////
     String filename = name; //request.getParameter("fn");
-    
+    System.out.println("=============================================================");
+    System.out.println(name);
     boolean lint = false;
     String mode = "text/html";
     if (filename != null) {
@@ -191,7 +165,8 @@
 
     String path = null;
     if (filename != null) {
-        path = sktPath + filename;
+        //path = sktPath + filename;
+        path=filename;
     }
 
     String code = "";
@@ -239,99 +214,70 @@
     <div class="row">
         <div class="col-md-12">
 
+            <%
+            String onlyName = null;
+            if(name.lastIndexOf("\\")!=-1){
+                onlyName = name.substring(name.lastIndexOf("\\")+1);
+            } else if(name.lastIndexOf("/")!=-1){
+                onlyName = name.substring(name.lastIndexOf("/")+1);
+            }
+            
+            %>
+            
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title"><%=skt%> - <%=name%></h3>
+                    <h3 class="box-title"><%=skt%> - <%=onlyName%></h3>
                 </div>
                 <%
 
         String defaultBoard = "uno";
-
-        Properties properties = new Properties();
-        InputStream inputstream = null;
-        try {
-            File conff = new File(sktPath + "/config.properties");
-            if (!conff.exists()) {
-                conff.createNewFile();
-                conff.setWritable(true);
-            } 
-
-            inputstream = new FileInputStream(sktPath + "/config.properties");
-            properties.load(inputstream);
-            defaultBoard = properties.getProperty("compile", "uno");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (inputstream != null) {
-                try {
-                    inputstream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
         if (code != null) {
+
                 %>
                 <div class="form-group has-feedback">
-                    <div class="col-md-1"><label>&nbsp;&nbsp;Board</label></div>                    
+                    <div class="col-md-1"><label>&nbsp;&nbsp;Devices</label></div>                    
                     <div class="col-md-6 pull-left">
-                        <select name="type" id="type" class="form-control">
-                            <option value="cloudino-standalone">Cloudino Connector Standalone</option>
+                        <%
+                        SWBDataSource ds = engine.getDataSource("Device");
+                        DataObject query = new DataObject();
+                        DataObject data = new DataObject();
+                        query.put("data", data);
+                        data.put("user", user.getId());
+                        DataObject ret = ds.fetch(query);
+                        DataList<DataObject> devices = ret.getDataObject("response").getDataList("data");
+                        if (devices != null) {
+                            %>
+                            <select name="type" id="type" class="form-control">
+                            <!-- option value="cloudino-standalone">Cloudino Connector Standalone</option -->
                             <%
-                                ArdCompiler cmp = ArdCompiler.getInstance();
-                                Iterator<ArdDevice> it = cmp.listDevices();
-                                while (it.hasNext()) {
-                                    io.cloudino.compiler.ArdDevice dev = it.next();
-                                    out.println("<option value=\"" + dev.key + "\" " + (defaultBoard.equals(dev.key) ? "selected" : "") + " >" + dev.toString() + "</option>");
+                            for (DataObject dev : devices) {
+                                String id = dev.getNumId();
+                                String boardType = dev.getString("type", null);
+                                if(null!=boardType){
+                                    out.println("<option value=\"" +boardType+"|"+id + "\" >" + dev.getString("name") + "</option>");
                                 }
+                            }
+                            %>
+                            </select>
+                            <%
+                        } else {
                             %>    
-                        </select>
+                        <label>No devices found.</label>
+                        <%
+                        }
+                        %>
                     </div><div class="col-md-3 pull-left">
-                <input type="button" value="Save" onclick="document.getElementById('consoleLog').value = 'Saving File...\n\r';getAsynchData('sketcherDetail?up=<%=filename != null ? URLEncoder.encode(filename) : ""%>&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary">
-                <%
-                    String skt_mainFile = skt + ".ino";
-                    if (filename.equals(skt_mainFile)) {
-                %>
-                <input type="button" value="Compile" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('sketcherDetail?cp=<%=filename != null ? URLEncoder.encode(filename) : ""%>&dev=' + document.getElementById('type').value + '&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
                 
                 <%
-                    }
-                    if (null != skt && null != name && !name.equals(skt_mainFile)) {
+                    String skt_mainFile = skt + ".ino";
+                    if (onlyName.equals(skt_mainFile)) {
                 %>
-                        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#ModalForm">Rename</button>
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="ModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header no-border">
-                                        <button id="buttonClose" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Rename File</h4>
-                                    </div>
-                                    <form data-target=".content-wrapper" data-submit="ajax" action="sketcherDetail" role="form" >
-                                        <div class="modal-body no-padding">
-
-
-                                            <input type="hidden" name="skt" value="<%=skt%>"/>
-                                            <input type="hidden" name="fn" value="<%=name%>"/>
-                                            <input type="hidden" name="act" value="rename"/>
-                                            <!-- text input -->
-                                            <div class="form-group">
-                                                <label>   Name</label>
-                                                <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ..." required>
-                                            </div>
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-success btn-primary" onsubmit="$('#ModalForm').modal('hide');">Rename</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <%}%>
+                <input type="button" value="Compile" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('exampleDetail?cp=<%=filename != null ? URLEncoder.encode(filename) : ""%>&dev=' + document.getElementById('type').value + '&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
+                <input type="button" value="Clone to Sketchers" onclick="document.getElementById('consoleLog').value = 'Saving File...\n\r';getAsynchData('sketcherDetail?up=<%=filename != null ? URLEncoder.encode(filename) : ""%>&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary">
+                <%
+                    }
+                %>
+                
                     </div>
                     <br/>
                 </div> 
@@ -367,6 +313,8 @@
                     <%}%>
                     });
                     myCodeMirror.setSize("100%", 500);
+                    //# set readOnly mode
+                    myCodeMirror.setOption("readOnly", true);
                 </script>      
                 <%
                     }

@@ -55,7 +55,7 @@
     if(compile!=null)upload=compile;
 
     if (upload != null) {
-        System.out.println("up:" + upload);
+        //System.out.println("up:" + upload);
         byte code[] = readInputStream(request.getInputStream());
 
         try {

@@ -1,10 +1,11 @@
+<%@page import="io.cloudino.utils.ParamsMgr"%>
 <%@page import="java.io.IOException"%>
 <%@page import="java.io.PrintWriter"%>
 <%@page import="io.cloudino.engine.DeviceMgr"%>
 <%@page import="java.io.File"%>
 <%@page import="org.semanticwb.datamanager.*"%>
 <%!
-    void addFile(File file, JspWriter out, File base, String tool) throws IOException
+    void addFile(File file, JspWriter out, File base, String tool, ParamsMgr params) throws IOException
     {
         if (file.isDirectory() && !file.isHidden()) {
             out.println("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>" + file.getName() + "<i class=\"fa fa-angle-left pull-right\"></i></a>");
@@ -13,17 +14,17 @@
             for (File sktFile : sketcherFiles) {
                 if(sktFile.isDirectory())
                 {
-                    addFile(sktFile, out,base,tool);
+                    addFile(sktFile, out,base,tool,params);
                 }
-                else
+                else if(!sktFile.isHidden())
                 {
                     if(!sktFile.getName().equals("config.properties")){
                         if(base!=null)
                         {
                             if(sktFile.getName().endsWith(".txt")||sktFile.getName().endsWith(".ino")||sktFile.getName().endsWith(".c")||sktFile.getName().endsWith(".cpp")||sktFile.getName().endsWith(".h")){
-                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fp=" + sktFile.getCanonicalPath() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName())+"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
                             } else {
-                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fp=" + sktFile.getCanonicalPath() + "&skt=" + file.getName() + "&act=showImage\"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName(),"act","showImage") + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
                             }
                         }else
                         {
@@ -39,6 +40,7 @@
 %>
 <%
     DataObject user = (DataObject) session.getAttribute("_USER_");
+    ParamsMgr params=new ParamsMgr(request.getSession());
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
     String act=request.getParameter("act");
     File arduinoPath=new File(engine.getScriptObject().get("config").getString("arduinoPath"));
@@ -109,7 +111,7 @@
                         }
                         File[] listFiles = f.listFiles();
                         for (File file : listFiles) {
-                            addFile(file, out,null,"sketcherDetail");
+                            addFile(file, out,null,"sketcherDetail",params);
                         }
                     }
                     %>
@@ -128,7 +130,7 @@
                         File fexa = new File(arduinoPath+"/examples");
                         File[] listFiles = fexa.listFiles();
                         for (File file : listFiles) {
-                            addFile(file, out,fexa,"exampleDetail");
+                            addFile(file, out,fexa,"exampleDetail",params);
                         }
                     }
                     %>

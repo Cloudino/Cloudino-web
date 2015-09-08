@@ -2,16 +2,19 @@
     Document   : exampleDetail
     Created on : 11/08/2015, 12:00:44 PM
     Author     : juan.fernandez
---%><%@page import="java.nio.file.Files"%><%@page import="java.nio.file.StandardCopyOption.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
-    String name = request.getParameter("fp");
-    String newname = request.getParameter("name");
-    String act = request.getParameter("act");
+--%><%@page import="io.cloudino.utils.ParamsMgr"%><%@page import="java.nio.file.Files"%><%@page import="java.nio.file.StandardCopyOption.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
+    ParamsMgr params=new ParamsMgr(request.getSession());
+    
+    String k = request.getParameter("k");
+    
+    String name = params.getDataValue(k, "fp");
+    String act = params.getDataValue(k, "act");
     
     if(null==act){
         act="";
     }
     
-    String skt = request.getParameter("skt");
+    String skt = params.getDataValue(k, "skt");
     // Para guardar archivo
     String upload = request.getParameter("up");
     // Para compilar archivo editado
@@ -348,14 +351,6 @@
             } else if (name.lastIndexOf("/") != -1) {
                 onlyName = name.substring(name.lastIndexOf("/") + 1);
             }
-                
-            File imgsrc = new File(name);
-            File imgdestino = new File(dir+"/tmp/"+onlyName);
-            if(!imgdestino.exists()){
-                imgdestino.mkdirs();
-            }
-            
-            Files.copy(imgsrc.toPath(), imgdestino.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
             %>
 
             <div class="box box-primary">
@@ -367,7 +362,7 @@
 <%
     if(null!=onlyName&&(onlyName.endsWith(".png")||onlyName.endsWith(".jpg")||onlyName.endsWith(".gif"))){
 %>
-<img src="<%="/work/tmp/"+onlyName%>" height="100%" width="100%"/>
+<img src="<%="/panel/image?k="+k%>"/>
 <%
     }
 %>

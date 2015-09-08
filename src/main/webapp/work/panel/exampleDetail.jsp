@@ -2,10 +2,15 @@
     Document   : exampleDetail
     Created on : 11/08/2015, 12:00:44 PM
     Author     : juan.fernandez
---%><%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
+--%><%@page import="java.nio.file.Files"%><%@page import="java.nio.file.StandardCopyOption.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
     String name = request.getParameter("fp");
     String newname = request.getParameter("name");
     String act = request.getParameter("act");
+    
+    if(null==act){
+        act="";
+    }
+    
     String skt = request.getParameter("skt");
     // Para guardar archivo
     String upload = request.getParameter("up");
@@ -34,46 +39,9 @@
     String buildPath = userBasePath + "/build/";
     Device device = null;
     if(null!=deviceID){
-        device = DeviceMgr.getInstance().getDeviceIfPresent(deviceID);
-        //devtype = device.getData().getString("type", "uno");
-        
-    }
-    boolean isConnected = false;
-    long connectedTime = 0;
-    long createdTime = 0;
-    if (device != null) {
-        isConnected = device.isConnected();
-        connectedTime = device.getConnectedTime();
-        createdTime = device.getCreatedTime();
-    }
+        device = DeviceMgr.getInstance().getDeviceIfPresent(deviceID);      
+    }   
     
-    String msg = null;
-    if (name != null && null != act && "rename".equals(act) && null != newname) {
-        File oldfile = new File(sktPath + name);
-        File newfile = new File(sktPath + newname);
-        boolean hasError = Boolean.FALSE;
-        if (!oldfile.exists()) {
-            msg = "Error. No such file \"" + name + "\"";
-            hasError = Boolean.TRUE;
-        } else {
-            oldfile.setWritable(true);
-        }
-        if (newfile.exists() && !hasError) {
-            msg = "Error. File already exists \"" + newname + "\"";
-            hasError = Boolean.TRUE;
-        }
-
-        if (!hasError) {
-            boolean success = oldfile.renameTo(newfile);
-            //System.out.println(oldfile.getName());
-            if (!success) {
-                msg = "Error trying to change the file name \"" + name + "\".";
-            } else {
-                msg = "File name was changed successfully.";
-                name = newname;
-            }
-        }
-    }
     if (name == null) {
         name = "";
     }
@@ -93,7 +61,7 @@
                 ArdCompiler com = ArdCompiler.getInstance();
                 
                 retmsg=com.compile(path, type, build, userBasePath);
-                retmsg=msg.replace("\n", "<br>\n");
+                retmsg=retmsg.replace("\n", "<br>\n");
 
                 File fino = new File(path);
                 String fname = fino.getName().split("\\.")[0];
@@ -108,7 +76,6 @@
                 } else {
                     retmsg = retmsg + "Device offline, could not be programmed."; 
                 }
-                
             } catch (Exception e) {
                 retmsg = retmsg +"Error:" + e.getMessage();
                 e.printStackTrace(response.getWriter());
@@ -118,7 +85,50 @@
             e.printStackTrace(response.getWriter());
         }
         out.print(retmsg);
+        return;
+    }
+    
+    String clone = request.getParameter("clone");
+    if(null!=clone){
+
+        //Revisar que no exista un Sketcher con el mismo nombre
+        File fskt = new File(sktPath);
         
+        if(fskt.exists()){
+            //buscar nombre con un skt_[num] diferente
+            String rootSkts = userBasePath + "/sketchers/"+skt;
+            boolean busca = true;
+            int i=0;
+            while(busca){
+                i++;
+                fskt = new File(rootSkts+"_"+i+"/");
+                if(!fskt.exists()){
+                    fskt.mkdirs();
+                    busca=false;
+                }
+            }
+        } else {
+           fskt.mkdirs(); 
+        }
+        
+        String toDir = fskt.getPath();
+        String srcDir = null;
+        if(clone.indexOf("\\")>-1){
+            srcDir = clone.substring(0, clone.lastIndexOf("\\"));
+        } else if(clone.indexOf("/")>-1){
+            srcDir = clone.substring(0, clone.lastIndexOf("/"));
+        }
+        
+//        System.out.println("Source DIR: "+srcDir);
+//        System.out.println("Target DIR: "+fskt.getPath());
+        File srcpath = new File(srcDir);
+        
+        File[] flist = srcpath.listFiles();
+        for(File f:flist){
+            File tof = new File(toDir+"/"+f.getName());          
+            Files.copy(f.toPath(),tof.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        }
+        response.sendRedirect("sketcherDetail?fn=" + skt + ".ino&skt=" + skt+"&_rm=true");
         return;
     }
 
@@ -187,20 +197,11 @@
     }      
 %>
 
-<script type="text/javascript">
-    <%if (null != msg) {%>
-    alert('<%=msg%>');
-    $('body').removeClass('modal-open');
-
-    $('.modal-backdrop').remove();
-    <%}%>
-
-</script>
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Sketcher
-        <small>Code Editor</small>
+        Examples
+        <small></small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -208,31 +209,28 @@
         <li class="active">General Elements</li>
     </ol>
 </section>
-
+<%
+    if("".equals(act)){
+%>
 <!-- Main content -->
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-
             <%
             String onlyName = null;
             if(name.lastIndexOf("\\")!=-1){
                 onlyName = name.substring(name.lastIndexOf("\\")+1);
             } else if(name.lastIndexOf("/")!=-1){
                 onlyName = name.substring(name.lastIndexOf("/")+1);
-            }
-            
-            %>
-            
+            }            
+            %>            
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title"><%=skt%> - <%=onlyName%></h3>
                 </div>
                 <%
-
         String defaultBoard = "uno";
         if (code != null) {
-
                 %>
                 <div class="form-group has-feedback">
                     <div class="col-md-1"><label>&nbsp;&nbsp;Devices</label></div>                    
@@ -267,17 +265,15 @@
                         }
                         %>
                     </div><div class="col-md-3 pull-left">
-                
                 <%
                     String skt_mainFile = skt + ".ino";
                     if (onlyName.equals(skt_mainFile)) {
                 %>
                 <input type="button" value="Compile" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('exampleDetail?cp=<%=filename != null ? URLEncoder.encode(filename) : ""%>&dev=' + document.getElementById('type').value + '&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
-                <input type="button" value="Clone to Sketchers" onclick="document.getElementById('consoleLog').value = 'Saving File...\n\r';getAsynchData('sketcherDetail?up=<%=filename != null ? URLEncoder.encode(filename) : ""%>&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary">
+                <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" href="exampleDetail?clone=<%=filename != null ? URLEncoder.encode(filename) : ""%>&skt=<%=skt%>&fn=<%=filename%>'">Clone to Sketchers</a>
                 <%
                     }
                 %>
-                
                     </div>
                     <br/>
                 </div> 
@@ -321,9 +317,69 @@
                 %>
             </div>
         </div>
-
     </div>   <!-- /.row -->
 </section><!-- /.content -->
+
+<%
+} else if("showImage".equals(act)) {  
+    
+    // elimina los archivos temporales que se muestran de las imágenes de los ejemplos
+    File tmpfolder = new File(dir+"/tmp/");
+    if(tmpfolder.exists()){
+        if(tmpfolder.isDirectory()){
+            File[] files = tmpfolder.listFiles();
+            for(File f:files){
+                f.delete();
+            }
+        }
+    }
+
+%>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+
+            <%
+    
+            String onlyName = null;
+            if (name.lastIndexOf("\\") != -1) {
+                onlyName = name.substring(name.lastIndexOf("\\") + 1);
+            } else if (name.lastIndexOf("/") != -1) {
+                onlyName = name.substring(name.lastIndexOf("/") + 1);
+            }
+                
+            File imgsrc = new File(name);
+            File imgdestino = new File(dir+"/tmp/"+onlyName);
+            if(!imgdestino.exists()){
+                imgdestino.mkdirs();
+            }
+            
+            Files.copy(imgsrc.toPath(), imgdestino.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            %>
+
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><%=skt%> - <%=onlyName%></h3>
+                </div>
+                    <div class="form-group has-feedback"></div>
+                        <div _class="col-md-12 pull-left">
+<%
+    if(null!=onlyName&&(onlyName.endsWith(".png")||onlyName.endsWith(".jpg")||onlyName.endsWith(".gif"))){
+%>
+<img src="<%="/work/tmp/"+onlyName%>" height="100%" width="100%"/>
+<%
+    }
+%>
+                        </div> 
+            </div>
+        </div>
+    </div>   <!-- /.row -->
+</section><!-- /.content -->
+<%
+    }
+%>
+
 
 <%!
     byte[] readInputStream(InputStream in) throws IOException {

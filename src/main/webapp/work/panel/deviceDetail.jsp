@@ -265,11 +265,11 @@
                                                     if(dirName.indexOf("_")>-1){
                                                         dirName = dirName.substring(0,dirName.indexOf("_"));
                                                     }
-                                                    System.out.println(dirName);
+                                                    //System.out.println(dirName);
                                                     File[] list = file.listFiles();
                                                     for(File inoFile:list){
                                                         String fileName = inoFile.getName();
-                                                        System.out.println("Revisando..."+dirName+" con: "+fileName);
+                                                        //System.out.println("Revisando..."+dirName+" con: "+fileName);
                                                         if(fileName.startsWith(dirName)&&fileName.endsWith(".ino")){
                                                             out.println("<option value=\"" + fileName + "|"+file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + "</option>");
                                                         }
@@ -285,6 +285,7 @@
                                         function editSketcher(alink){
                                             var sketcher = document.getElementById('skt');
                                             var valSket = sketcher[sketcher.selectedIndex].value;
+                                            //alert(valSket);
                                             var urlEdit = 'sketcherDetail?act=edit&fn=' + valSket + '&skt=' + valSket ;
                                             alink.href=urlEdit;
                                             alink.click();

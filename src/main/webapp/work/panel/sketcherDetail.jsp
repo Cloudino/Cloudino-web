@@ -37,11 +37,9 @@
             skt = request.getParameter("skt");
             name = skt.substring(0,skt.lastIndexOf("|"));
             skt = skt.substring(skt.lastIndexOf("|")+1);
-        } else if(null!=act&&"edit".equals(act)){
-            skt = request.getParameter("skt");
-            name = skt.substring(0,skt.lastIndexOf("|"));
-            skt = skt.substring(skt.lastIndexOf("|")+1);
-        }
+            act="";
+            _rm ="true";
+        } 
     }
     
     String newname = request.getParameter("name");

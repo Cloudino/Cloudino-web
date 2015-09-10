@@ -47,7 +47,7 @@
     String newname = request.getParameter("name");
 
     
-    System.out.println("A C T I O N : "+act+" ==============================================================================");
+    //System.out.println("A C T I O N : "+act+" ==============================================================================");
     ///////////////////////////////////////////
 
     String appPath = config.getServletContext().getRealPath("/");
@@ -111,7 +111,7 @@
                 conff.createNewFile();
                 conff.setWritable(true);
             } else {
-                System.out.print("si existe");
+                //System.out.print("si existe");
             }
             outstream = new FileOutputStream(sktPath + "/config.properties");
             properties.setProperty("compile", devtype);

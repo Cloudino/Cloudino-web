@@ -15,6 +15,7 @@
                 if(sktFile.isDirectory())
                 {
                     addFile(sktFile, out,base,tool,params);
+                    
                 }
                 else if(!sktFile.isHidden())
                 {
@@ -22,16 +23,22 @@
                         if(base!=null)
                         {
                             if(sktFile.getName().endsWith(".txt")||sktFile.getName().endsWith(".ino")||sktFile.getName().endsWith(".c")||sktFile.getName().endsWith(".cpp")||sktFile.getName().endsWith(".h")){
-                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName())+"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName(),"act","")+"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
                             } else {
                                 out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName(),"act","showImage") + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
                             }
-                        }else
-                        {
-                            out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?fn=" + sktFile.getName() + "&skt=" + file.getName() + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                        }else{
+                            if(sktFile.getName().endsWith(".txt")||sktFile.getName().endsWith(".ino")||sktFile.getName().endsWith(".c")||sktFile.getName().endsWith(".cpp")||sktFile.getName().endsWith(".h")){
+                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fn",sktFile.getName(),"skt",file.getName(),"act","")+"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                            } else {
+                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"fn", sktFile.getName(),"skt",file.getName(),"act","showImage") + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                            }
                         }
                     }
                 }
+            }
+            if("sketcherDetail".equals(tool)){
+                out.println("<li><a href=\"addSketcher?k="+params.setDataValues("skt", file.getName(),"act","newfile")+"\" data-target=\".content-wrapper\" data-load=\"ajax\"><i class=\"fa fa-gear\"></i> Nuevo Archivo</a></li> ");
             }
             out.println("</ul>");
             out.println("</li>");
@@ -134,28 +141,6 @@
                         }
                     }
                     %>
-<!--  
-                    <li><a href="addSketcher" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Agregar Sketcher</a></li> 
-                    
-                    <li><a href="#"><i class="fa fa-file-code-o"></i> Programa uno<i class="fa fa-angle-left pull-right"></i></a>
-                    <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-code"></i> Version 1</a></li>
-                      </ul>
-                      </li>
-                    <li>
-                      <a href="#"><i class="fa fa-file-code-o"></i> Programa dos <i class="fa fa-angle-left pull-right"></i></a>
-                      <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-code"></i> Version 1</a></li>
-                        <li><a href="#"><i class="fa fa-code"></i> Version 2</a></li>
-                      </ul>
-                    </li>
-                    <li><a href="#"><i class="fa fa-file-code-o"></i> Programa tres<i class="fa fa-angle-left pull-right"></i></a>
-                      <ul class="treeview-menu">
-                          <li><a href="#"><i class="fa fa-code"></i> Version 1</a></li>
-                          <li><a href="#"><i class="fa fa-code"></i> Version 2</a></li>
-                          <li><a href="#"><i class="fa fa-code"></i> Version 3</a></li>
-                        </ul>
-                      </li> -->
                 </ul>
             </li>            
             

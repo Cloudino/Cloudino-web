@@ -786,7 +786,7 @@
     <!-- FastClick --
     <script src='/static/plugins/fastclick/fastclick.min.js'></script>
 -->
-    <script src="/static/bootstrap/js/bootbox.min.js" type="text/javascript"></script>  
+    <!--<script src="/static/bootstrap/js/bootbox.min.js" type="text/javascript"></script>  -->
 
     <!-- AdminLTE App -->
     <script src="/static/dist/js/app.min.js" type="text/javascript"></script>    

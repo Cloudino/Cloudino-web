@@ -91,6 +91,9 @@
                 
                 ArdCompiler com = ArdCompiler.getInstance();
                 msg=com.compile(path, type, userBuildPath, userPath);
+                
+                System.out.println(path);
+                
                 msg=msg.replace("\n", "<br>\n");
 
                 File fino = new File(path);
@@ -271,7 +274,7 @@
                                                         String fileName = inoFile.getName();
                                                         //System.out.println("Revisando..."+dirName+" con: "+fileName);
                                                         if(fileName.startsWith(dirName)&&fileName.endsWith(".ino")){
-                                                            out.println("<option value=\"" + fileName + "|"+file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + "</option>");
+                                                            out.println("<option value=\"" + file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + "</option>");
                                                         }
                                                     }
                                                 }

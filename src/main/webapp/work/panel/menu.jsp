@@ -8,7 +8,10 @@
     void addFile(File file, JspWriter out, File base, String tool, ParamsMgr params) throws IOException
     {
         if (file.isDirectory() && !file.isHidden()) {
-            out.println("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>" + file.getName() + "<i class=\"fa fa-angle-left pull-right\"></i></a>");
+            out.print("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>" + file.getName());
+            out.print("<i class=\"fa fa-angle-left pull-right\"></i>");
+            out.println("</a>");
+     
             out.println("<ul class=\"treeview-menu\">");
             File[] sketcherFiles = file.listFiles();
             for (File sktFile : sketcherFiles) {

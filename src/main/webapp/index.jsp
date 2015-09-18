@@ -188,7 +188,7 @@
                                 <li>mDNS Support</li>
                                 <li>Simple Messaging Rest Services</li>
                                 <hr>
-                                <li><a href="https://github.com/Cloudino/Firmware">Cloudino Firmware</a></li>
+                                <li><a href="https://github.com/Cloudino/Cloudino-Firmware">Cloudino Firmware</a></li>
                             </ul>
                         </div>
                     </div><!--/panel--> 

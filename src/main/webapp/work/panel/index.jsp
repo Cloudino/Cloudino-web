@@ -46,6 +46,8 @@
     <link href="/static/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
     <!-- bootstrap wysihtml5 - text editor -->
     <link href="/static/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+    <!-- FileInputPlugin -->
+    <link href="/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -761,6 +763,11 @@
     <script>
       $.widget.bridge('uibutton', $.ui.button);
     </script>
+    <!-- Just needed for resize --
+    <script src="path/to/js/plugins/canvas-to-blob.min.js" type="text/javascript"></script>
+    <!-- FileInputPlugin -->
+    <script src="/js/fileinput.min.js"></script>
+
     <!-- Bootstrap 3.3.2 JS -->
     <script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>    
 <!--
@@ -799,6 +806,8 @@
     
     <script src="/static/plugins/validator/validator.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/js/websockets.js"></script>
+    
+    
     
         <script src="/js/codemirror/lib/codemirror.js"></script>  
         <script src="/js/codemirror/addon/hint/show-hint.js"></script>

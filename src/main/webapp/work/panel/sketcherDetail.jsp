@@ -2,16 +2,50 @@
     Document   : sketcherDetail
     Created on : 11/08/2015, 12:00:44 PM
     Author     : juan.fernandez
---%><%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
-    String name = request.getParameter("fn");
-    String newname = request.getParameter("name");
-    String act = request.getParameter("act");
-    String skt = request.getParameter("skt");
+--%><%@page import="io.cloudino.utils.ParamsMgr"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.net.URLEncoder"%><%@page import="java.util.*"%><%@page import="java.io.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%
+    ParamsMgr params=new ParamsMgr(request.getSession());
+    
+    String k = request.getParameter("k");
+    
+    String name = params.getDataValue(k, "fn");
+    String act = params.getDataValue(k, "act");
+    String _rm = params.getDataValue(k,"_rm");
+
+    String skt = params.getDataValue(k,"skt");
     // Para guardar archivo
-    String upload = request.getParameter("up");
+    //String upload = request.getParameter("up");
+    String upload = params.getDataValue(k,"up");
     // Para compilar archivo editado
-    String compile = request.getParameter("cp");
-    String devtype = request.getParameter("dev");
+    //String compile = request.getParameter("cp");
+    String compile = params.getDataValue(k,"cp");
+    //String devtype = request.getParameter("dev");
+    String devtype = params.getDataValue(k,"dev");
+    
+    if(null==act){
+        act = request.getParameter("act");
+        if(null!=act&&"rename".equals(act)){
+            skt = request.getParameter("skt");
+            _rm = request.getParameter("_rm");
+            name= request.getParameter("fn");
+            
+        } else if(null!=act&&"compile".equals(act)){
+            compile = request.getParameter("cp");
+            skt = request.getParameter("skt");
+            name = request.getParameter("fn");
+            devtype = request.getParameter("dev");
+        } else if(null!=act&&"edit".equals(act)){
+            skt = request.getParameter("skt");
+            name = skt.substring(0,skt.lastIndexOf("|"));
+            skt = skt.substring(skt.lastIndexOf("|")+1);
+            act="";
+            _rm ="true";
+        } 
+    }
+    
+    String newname = request.getParameter("name");
+
+    
+    //System.out.println("A C T I O N : "+act+" ==============================================================================");
     ///////////////////////////////////////////
 
     String appPath = config.getServletContext().getRealPath("/");
@@ -75,7 +109,7 @@
                 conff.createNewFile();
                 conff.setWritable(true);
             } else {
-                System.out.print("si existe");
+                //System.out.print("si existe");
             }
             outstream = new FileOutputStream(sktPath + "/config.properties");
             properties.setProperty("compile", devtype);
@@ -96,7 +130,8 @@
         }
 
         out.println("File saved.");
-        if(compile == null)return;
+        if(compile == null)
+            return;
     }
 
     // COMPILAR ARCHIVO EDITADO
@@ -206,7 +241,7 @@
         }
     }
     
-    if(request.getParameter("_rm")!=null)
+    if(_rm!=null)
     {
         out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=sket','.main-sidebar');</script>");
     }      
@@ -233,7 +268,9 @@
         <li class="active">General Elements</li>
     </ol>
 </section>
-
+<%
+    if(null!=act&&act.equals("")){
+%>
 <!-- Main content -->
 <section class="content">
     <div class="row">
@@ -288,12 +325,12 @@
                             %>    
                         </select>
                     </div><div class="col-md-3 pull-left">
-                <input type="button" value="Save" onclick="document.getElementById('consoleLog').value = 'Saving File...\n\r';getAsynchData('sketcherDetail?up=<%=filename != null ? URLEncoder.encode(filename) : ""%>&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary">
+                        <input type="button" value="Save" onclick="document.getElementById('consoleLog').value = 'Saving File...\n\r';getAsynchData('sketcherDetail?k=<%=params.setDataValues("up",(filename != null ? URLEncoder.encode(filename) : ""),"skt",skt,"fn",filename)%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary">
                 <%
                     String skt_mainFile = skt + ".ino";
                     if (filename.equals(skt_mainFile)) {
                 %>
-                <input type="button" value="Compile" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('sketcherDetail?cp=<%=filename != null ? URLEncoder.encode(filename) : ""%>&dev=' + document.getElementById('type').value + '&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
+                <input type="button" value="Compile" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('sketcherDetail?act=compile&cp=<%=filename != null ? URLEncoder.encode(filename) : ""%>&dev=' + document.getElementById('type').value + '&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
                 
                 <%
                     }
@@ -316,6 +353,7 @@
                                             <input type="hidden" name="skt" value="<%=skt%>"/>
                                             <input type="hidden" name="fn" value="<%=name%>"/>
                                             <input type="hidden" name="act" value="rename"/>
+                                            <input type="hidden" name="_rm" value="true"/>
                                             <!-- text input -->
                                             <div class="form-group">
                                                 <label>   Name</label>
@@ -376,6 +414,40 @@
 
     </div>   <!-- /.row -->
 </section><!-- /.content -->
+<%
+    } else if(null!=act&&act.equals("showImage")){
+
+%>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><%=skt%> - <%=name%></h3>
+                </div>
+                <div class="form-group has-feedback">
+                    <div _class="col-md-12">
+                        <%
+    if(null!=name&&(name.endsWith(".png")||name.endsWith(".jpg")||name.endsWith(".gif"))){
+        
+%>
+<img src="<%="/panel/image?k="+k%>"/>
+<%
+    }
+%>
+                        </div> 
+                    </div>                    
+                    
+            </div>
+        </div>
+
+    </div>   <!-- /.row -->
+</section><!-- /.content -->
+<%
+    }
+%>
 
 <%!
     byte[] readInputStream(InputStream in) throws IOException {

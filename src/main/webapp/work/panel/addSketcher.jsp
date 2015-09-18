@@ -3,11 +3,29 @@
     Created on : 11/08/2015, 11:59:05 AM
     Author     : juan.fernandez
 --%>
+<%@page import="io.cloudino.utils.ParamsMgr"%>
 <%@page import="java.util.Properties"%><%@page import="io.cloudino.compiler.ArdCompiler"%><%@page import="io.cloudino.engine.*"%><%@page import="java.util.ArrayList"%><%@page import="java.util.Iterator"%><%@page import="java.io.*"%><%@page import="java.net.URLEncoder"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="org.semanticwb.datamanager.*"%>
 <%
-    String name=request.getParameter("name");
-    String sktname=request.getParameter("skt");
-    String act = request.getParameter("act");
+    ParamsMgr params=new ParamsMgr(request.getSession());
+    
+    String k = request.getParameter("k");
+    
+    String name = params.getDataValue(k, "name");
+    String act = params.getDataValue(k, "act");
+    String sktname = params.getDataValue(k,"skt");
+    
+    //String name=request.getParameter("name");
+    //String sktname=request.getParameter("skt");
+    //String act = request.getParameter("act");
+    
+    if(null==act){
+        act = request.getParameter("act");
+        if(null!=act){
+            name = name=request.getParameter("name");
+            sktname=request.getParameter("skt");
+        } 
+    }
+    
     
     boolean isNewFile = Boolean.FALSE;
     if(null!=act&&"newfile".equals(act)){
@@ -71,7 +89,7 @@
         if(newf!=null)
         {
             if(null==sktname)sktname=name;
-            response.sendRedirect("sketcherDetail?fn="+newf.getName()+"&skt="+sktname+"&_rm=true");
+            response.sendRedirect("sketcherDetail?k="+params.setDataValues("fn",newf.getName(),"skt",sktname,"_rm","true"));
             return;
         }
     }
@@ -115,7 +133,7 @@
                     <h3 class="box-title">General Data</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
-                <form data-target=".content-wrapper" data-submit="ajax" action="addSketcher" role="form" <%//=(isNewFile?"onsubmit=\"if(validateFileType())return true;\"":"")%>>
+                <form data-target=".content-wrapper" data-submit="ajax" action="addSketcher" role="form" >
                     <div class="box-body">
                         <%
                         String placeHolderStr = "Enter Sketcher name ...";

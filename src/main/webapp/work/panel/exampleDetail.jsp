@@ -18,7 +18,7 @@
     // Para guardar archivo
     String upload = request.getParameter("up");
     // Para compilar archivo editado
-    String compile = request.getParameter("cp");
+    String compile = params.getDataValue(k,"cp");
     
     String dev_type = request.getParameter("dev");
     
@@ -60,7 +60,8 @@
             try {
                 String type = devtype;
                 String build = buildPath; //"/Users/javiersolis/Documents/Arduino/build";
-                String path = sktPath + compile;
+                //String path = sktPath + compile;
+                String path = compile;
                 ArdCompiler com = ArdCompiler.getInstance();
                 
                 retmsg=com.compile(path, type, build, userBasePath);
@@ -272,9 +273,9 @@
                     String skt_mainFile = skt + ".ino";
                     if (onlyName.equals(skt_mainFile)) {
                 %>
-                <input type="button" value="Send" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('exampleDetail?cp=<%=filename != null ? URLEncoder.encode(filename) : ""%>&dev=' + document.getElementById('type').value + '&skt=<%=skt%>&fn=<%=filename%>', myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
-                <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" href="exampleDetail?clone=<%=filename != null ? URLEncoder.encode(filename) : ""%>&skt=<%=skt%>&fn=<%=filename%>'">Clone to Sketchers</a>
-                <%
+                <input type="button" value="Send" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('exampleDetail?k=<%=params.setDataValues("cp",(filename != null ? URLEncoder.encode(filename) : ""),"skt",skt,"fn",filename)%>&dev=' + document.getElementById('type').value, myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
+                <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" href="exampleDetail?k=<%=params.setDataValues("clone",(filename != null ? URLEncoder.encode(filename) : ""),"skt",skt,"fn",filename)%>">Clone to Sketchers</a>
+                <% 
                     }
                 %>
                     </div>

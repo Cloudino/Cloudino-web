@@ -9,7 +9,7 @@
     
     String name = params.getDataValue(k, "fn");
     String act = params.getDataValue(k, "act");
-    String _rm = params.getDataValue(k,"_rm");
+    String _rm = request.getParameter("_rm");
 
     String skt = params.getDataValue(k,"skt");
     // Para guardar archivo

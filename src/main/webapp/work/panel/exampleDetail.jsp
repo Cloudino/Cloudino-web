@@ -92,7 +92,7 @@
         return;
     }
     
-    String clone = request.getParameter("clone");
+    String clone = params.getDataValue(k, "clone");
     if(null!=clone){
 
         //Revisar que no exista un Sketcher con el mismo nombre
@@ -132,7 +132,7 @@
             File tof = new File(toDir+"/"+f.getName());          
             Files.copy(f.toPath(),tof.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         }
-        response.sendRedirect("sketcherDetail?fn=" + skt + ".ino&skt=" + skt+"&_rm=true");
+        response.sendRedirect("sketcherDetail?k="+params.setDataValues("fn",skt+".ino","skt",skt,"act","")+"&_rm=true");
         return;
     }
 
@@ -273,8 +273,8 @@
                     String skt_mainFile = skt + ".ino";
                     if (onlyName.equals(skt_mainFile)) {
                 %>
-                <input type="button" value="Send" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('exampleDetail?k=<%=params.setDataValues("cp",(filename != null ? URLEncoder.encode(filename) : ""),"skt",skt,"fn",filename)%>&dev=' + document.getElementById('type').value, myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
-                <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" href="exampleDetail?k=<%=params.setDataValues("clone",(filename != null ? URLEncoder.encode(filename) : ""),"skt",skt,"fn",filename)%>">Clone to Sketchers</a>
+                <input type="button" value="Send" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('exampleDetail?k=<%=params.setDataValues("cp",(filename != null ? filename : ""),"skt",skt,"fn",filename)%>&dev=' + document.getElementById('type').value, myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
+                <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" href="exampleDetail?k=<%=params.setDataValues("clone",(filename != null ? filename : ""),"skt",skt,"fn",filename)%>">Clone to Sketchers</a>
                 <% 
                     }
                 %>

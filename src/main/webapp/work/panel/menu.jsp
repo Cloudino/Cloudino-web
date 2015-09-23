@@ -55,9 +55,10 @@
     String act=request.getParameter("act");
     File arduinoPath=new File(engine.getScriptObject().get("config").getString("arduinoPath"));
     File usersWorkPath=new File(engine.getScriptObject().get("config").getString("usersWorkPath"));
+
 %>
     <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
+    <section class="sidebar" style="overflow: scroll">
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
@@ -110,11 +111,12 @@
                 </a>
                 <ul class="treeview-menu">
                     <%
+                    String workPath = DataMgr.getApplicationPath() + "/work/";
                     {
-                        //+ request.getRequestURI().substring(1, request.getRequestURI().lastIndexOf("/")) + "/"
-                        String dir = config.getServletContext().getRealPath("/") + "/work/";
+                        //+ request.getRequestURI().substring(1, request.getRequestURI().lastIndexOf("/")) + "/"                        
+                        
                         // leer estructura de archivos del usuario
-                        String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/sketchers";
+                        String userBasePath = workPath + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/sketchers";
                         File f = new File(userBasePath);
                         if (!f.exists()) {
                             f.mkdirs();
@@ -137,7 +139,7 @@
                 <ul class="treeview-menu">
                     <%
                     {
-                        File fexa = new File(arduinoPath+"/examples");
+                        File fexa = new File(workPath+"/examples");
                         File[] listFiles = fexa.listFiles();
                         for (File file : listFiles) {
                             addFile(file, out,fexa,"exampleDetail",params);

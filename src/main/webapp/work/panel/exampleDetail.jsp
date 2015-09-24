@@ -97,7 +97,7 @@
 
         //Revisar que no exista un Sketcher con el mismo nombre
         File fskt = new File(sktPath);
-        
+        String skt_n_name = skt;
         if(fskt.exists()){
             //buscar nombre con un skt_[num] diferente
             String rootSkts = userBasePath + "/sketchers/"+skt;
@@ -108,6 +108,7 @@
                 fskt = new File(rootSkts+"_"+i+"/");
                 if(!fskt.exists()){
                     fskt.mkdirs();
+                    skt_n_name = skt+"_"+i;
                     busca=false;
                 }
             }
@@ -129,8 +130,18 @@
         
         File[] flist = srcpath.listFiles();
         for(File f:flist){
-            File tof = new File(toDir+"/"+f.getName());          
+            File tof = null;
+            if(f.getName().startsWith(skt)&&f.getName().equals(skt+".ino")&&!skt.equals(skt_n_name)){
+                tof = new File(toDir+"/"+skt_n_name+".ino");    
+            } else {
+                tof = new File(toDir+"/"+f.getName()); 
+            }
+              
+            
             Files.copy(f.toPath(),tof.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        }
+        if(!skt.equals(skt_n_name)){
+            skt = skt_n_name;
         }
         response.sendRedirect("sketcherDetail?k="+params.setDataValues("fn",skt+".ino","skt",skt,"act","")+"&_rm=true");
         return;

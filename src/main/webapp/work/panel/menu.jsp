@@ -172,6 +172,11 @@
                     </li>
                 </ul>
             </li>
+            <%
+            
+            //  DATASETS
+            
+            %>
             <li class="treeview<%=("ds".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-cubes"></i>
@@ -179,18 +184,25 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="#"><i class="fa fa-cube"></i> Data set uno<i class="fa fa-angle-left pull-right"></i></a>
-                        <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-cube"></i> Version 1</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-cube"></i> Data set dos <i class="fa fa-angle-left pull-right"></i></a>
-                        <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-cube"></i> Version 1</a></li>
-                            <li><a href="#"><i class="fa fa-cube"></i> Version 2</a></li>
-                        </ul>
-                    </li>
+                    <%
+                        SWBDataSource ds_dataset = engine.getDataSource("DataSet");
+                        DataObject query_dataset = new DataObject();
+                        DataObject data_dataset = new DataObject();
+                        query_dataset.put("data", data);
+                        data_dataset.put("user", user.getId());
+                        DataObject ret_dataset = ds_dataset.fetch(query);
+                        //System.out.println(ret);
+                        DataList<DataObject> datasets = ret_dataset.getDataObject("response").getDataList("data");
+                        if (devices != null) {
+                            for (DataObject dataset : datasets) {
+                                String id = dataset.getNumId();
+                                %>
+                                <li><a href="datasetDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=dataset.getString("name")%></a></li>
+                                <%
+                            }
+                        }
+                    %>                
+                    <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
                 </ul>
             </li>
             <li class="treeview<%=("dp".equals(act)?" active":"")%>">

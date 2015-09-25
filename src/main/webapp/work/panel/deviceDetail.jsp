@@ -8,7 +8,8 @@
     SWBDataSource ds = engine.getDataSource("Device");
 
     String id = request.getParameter("ID");
-
+    String act = request.getParameter("act");
+    
     Device device = DeviceMgr.getInstance().getDeviceIfPresent(id);
     DataObject data = null;
 
@@ -17,6 +18,7 @@
     } else {
         data = ds.fetchObjByNumId(id);
     }
+    
 //    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 //    System.out.println("id:" + id);
 //    System.out.println("device:" + device);
@@ -26,6 +28,24 @@
         response.sendError(404);
         return;
     }
+    
+    //remove
+    if("remove".equals(act))
+    {
+        ds.removeObjById(data.getId());
+        out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=dev','.main-sidebar');</script>");
+%>
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <h3>Device was deleted...</h3>
+                    </div><!-- /.tab-pane -->
+                </div>    
+            </div>
+<%
+        return;
+    }    
 
     //Update
     String name = request.getParameter("name");
@@ -152,7 +172,7 @@
 <section class="content">
     <!-- START CUSTOM TABS -->
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" id="main_content">
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
@@ -240,8 +260,21 @@
 
                             <div class="box-footer">
                                 <button type="submit" class="btn btn-primary disabled">Submit</button>
+                                <button class="btn btn-danger" onclick="return removeDevice(this);">Delete</a>  
                             </div>
-                        </form>                        
+                        </form>     
+                                
+                    <script type="text/javascript">
+                        function removeDevice(alink){
+                                if(confirm('Are you sure to remove this device?')){
+                                    var urlRemove = 'deviceDetail?ID=<%=id%>&act=remove';
+                                    loadContent(urlRemove,"#main_content");
+                                    //alink.href=urlRemove;
+                                    //alink.click(); 
+                                }
+                            return false;
+                         }
+                    </script>
 
                     </div><!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2">
@@ -355,12 +388,6 @@
                     </div><!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_5">
                         <jsp:include page="controls.jsp" />
-<!--                        <div>
-                            <button class="btn btn-primary btn-flat" onclick="WS.post('sir','true')" >Alarm ON</button>
-                            <button class="btn btn-primary btn-flat" onclick="WS.post('sir','false')" >Alarm OFF</button>
-                            <button class="btn btn-primary btn-flat" onclick="WS.post('mov','true')" >Move On</button>
-                            <button class="btn btn-primary btn-flat" onclick="WS.post('mov','false')" >Move Off</button> 
-                        </div>-->
                     </div><!-- /.tab-pane -->
                 </div><!-- /.tab-content -->
             </div><!-- nav-tabs-custom -->

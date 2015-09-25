@@ -8,10 +8,12 @@
     SWBDataSource ds = engine.getDataSource("DataSet");
 
     String id = request.getParameter("ID");
+    String act = request.getParameter("act");    
 
     DataObject dataset = null;
 
-        dataset = ds.fetchObjByNumId(id);
+    dataset = ds.fetchObjByNumId(id);
+    
 //    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 //    System.out.println("id:" + id);
 //    System.out.println("dataset" + device);
@@ -21,6 +23,23 @@
         response.sendError(404);
         return;
     }
+    
+    
+    //remove
+    if("remove".equals(act))
+    {
+        ds.removeObjById(dataset.getId());
+        out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=ds','.main-sidebar');</script>");
+%>
+            <!-- Custom Tabs -->
+
+            <h3>Dataset was deleted...</h3>
+<%
+        return;
+    }      
+    
+    
+    
 
     //Update
     String name = request.getParameter("name");
@@ -41,13 +60,13 @@
         
     }
 
-    name = data.getString("name", "");
+    name = dataset.getString("name", "");
 
     /////////////////////////////////////////////////////////////
    
     if(request.getParameter("_rm")!=null)
     {
-        out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=dev','.main-sidebar');</script>");
+        out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=ds','.main-sidebar');</script>");
     }    
 %>
 
@@ -97,8 +116,21 @@
 
                             <div class="box-footer">
                                 <button type="submit" class="btn btn-primary disabled">Submit</button>
+                                <button class="btn btn-danger" onclick="return removeObj(this);">Delete</a>  
                             </div>
-                        </form>                        
+                        </form>     
+                                
+                        <script type="text/javascript">
+                            function removeObj(alink){
+                                    if(confirm('Are you sure to remove this Dataset?')){
+                                        var urlRemove = 'datasetDetail?ID=<%=id%>&act=remove';
+                                        loadContent(urlRemove,"#tab_1");
+                                        //alink.href=urlRemove;
+                                        //alink.click(); 
+                                    }
+                                return false;
+                             }
+                        </script>                                
 
                     <div _class="tab-pane" id="tab_5">
                         <jsp:include page="fields.jsp" />

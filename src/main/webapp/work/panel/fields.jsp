@@ -41,6 +41,7 @@
         DataObject field=new DataObject();
         field.put("name", nameF);
         field.put("title", titleF);
+        field.put("type", "string");
         
         fields.add(field);
         ds.updateObj(dataset);
@@ -267,22 +268,16 @@
 
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary"  >Update</button>
-                        <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  onclick="removeField(this)">Delete</a>                       
+                        <button class="btn btn-danger" onclick="removeField(this)">Delete</button>                       
                         <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  href="fields?ID=<%=id%>">Cancel</a>                       
                     </div>
                 </form>
                     <script type="text/javascript">
                         function removeField(alink){
-                                if(confirm('Are you sure to remove this field?')){
-                                    var urlRemove = 'fields?ID=<%=id%>&act=remove&fID=<%=fID%>' ;
-                                    alink.href=urlRemove;
-                                    alink.click(); 
-                                } else {
-//                                    var urlRemove = 'controls?ID=<%=id%>' ;
-//                                    alink.href=urlRemove;
-//                                    alink.click();
-                                    return false;
-                                }    
+                            if(confirm('Are you sure to remove this field?')){
+                                var urlRemove = 'fields?ID=<%=id%>&act=remove&fID=<%=fID%>' ;
+                                loadContent(urlRemove,"#tab_5");
+                            } 
                             return false;
                          }
                     </script>

@@ -260,22 +260,18 @@
 
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary"  >Update</button>
-                        <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  onclick="removeControl(this)">Delete</a>                       
+                        <button class="btn btn-danger" onclick="removeControl(this)">Delete</button>                       
                         <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  href="controls?ID=<%=id%>">Cancel</a>                       
                     </div>
                 </form>
                     <script type="text/javascript">
                         function removeControl(alink){
-                                if(confirm('Are you sure to remove this control?')){
-                                    var urlRemove = 'controls?ID=<%=id%>&act=remove&ctrlid=<%=ctrlid%>' ;
-                                    alink.href=urlRemove;
-                                    alink.click(); 
-                                } else {
-//                                    var urlRemove = 'controls?ID=<%=id%>' ;
-//                                    alink.href=urlRemove;
-//                                    alink.click();
-                                    return false;
-                                }    
+                            if(confirm('Are you sure to remove this control?')){
+                                var urlRemove = 'controls?ID=<%=id%>&act=remove&ctrlid=<%=ctrlid%>' ;
+                                loadContent(urlRemove,"#tab_5");
+                                //alink.href=urlRemove;
+                                //alink.click(); 
+                            }    
                             return false;
                          }
                     </script>

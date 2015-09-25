@@ -1,3 +1,4 @@
+<%@page import="java.io.FileFilter"%>
 <%@page import="io.cloudino.utils.ParamsMgr"%>
 <%@page import="java.io.IOException"%>
 <%@page import="java.io.PrintWriter"%>
@@ -47,6 +48,51 @@
             out.println("</li>");
         }        
     }
+    
+    void addExamples(File dir, JspWriter out, ParamsMgr params) throws IOException
+    {
+        File[] listFiles = dir.listFiles();
+        for(File file : listFiles) {
+            addFile(file, out,dir,"exampleDetail",params);
+        }            
+    }
+    
+    void searchExamples(File base, JspWriter out, ParamsMgr params) throws IOException
+    {
+        if(!base.exists())
+        {
+            System.out.println(base);
+            return;
+        }
+        if(base.getName().equals("examples"))
+        {
+            addExamples(base, out, params);
+        }else
+        {
+            File[] dirs=base.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return pathname.isDirectory();
+                }
+            });
+            for(File dir : dirs) {
+                if(dir.getName().equals("examples"))
+                {
+                    out.print("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>" + base.getName());
+                    out.print("<i class=\"fa fa-angle-left pull-right\"></i>");
+                    out.println("</a>");
+                    out.println("<ul class=\"treeview-menu\">");                    
+                    addExamples(dir, out, params);
+                    out.println("</ul>");
+                    out.println("</li>");
+                }else
+                {
+                    searchExamples(dir, out, params);
+                }
+            }
+        }
+    }
+    
 %>
 <%
     DataObject user = (DataObject) session.getAttribute("_USER_");
@@ -127,7 +173,7 @@
                         }
                     }
                     %>
-                    <li><a href="addSketcher" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Agregar Sketcher</a></li> 
+                    <li><a href="addSketcher" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Sketcher</a></li> 
                 </ul>
             </li>
             <li class="treeview<%=("exa".equals(act)?" active":"")%>">
@@ -138,14 +184,17 @@
                 </a>
                 <ul class="treeview-menu">
                     <%
-                    {
-                        File fexa = new File(workPath+"/examples");
-                        File[] listFiles = fexa.listFiles();
-                        for (File file : listFiles) {
-                            addFile(file, out,fexa,"exampleDetail",params);
-                        }
-                    }
+                    searchExamples(new File(workPath+"/examples"), out, params);
                     %>
+                    
+                    <li class="header" style="color: #D8D8D8;padding: 10px">Builtin Libraries Examples</li>
+                    <%
+                    searchExamples(new File(arduinoPath+"/libraries"), out, params);
+                    %>
+                    <li class="header" style="color: #D8D8D8;padding: 10px">User Libraries Examples</li>
+                    <%
+                    searchExamples(new File(workPath+usersWorkPath+ "/" + user.getNumId()+"/libraries"), out, params);
+                    %>                
                 </ul>
             </li>            
             
@@ -157,26 +206,40 @@
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="#"><i class="fa fa-globe"></i> Global<i class="fa fa-angle-left pull-right"></i></a>
+                        <a href="#"><i class="fa fa-globe"></i> Builtin Libraries<i class="fa fa-angle-left pull-right"></i></a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-book"></i> Library 1</a></li>
-                            <li><a href="#"><i class="fa fa-book"></i> Library 2</a></li>
+<%
+                        {
+                            String path = arduinoPath + "/libraries";
+                            File f = new File(path);
+                            File[] listFiles = f.listFiles();
+                            for (File file : listFiles) {
+                                addFile(file, out,f,"libraryDetail",params);
+                            }
+                        }
+%>
                         </ul>
                     </li>
-                    <li><a href="#"><i class="fa fa-book"></i> Local<i class="fa fa-angle-left pull-right"></i></a>
+                    <li><a href="#"><i class="fa fa-book"></i> User Libraries<i class="fa fa-angle-left pull-right"></i></a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-book"></i> Library 1</a></li>
-                            <li><a href="#"><i class="fa fa-book"></i> Library 2</a></li>
-                            <li><a href="#"><i class="fa fa-book"></i> Library 3</a></li>
+<%
+                        {
+                            String path = workPath + usersWorkPath + "/" + user.getNumId() + "/libraries";
+                            File f = new File(path);
+                            if (!f.exists()) {
+                                f.mkdirs();
+                            }
+                            File[] listFiles = f.listFiles();
+                            for (File file : listFiles) {
+                                addFile(file, out,f,"libraryDetail",params);
+                            }
+                        }
+%>
+                            <li><a href="addLibrary" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Library</a></li> 
                         </ul>
                     </li>
                 </ul>
             </li>
-            <%
-            
-            //  DATASETS
-            
-            %>
             <li class="treeview<%=("ds".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-cubes"></i>
@@ -205,6 +268,7 @@
                     <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
                 </ul>
             </li>
+<!--                
             <li class="treeview<%=("dp".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-clock-o"></i>
@@ -215,6 +279,7 @@
                     <li><a href="#"><i class="fa fa-clock-o"></i> Procesor uno</a></li>
                 </ul>
             </li>
+        
             <li class="treeview<%=("dsv".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-server"></i>
@@ -231,6 +296,7 @@
                     </li>
                 </ul>
             </li>
+-->
             <li class="treeview<%=("rul".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-eye"></i>

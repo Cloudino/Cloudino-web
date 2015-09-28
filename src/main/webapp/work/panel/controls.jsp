@@ -178,35 +178,88 @@
     }  else if("editlist".equals(act)){
 %>
         
-<div>  
+<!--<div>  
     <div class="box box-primary">
         <div class="box-header">
             <h3 class="box-title">Existing Controls - select one of the list</h3>
         </div>
-        <ul>
+        <ul>-->
 <%        
-        DataObject query = new DataObject();
-        DataObject data = new DataObject();
-        query.put("data", data);
-        data.put("user", user.getId());
-        data.put("device", id);
-        DataObject ret = ds.fetch(query);
-        //Lista de controles asociados al dispositivo
-        DataList<DataObject> controls = ret.getDataObject("response").getDataList("data");
-        if (controls != null) {
-            for (DataObject contrl : controls) {
-                String ctrlid = contrl.getNumId();
-                String titulo = contrl.getString("title");
-                out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
-            }
-        }    
+//        DataObject query = new DataObject();
+//        DataObject data = new DataObject();
+//        query.put("data", data);
+//        data.put("user", user.getId());
+//        data.put("device", id);
+//        DataObject ret = ds.fetch(query);
+//        //Lista de controles asociados al dispositivo
+//        DataList<DataObject> controls = ret.getDataObject("response").getDataList("data");
+//        if (controls != null) {
+//            for (DataObject contrl : controls) {
+//                String ctrlid = contrl.getNumId();
+//                String titulo = contrl.getString("title");
+//                out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
+//            }
+//        }    
 %>
-        </ul>
+<!--        </ul>
     </div>
     <div class="box-footer">
-        <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  href="controls?ID=<%=id%>&act=">Cancel</a>                       
+        <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  href="controls?ID=<%//=id%>&act=">Cancel</a>                       
     </div>
-</div>
+</div>-->
+    <div>
+    <!-- TABLE: LATEST ORDERS -->
+              <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Existing Controls - select one of the list</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped no-margin">
+                      <thead>
+                        <tr>
+                          <!--<th>Id</th>-->
+                          <th>Id</th>
+                          <th>Title</th>
+                          <th>&nbsp;</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                            <%
+                        DataObject query = new DataObject();
+                        DataObject data = new DataObject();
+                        query.put("data", data);
+                        data.put("user", user.getId());
+                        data.put("device", id);
+                        DataObject ret = ds.fetch(query);
+                        //Lista de controles asociados al dispositivo
+                        DataList<DataObject> controls = ret.getDataObject("response").getDataList("data");
+                        if (controls != null) {
+                            for (DataObject contrl : controls) {
+                                String ctrlid = contrl.getNumId();
+                                String tituloCTRL = contrl.getString("title");
+                    //            out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
+                        %>
+                        <tr>
+                          <td><%=ctrlid%></td>
+                          <td><%=tituloCTRL%></td>
+                          <td><a data-target="#tab_5" data-load="ajax"  href="controls?ID=<%=id%>&act=edit&ctrlid=<%=ctrlid%>"><i class="fa fa-edit"></i></a></td>
+                        </tr>
+                        <%
+                            }
+                        } 
+                        %> 
+                      </tbody>
+                    </table>
+                  </div><!-- /.table-responsive -->
+                </div><!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <!--<a href="fields?ID=<%//=id%>&act=new" data-target="#tab_5" data-load="ajax" title="Add new Field" class="btn btn-primary pull-left">Add New Field</a>-->
+                    <a class="btn btn-primary" data-target="#tab_5" data-load="ajax"  href="controls?ID=<%=id%>&act=">Cancel</a>                       
+                  <!--<a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>-->
+                </div><!-- /.box-footer -->
+              </div><!-- /.box -->
+              </div>
 
 <%
     }  else if("edit".equals(act)){

@@ -85,15 +85,15 @@
         <div class="col-md-12">
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom">
-<!--                <ul class="nav nav-tabs">
+                <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">General</a></li>
                     <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">Fields</a></li>
-                    <li class="pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"><i class="fa fa-gear"></i></a>
+<!--                    <li class="pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"><i class="fa fa-gear"></i></a>
                         <ul class="dropdown-menu">
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete</a></li>
                         </ul>
-                    </li>
-                </ul>-->
+                    </li>-->
+                </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
 
@@ -130,16 +130,12 @@
                                     }
                                 return false;
                              }
-                        </script>                                
-
-                    <div _class="tab-pane" id="tab_5">
-                        <jsp:include page="fields.jsp" />
-                    </div>
-                                
-                                
+                        </script>                                  
                     </div><!-- /.tab-pane -->
 
-                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_5">
+                        <jsp:include page="fields.jsp" />
+                    </div><!-- /.tab-pane -->
                 </div><!-- /.tab-content -->
             </div><!-- nav-tabs-custom -->
         </div><!-- /.col -->

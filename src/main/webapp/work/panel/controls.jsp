@@ -221,6 +221,7 @@
                           <!--<th>Id</th>-->
                           <th>Id</th>
                           <th>Title</th>
+                          <th>Type</th>
                           <th>&nbsp;</th>
                         </tr>
                       </thead>
@@ -238,11 +239,13 @@
                             for (DataObject contrl : controls) {
                                 String ctrlid = contrl.getNumId();
                                 String tituloCTRL = contrl.getString("title");
+                                String typeCTRL = contrl.getString("type","");
                     //            out.println("<li><a data-target=\"#tab_5\" data-load=\"ajax\"  href=\"controls?ID="+id+"&act=edit&ctrlid="+ctrlid+"\">"+titulo+"</a></li>");
                         %>
                         <tr>
                           <td><%=ctrlid%></td>
                           <td><%=tituloCTRL%></td>
+                          <td><%=typeCTRL%></td>
                           <td><a data-target="#tab_5" data-load="ajax"  href="controls?ID=<%=id%>&act=edit&ctrlid=<%=ctrlid%>"><i class="fa fa-edit"></i></a></td>
                         </tr>
                         <%

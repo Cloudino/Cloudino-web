@@ -35,7 +35,7 @@
                         <div class="pull-right  hidden-xs">    
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><h3><i class="glyphicon glyphicon-cog"></i></h3></a>
                             <ul class="dropdown-menu">
-                                <li><a href="/login"><i class="glyphicon glyphicon-user"></i> LOG IN</a></li>
+                                <li><a href="/panel/"><i class="glyphicon glyphicon-user"></i> LOG IN</a></li>
                                 <li><a href="/register"><i class="glyphicon glyphicon-chevron-right"></i> SIGN UP</a></li>
                                 <!--<li><a href="#"><i class="glyphicon glyphicon-cog"></i> Link</a></li>-->
                             </ul>

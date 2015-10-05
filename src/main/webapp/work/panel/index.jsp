@@ -73,7 +73,7 @@
       
       <header class="main-header">
         <!-- Logo -->
-        <a href="index .html" class="logo">
+        <a href="/panel/" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><i class="fa fa-cloud"></i></span>
           <!-- logo for regular state and mobile devices -->

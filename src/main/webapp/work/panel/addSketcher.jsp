@@ -26,6 +26,9 @@
         } 
     }
     
+    if (null==name){
+        name = name=request.getParameter("name");
+    }
     
     boolean isNewFile = Boolean.FALSE;
     if(null!=act&&"newfile".equals(act)){

@@ -4,6 +4,9 @@
   Attach the center pin of a potentiometer to pin A0, and the outside pins to +5V and ground.
 
  This example code is in the public domain.
+
+ modify for Cloudino, 23 September 2015
+ by Javier Solis, softjei@gmail.com
  */
 
 #include<Cloudino.h>

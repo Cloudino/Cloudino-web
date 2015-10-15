@@ -24,7 +24,7 @@ This example code is in the public domain.
  http://www.arduino.cc/en/Tutorial/ButtonStateChange
 
  modify for Cloudino, 23 September 2015
- by Javier Solis, softjei@gmail.com
+ by Javier Solis, javier.solis@infotec.mx, softjei@gmail.com
 
 */
 

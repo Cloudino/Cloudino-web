@@ -3,6 +3,9 @@
  Reads a digital input on pin 2, prints the result to the serial monitor
 
  This example code is in the public domain.
+
+ modify for Cloudino, 23 September 2015
+ by Javier Solis, softjei@gmail.com
  */
 
 #include<Cloudino.h>

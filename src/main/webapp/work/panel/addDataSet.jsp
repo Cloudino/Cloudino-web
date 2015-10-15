@@ -16,16 +16,17 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     String name=request.getParameter("name");
+    String description=request.getParameter("description");
     
     if(name!=null)
     {
         DataObject user=(DataObject)session.getAttribute("_USER_");
         SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
         SWBDataSource ds=engine.getDataSource("DataSet");
-        String token = TokenGenerator.getNonExistentTokenByUserId(user.getNumId(), ds);
         DataObject data=new DataObject();
         data.put("user", user.getId());
         data.put("name", name);
+        data.put("description", description);
         DataObject fields = new DataObject();
         data.put("fields", fields);
         DataObject ret=ds.addObj(data);
@@ -38,7 +39,7 @@
         }
     }
     if(name==null)name="";
-
+    if(description==null)description="";
 %>
 <!-- Content Header (Page header) -->
 <section class="content-header">
@@ -73,27 +74,11 @@
                         </div>
 
                         <!-- textarea -->
-<!--                        <div class="form-group has-feedback">
+                        <div class="form-group has-feedback">
                             <label>Description</label>
                             <textarea name="description" class="form-control" rows="3" placeholder="Enter ..."><% //=description%></textarea>
-                        </div>-->
+                        </div>
 
-                        <!-- select -->
-<!--                        <div class="form-group has-feedback">
-                            <label>Type</label>
-                            <select name="type" class="form-control">
-                                <option value="cloudino-standalone">Cloudino Connector Standalone</option>-->
-                                <%
-//                                    ArdCompiler cmp = ArdCompiler.getInstance();
-//                                    Iterator<io.cloudino.compiler.ArdDevice> it = cmp.listDevices();
-//                                    while (it.hasNext()) {
-//                                        io.cloudino.compiler.ArdDevice dev = it.next();
-//                                        out.println("<option value=\"" + dev.key + "\">" + dev.toString() + "</option>");
-//                                    }
-                                %>                                
-<!--                            </select>
-                        </div>  -->
-                            
                     </div><!-- /.box-body -->
 
                     <div class="box-footer">

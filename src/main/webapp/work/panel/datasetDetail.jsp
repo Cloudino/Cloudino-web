@@ -32,8 +32,13 @@
         out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=ds','.main-sidebar');</script>");
 %>
             <!-- Custom Tabs -->
-
-            <h3>Dataset was deleted...</h3>
+            <div class="nav-tabs-custom">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <h3>Data Set was deleted...</h3>
+                    </div><!-- /.tab-pane -->
+                </div>    
+            </div>
 <%
         return;
     }      
@@ -43,9 +48,10 @@
 
     //Update
     String name = request.getParameter("name");
+    String description = request.getParameter("description");
     if (name != null) {
         dataset.put("name", name);
-//        data.put("description", description);
+        dataset.put("description", description);
 //        data.put("type", type);
         DataObject ret = ds.updateObj(dataset);
         //System.out.println(ret);
@@ -61,6 +67,7 @@
     }
 
     name = dataset.getString("name", "");
+    description = dataset.getString("description", "");
 
     /////////////////////////////////////////////////////////////
    
@@ -82,17 +89,12 @@
 <section class="content">
     <!-- START CUSTOM TABS -->
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" id="main_content">
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">General</a></li>
                     <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">Fields</a></li>
-<!--                    <li class="pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"><i class="fa fa-gear"></i></a>
-                        <ul class="dropdown-menu">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete</a></li>
-                        </ul>
-                    </li>-->
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
@@ -111,6 +113,11 @@
                                     <label>Name</label>
                                     <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ..." required="true">
                                 </div>
+                                
+                                <div class="form-group has-feedback">
+                                    <label>Description</label>
+                                    <textarea name="description" class="form-control" rows="3" placeholder="Enter ..."><%=description%></textarea>
+                                </div>
 
                             </div><!-- /.box-body -->
 
@@ -124,9 +131,7 @@
                             function removeObj(alink){
                                     if(confirm('Are you sure to remove this Dataset?')){
                                         var urlRemove = 'datasetDetail?ID=<%=id%>&act=remove';
-                                        loadContent(urlRemove,"#tab_1");
-                                        //alink.href=urlRemove;
-                                        //alink.click(); 
+                                        loadContent(urlRemove,"#main_content");
                                     }
                                 return false;
                              }

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="/plugins/blockly/blockly_compressed.js"></script>
+        <script src="/plugins/blockly/blocks_compressed.js"></script>
+        <script src="/plugins/blockly/arduino_compressed.js"></script>
+        <script src="/plugins/blockly/javascript_compressed.js"></script>
+        <script src="/plugins/blockly/msg/js/en.js"></script>
+    </head>
+    <body>
+        <div>TODO write content</div>
+        <div id="blocklyArea">
+            <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+        </div>
+    <xml id="toolbox" style="display: none">
+        <category name="Logic">
+            <block type="controls_if"></block>
+            <block type="logic_compare"></block>
+            <block type="logic_operation"></block>
+            <block type="logic_negate"></block>
+            <block type="logic_null"></block>
+        </category>
+        <category name="Control">
+            <block type="base_delay">
+                <value name="DELAY_TIME">
+                    <block type="math_number">
+                        <field name="NUM">1000</field>
+                    </block>
+                </value>
+            </block>
+            <block type="controls_for">
+                <value name="FROM">
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
+                </value>
+                <value name="TO">
+                    <block type="math_number">
+                        <field name="NUM">10</field>
+                    </block>
+                </value>
+            </block>
+            <block type="controls_whileUntil"></block>
+        </category>
+        <category name="Math">
+            <block type="math_number"></block>
+            <block type="math_arithmetic"></block>
+            <block type="base_map">
+                <value name="DMAX">
+                    <block type="math_number">
+                        <field name="NUM">180</field>
+                    </block>
+                </value>
+            </block>
+        </category>
+        <category name="Text">
+            <block type="text"></block>
+        </category>
+        <category name="Variables" custom="VARIABLE"></category>
+        <category name="Functions" custom="PROCEDURE"></category>
+        <sep></sep>
+        <category name="Input/Output">
+            <block type="inout_highlow"></block>
+            <block type="inout_digital_write"></block>
+            <block type="inout_digital_read"></block>
+            <block type="inout_analog_write">
+                <value name="NUM">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+            </block>
+            <block type="inout_analog_read"></block>
+            <block type="serial_print">
+                <value name="CONTENT">
+                    <block type="text">
+                        <field name="TEXT"></field>
+                    </block>
+                </value>
+            </block>
+            <block type="inout_tone">
+                <value name="NUM">
+                    <block type="math_number">
+                        <field name="NUM">440</field>
+                    </block>
+                </value>
+            </block>
+            <block type="inout_notone"></block>
+            <block type="inout_buildin_led"></block>
+        </category>
+        <category name="Servo">
+            <block type="servo_move">
+                <value name="DEGREE">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+            </block>
+            <block type="servo_read_degrees"></block>
+        </category>
+        <category name="Grove Analog">
+            <block type="grove_rotary_angle"></block>
+            <block type="grove_temporature_sensor"></block>
+            <block type="grove_sound_sensor"></block>
+            <block type="grove_thumb_joystick"></block>
+        </category>
+        <category name="Grove">
+            <block type="grove_led"></block>
+            <block type="grove_button"></block>
+            <block type="grove_relay"></block>
+            <block type="grove_tilt_switch"></block>
+            <block type="grove_piezo_buzzer"></block>
+            <block type="grove_pir_motion_sensor"></block>
+            <block type="grove_line_finder"></block>
+            <block type="grove_rgb_led"></block>
+            <block type="grove_ultrasonic_ranger"></block>
+        </category>
+        <category name="Grove LCD">
+            <block type="grove_serial_lcd_print">
+                <value name="TEXT">
+                    <block type="text">
+                        <field name="TEXT"></field>
+                    </block>
+                </value>
+                <value name="TEXT2">
+                    <block type="text">
+                        <field name="TEXT"></field>
+                    </block>
+                </value>
+                <value name="DELAY_TIME">
+                    <block type="math_number">
+                        <field name="NUM">1000</field>
+                    </block>
+                </value>
+            </block>
+            <block type="grove_serial_lcd_power"></block>
+            <block type="grove_serial_lcd_effect"></block>
+        </category>
+        <category name="Grove Motor">
+            <block type="grove_motor_shield"></block>
+        </category>
+    </xml>
+
+    <script>
+
+        function toJSON()
+        {
+            var xml = Blockly.Xml.workspaceToDom(workspace);
+            return xmlToJson(xml);
+        }
+
+// Changes XML to JSON
+        function xmlToJson(xml) {
+
+            // Create the return object
+            var obj = {};
+
+            if (xml.nodeType == 1) { // element
+                // do attributes
+                if (xml.attributes.length > 0) {
+                    obj["@attributes"] = {};
+                    for (var j = 0; j < xml.attributes.length; j++) {
+                        var attribute = xml.attributes.item(j);
+                        obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+                    }
+                }
+            } else if (xml.nodeType == 3) { // text
+                obj = xml.nodeValue;
+            }
+
+            // do children
+            if (xml.hasChildNodes()) {
+                for (var i = 0; i < xml.childNodes.length; i++) {
+                    var item = xml.childNodes.item(i);
+                    var nodeName = item.nodeName;
+                    if (typeof (obj[nodeName]) == "undefined") {
+                        obj[nodeName] = xmlToJson(item);
+                    } else {
+                        if (typeof (obj[nodeName].push) == "undefined") {
+                            var old = obj[nodeName];
+                            obj[nodeName] = [];
+                            obj[nodeName].push(old);
+                        }
+                        obj[nodeName].push(xmlToJson(item));
+                    }
+                }
+            }
+            return obj;
+        }
+        ;
+
+        function toXML()
+        {
+            var xml = Blockly.Xml.workspaceToDom(workspace);
+            return Blockly.Xml.domToText(xml);
+        }
+
+        function fromText(xml_text)
+        {
+            var xml = Blockly.Xml.textToDom(xml_text);
+            Blockly.Xml.domToWorkspace(workspace, xml);
+        }
+
+        function getContexts()
+        {
+            return [["En Casa", "contx1"], ["Fuera de Casa", "contx2"], ["Durmiendo", "contx3"]];
+        }
+
+        function getDevices()
+        {
+            return [["Alarma", "dev1"], ["Casa", "dev2"], ["Jardin", "dev3"]];
+        }
+
+
+        Blockly.Blocks['cdino_context'] = {
+            init: function() {
+                this.appendDummyInput()
+                        .appendField("Context")
+                        .appendField(new Blockly.FieldDropdown(getContexts), "context");
+                this.appendStatementInput("EVENTS")
+                        .setCheck("Event")
+                        .appendField("events");
+                this.setColour(160);
+                this.setTooltip('');
+                this.setHelpUrl('http://www.example.com/');
+            }
+        };
+
+        Blockly.JavaScript['cdino_context'] = function(block) {
+            var dropdown_context = block.getFieldValue('context');
+            var statements_events = Blockly.JavaScript.statementToCode(block, 'EVENTS');
+            // TODO: Assemble JavaScript into code variable.
+            var code = '{ var _cntx="' + dropdown_context + '"; ' + statements_events + ' }';
+            return code;
+        };
+
+        Blockly.Blocks['cdino_ondevice_message'] = {
+            init: function() {
+                this.appendDummyInput()
+                        .appendField("onMessage")
+                        .appendField("Device:")
+                        .appendField(new Blockly.FieldDropdown(getDevices), "device")
+                        .appendField("Topic:")
+                        .appendField(new Blockly.FieldTextInput("topic"), "topic")
+                        .appendField("with: msg");
+                this.appendStatementInput("ACTIONS")
+                        .setCheck("Action")
+                        .appendField("do");
+                this.setPreviousStatement(true, "Event");
+                this.setNextStatement(true, "Event");
+                this.setColour(20);
+                this.setTooltip('');
+                this.setHelpUrl('http://www.example.com/');
+                /**
+                 * Return all variables referenced by this block.
+                 * @return {!Array.<string>} List of variable names.
+                 * @this Blockly.Block
+                 */
+                this.getVars = function() {
+                    //return [this.getFieldValue('msg')];
+                    return ["msg"];
+                };
+            }
+        };
+
+        Blockly.JavaScript['cdino_ondevice_message'] = function(block) {
+            var dropdown_device = block.getFieldValue('device');
+            var text_topic = block.getFieldValue('topic');
+            var statements_actions = Blockly.JavaScript.statementToCode(block, 'ACTIONS');
+            // TODO: Assemble JavaScript into code variable.
+            var code = 'cdino.on(_cntx,"cdino_ondevice_message","' + dropdown_device + '","' + text_topic + '",function(msg){' + statements_actions + '});';
+            return code;
+        };
+
+        Blockly.Blocks['cdino_onchange_context'] = {
+            init: function() {
+                this.appendDummyInput()
+                        .appendField("onChangeContext")
+                        .appendField(new Blockly.FieldDropdown([["Enter", "enter"], ["Exit", "exit"]]), "NAME");
+                this.appendStatementInput("ACTIONS")
+                        .setCheck("Action")
+                        .appendField("do");
+                this.setPreviousStatement(true, "Event");
+                this.setNextStatement(true, "Event");
+                this.setColour(20);
+                this.setTooltip('');
+                this.setHelpUrl('http://www.example.com/');
+            }
+        };
+
+        Blockly.Blocks['cdino_send_device_message'] = {
+            init: function() {
+                this.appendDummyInput()
+                        .appendField("sendMessage");
+                this.appendDummyInput()
+                        .setAlign(Blockly.ALIGN_RIGHT)
+                        .appendField("Device:")
+                        .appendField(new Blockly.FieldDropdown(getDevices), "device");
+                this.appendDummyInput()
+                        .setAlign(Blockly.ALIGN_RIGHT)
+                        .appendField("Topic:")
+                        .appendField(new Blockly.FieldTextInput("topic"), "topic");
+                this.appendValueInput("msg")
+                        .setCheck("String")
+                        .setAlign(Blockly.ALIGN_RIGHT)
+                        .appendField("Msg:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, "Action");
+                this.setNextStatement(true, "Action");
+                this.setColour(330);
+                this.setTooltip('');
+                this.setHelpUrl('http://www.example.com/');
+            }
+        };
+
+        Blockly.Blocks['cdino_invoke_after'] = {
+            init: function() {
+                this.appendDummyInput()
+                        .appendField("invoke after:")
+                        .appendField(new Blockly.FieldTextInput("10"), "time")
+                        .appendField(new Blockly.FieldDropdown([["seconds", "s"], ["minuts", "m"], ["hours", "h"], ["days", "d"]]), "metric");
+                this.appendStatementInput("ACTIONS")
+                        .setCheck("Action")
+                        .appendField("do");
+                this.setPreviousStatement(true, "Action");
+                this.setColour(330);
+                this.setTooltip('');
+                this.setHelpUrl('http://www.example.com/');
+            }
+        };
+
+        Blockly.Blocks['cduino_change_context'] = {
+            init: function() {
+                this.appendDummyInput()
+                        .appendField("changeContext")
+                        .appendField(new Blockly.FieldDropdown(getContexts), "NAME");
+                this.setPreviousStatement(true, "Action");
+                this.setColour(330);
+                this.setTooltip('');
+                this.setHelpUrl('http://www.example.com/');
+            }
+        };
+
+        Blockly.Blocks['cdino_push_notification'] = {
+            init: function() {
+                this.appendValueInput("NAME")
+                        .setCheck("String")
+                        .appendField("pushNotification")
+                        .appendField("Text:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, "Action");
+                this.setNextStatement(true, "Action");
+                this.setColour(330);
+                this.setTooltip('');
+                this.setHelpUrl('http://www.example.com/');
+            }
+        };
+
+//others
+
+//Math
+        Blockly.Blocks['cdino_parse_number'] = {
+            init: function() {
+                this.appendValueInput("NAME")
+                        .setCheck("String")
+                        .appendField("parseNumber");
+                this.setInputsInline(true);
+                this.setOutput(true, "Number");
+                this.setColour(225);
+                this.setTooltip('Convert Text to Number');
+                this.setHelpUrl('http://www.example.com/');
+            }
+        };
+
+
+    </script>
+
+    <script>
+        var blocklyArea = document.getElementById('blocklyArea');
+        var blocklyDiv = document.getElementById('blocklyDiv');
+        var workspace = Blockly.inject(blocklyDiv, {
+            grid:{
+                spacing: 25,
+                length: 3,
+                colour: '#ccc',
+                snap: true
+            },
+            media: '/plugins/blockly/media/',
+            toolbox: document.getElementById('toolbox')
+        });
+        var onresize = function(e) {
+            // Compute the absolute coordinates and dimensions of blocklyArea.
+            var element = blocklyArea;
+            var x = 0;
+            var y = 0;
+            do {
+                x += element.offsetLeft;
+                y += element.offsetTop;
+                element = element.offsetParent;
+            } while (element);
+            // Position blocklyDiv over blocklyArea.
+            blocklyDiv.style.left = x + 'px';
+            blocklyDiv.style.top = y + 'px';
+            blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+            blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+        };
+        window.addEventListener('resize', onresize, false);
+        onresize();
+    </script>
+</body>
+</html>

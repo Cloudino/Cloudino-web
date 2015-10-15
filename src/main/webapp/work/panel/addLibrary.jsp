@@ -76,7 +76,7 @@
     for(DataObject lib : list)
     {
         out.println("                                <tr>");
-        out.println("                                   <td>"+lib.getString("name")+"</td>");
+        out.println("                                   <td>"+lib.getString("name").replace('_', ' ')+"</td>");
         out.println("                                   <td>"+lib.getString("version")+"</td>");
         out.println("                                   <td>"+lib.getString("author")+"</td>");
         //out.println("                                   <td>"+lib.getString("maintainer")+"</td>");

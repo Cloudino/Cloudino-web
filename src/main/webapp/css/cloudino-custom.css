@@ -1,0 +1,175 @@
+.x { height:0px;}
+html, body { height: 100%}
+* {font-family: 'Muli', sans-serif;}
+a 				 { outline: 0 !important; color: #666 }
+.collapsed .glyphicon-chevron-up,
+.panel-title.btnUpDown .glyphicon-chevron-down { display:none }
+.panel-title.collapsed .glyphicon-chevron-down { display:inline-block}
+section {padding-top:120px !important; padding-bottom:170px !important;}
+
+/*NAV BAR*/
+nav { background: rgba(45,45,45,0.95) !important;}
+nav h1 { display: none;}
+.navbar-default { padding:25px 0 25px;}
+.navbar-default.navbar-shrink { padding:0px 0 6px;}
+.navbar-default.navbar-shrink .navbar-brand img { margin-top:9px}
+.navbar-brand { padding: 0;}
+.navbar-brand img { width: 200px}
+.navbar-default .navbar-nav > li > a { font-size:18px; font-weight:lighter; color:#FFF}
+.navbar-default .navbar-nav > .active > a { margin-top:2px; padding:13px 15px; } /*Scroll spy*/
+
+/*HEADER*/
+header {
+  background: -webkit-linear-gradient(#ecf3f3 , #d6e1e3); 
+  background: -o-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: -moz-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: linear-gradient(#ecf3f3 , #d6e1e3 );}
+.seccion-header                     { padding:250px 0 300px; color: #666}
+.seccion-header div div             { padding:0}
+.seccion-header div div:first-child,
+.seccion-header div div:last-child  { padding-top:70px}
+.seccion-header h2                  { font-size:26px;font-weight:300;}
+.seccion-header .headdiv1 h2        { text-align:left; line-height:35px;}
+.seccion-header .headdiv3 h2        { text-align:right; line-height:35px;}
+.seccion-header h2 strong           { font-size:40px; display:block; font-weight:400; }
+.seccion-header .btn                { margin-top:80px}
+.nube1, .nube2, .nube3   { position:absolute}
+.nube1 { opacity:0.4; width:750px; top:80px; left:30%}
+.nube2 { opacity:0.3; width:250px; top:220px; right:-9%}
+.nube3 { opacity:0.2; width:340px; top:200px; left:0%}
+
+/*INNOVATION*/
+#innovation {
+  background: -webkit-linear-gradient(#ecf3f3 , #d6e1e3); 
+  background: -o-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: -moz-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: linear-gradient(#ececec , #fcfcfc );}
+#innovation div{ padding:0;}
+#innovation    { color:#666 }
+#innovation h2 { font-size:50px; margin-bottom:50px}
+#innovation p  { font-size:25px; line-height:35px; font-weight: 300; margin-bottom:35px}
+#innovation .btn                { margin-top:25px}
+
+/*COMPONENTS*/
+#components {
+  background: url(../img/components-fondo.png), -webkit-linear-gradient(#ecf3f3 , #d6e1e3); 
+  background: url(../img/components-fondo.png), -o-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: url(../img/components-fondo.png), -moz-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: url(../img/components-fondo.png), linear-gradient(#0a94b3  , #47afc6  );
+    background-size:contain; background-repeat: no-repeat; background-position: bottom right;}
+#components h2 { font-size:50px; margin:0px auto 50px; text-align: center; color:#144e5b; font-weight:bold}
+#components .panel *        { color: #FFF;}
+#components .panel-heading,
+#components .panel          { background:none; border: none; box-shadow: none;}
+#components .panel-heading  { text-align: center; }
+#components .panel-heading a{ text-decoration: none; font-size:24px;}
+#components .panel-body     { border: none;}
+#components div             { text-align: center;}
+#components img             { margin: auto; width: 200px;}
+#components ul              { text-align: left; font-size:20px; padding:0 0 0 20px}
+#components ul li a         { text-decoration: underline;}
+#components .panel-body     { padding:0px !important}
+#components .glyphicon      { font-size:15px;}
+
+/*boardStart*/
+.boardstart *   { color:#FFF; }
+.boardstart h2  { font-size:50px; margin:0 0 40px 0; font-weight:bold}
+.boardstart li  { font-size: 21px; font-weight:300; line-height:40px}
+.seccion-boards,
+.seccion-learn  { padding:0;}
+#boards, #learn { height:780px;}
+
+/*BOARDS*/
+#boards { background: url( ../img/boards-fondo.png) no-repeat top left; background-size:cover}
+
+/*START*/
+#learn { background: url( ../img/start-fondo.png) no-repeat center; background-size:cover}
+
+/*CONTACT*/
+#contact { 
+  background: url(../img/contact.svg) no-repeat, -webkit-linear-gradient(#ecf3f3 , #d6e1e3); 
+  background: url(../img/contact.svg) no-repeat, -o-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: url(../img/contact.svg) no-repeat, -moz-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: url(../img/contact.svg) no-repeat, linear-gradient(#ecf3f3 , #d6e1e3 );
+ background-size: cover; background-position: top right;}
+#contact h2 { font-size:50px; margin:0 0 50px 0; font-weight:bold; color:#09809b;}
+#contact .form-group {margin-bottom:25px;}
+#contact .form-group input,
+#contact .form-group textarea {padding:20px; font-size: 21px}
+#contact .form-group input.form-control {height: auto;}
+#contact .form-group textarea.form-control {height:170px;}
+#contact .form-control:focus {border:solid 1px #e63a4a; box-shadow:none;}
+#contact::-webkit-input-placeholder { color: #bbb;}
+#contact:-moz-placeholder {  color: #bbb;}
+#contact::-moz-placeholder { color: #bbb;}
+#contact:-ms-input-placeholder { color: #bbb;}
+#contact .text-danger {color:#e63a4a ;}
+#contact button { margin-top: 40px}
+
+/*FOOTER*/
+footer      { background: #333; color:#fff }
+footer a    { color: #FFF; text-decoration: underline;}
+footer span { margin:0 10px; color: #ccc}
+footer p    { margin:0 }
+.foot1  {}
+.foot2  {}
+.foot3  {}
+.footthanks { position: absolute; bottom: 0; width: 100%}
+
+/*THANKS*/
+.thanks { 
+  background: url(../img/cloudino-symbol.svg) no-repeat ,-webkit-linear-gradient(#ecf3f3 , #d6e1e3); 
+  background: url(../img/cloudino-symbol.svg) no-repeat ,-o-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: url(../img/cloudino-symbol.svg) no-repeat ,-moz-linear-gradient(#ecf3f3 , #d6e1e3);
+  background: url(../img/cloudino-symbol.svg) no-repeat ,linear-gradient(#ecf3f3 , #d6e1e3 );
+  background-size: cover; background-position:top}
+.thanks { text-align: center; height: 100%; display: block; padding:50px 0;}
+.section-thanks h2 { font-size: 70px}
+.section-thanks p { font-size: 40px}
+.section-thanks divx { background:rgba(255,255,255,.3); width:60%; margin: auto; padding: 3%}
+.section-thanks * { text-shadow:1px 1px 0px #000; color: #f1f1f1}
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+/* - - - - Escritorio grande - - - */
+@media (min-width: 1200px){ .x { background: red;} 
+  #components .panel-group    { height:380px}
+  #components .panel-heading a {font-size: 25px;}
+  #boards { padding-left:65px !important}
+  #learn  { padding-left:50px !important}
+}
+
+/* - - - - Escritorio pequeño o tablet - - - */
+@media (min-width:992px) and (max-width:1199px){.x { background: green;} 
+    #components .panel-group    { height:400px}
+    #boards { padding-left:65px !important}
+    #learn  { padding-left:50px !important}
+}
+
+/* - - - - Tablet o smartphone - - - */
+@media (min-width:768px) and (max-width:991px){.x { background: blue;} 
+    .seccion-header * { text-align: center !important; margin: auto}
+     #components .panel-group    { height:400px}
+     #boards, #learn { height:760px}
+     #boards { padding-left:65px !important}
+     #learn  { padding-left:50px !important}
+}
+
+/* - - - - Smartphone - - - */
+@media (max-width:767px){ .x { background: cyan;}
+    .seccion-header * { text-align: center !important; margin: auto}
+    .seccion-header   { padding:150px 0 200px; color: #666}
+    .nube1 { opacity:0.5; width:850px; top:70px; left:0%}
+    .btn-xl { font-size:30px}
+    .navbar-brand { margin-left: 10px}
+    h2 { font-size:30px !important;}
+    p  { font-size:21px !important;}
+    #innovation div {padding:10px;}
+    #components { background-size:cover; background-repeat: no-repeat; background-position: top right;}
+    #boards, #learn { padding:90px 5px 40px 20px !important}
+    #learn ul li { text-shadow:1px 1px 0px #be3a46  !important;}
+    footer p { font-size:18px !important; line-height:23px ; margin-bottom: 10px; font-weight: 300 }
+    footer span { visibility: hidden;}
+    .foot2, .foot3 { font-size:12px !important; }
+}

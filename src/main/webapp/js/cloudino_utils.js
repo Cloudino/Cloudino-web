@@ -101,14 +101,25 @@ var getSynchData = function(url, data, method)
     return aRequest;
 };
 
-var loadContent = function(url, target)
+var loadContent = function(url, target, data)
 {
-    $.get(url, function(data) {
-        $(target).html(
-                cdino_parse(data)
-                );
-        $.AdminLTE.tree($(target));
-    });
+    if(data)
+    {
+        $.post(url, data, function(data) {
+            $(target).html(
+                    cdino_parse(data)
+                    );
+            $.AdminLTE.tree($(target));
+        });
+    }else
+    {
+        $.get(url, function(data) {
+            $(target).html(
+                    cdino_parse(data)
+                    );
+            $.AdminLTE.tree($(target));
+        });
+    }
 }
 
 var cdino_parse = function(html)

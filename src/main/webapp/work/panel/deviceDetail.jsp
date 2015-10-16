@@ -92,15 +92,30 @@
     String userPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId();
     String userBasePath = userPath + "/sketchers";
     String userBuildPath = userPath + "/build";
-    File f = new File(userBasePath);
-    if (!f.exists()) {
-        f.mkdirs();
+    
+    File fsketch = new File(userBasePath);
+    if (!fsketch.exists()) {
+        fsketch.mkdirs();
     }
+    File fblock = new File(userPath+"/blocks");
+    if (!fblock.exists()) {
+        fblock.mkdirs();
+    }    
+    
     String msg = "";
     String compile = request.getParameter("cp");
 
-    if ( compile != null && null != skt) { 
-
+    if ( compile != null && null != skt) 
+    { 
+        if(skt.startsWith("sk_"))
+        {
+            skt=skt.substring(3);
+        }else
+        {
+            skt=skt.substring(3);
+            userBasePath=userPath + "/blocks";
+        }
+        
         if(null!=data) data.put("sketcher", skt);
         String sktFile = skt + ".ino";
         String path=userBasePath + "/" + skt + "/" + sktFile;
@@ -294,7 +309,8 @@
                                     <div class="col-md-10 pull-left">
                                     <select name="skt" id="skt" class="form-control">                                        
                                         <%
-                                            File[] listFiles = f.listFiles();
+                                        {
+                                            File[] listFiles = fblock.listFiles();
                                             for (File file : listFiles) {
                                                 if (file.isDirectory() && !file.isHidden()) {
                                                     String dirName = file.getName();
@@ -307,11 +323,33 @@
                                                         String fileName = inoFile.getName();
                                                         //System.out.println("Revisando..."+dirName+" con: "+fileName);
                                                         if(fileName.startsWith(dirName)&&fileName.endsWith(".ino")){
-                                                            out.println("<option value=\"" + file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + "</option>");
+                                                            out.println("<option value=\"bk_" + file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + " (Block)</option>");
                                                         }
                                                     }
                                                 }
                                             }
+                                        }
+                                        {
+                                            File[] listFiles = fsketch.listFiles();
+                                            for (File file : listFiles) {
+                                                if (file.isDirectory() && !file.isHidden()) {
+                                                    String dirName = file.getName();
+                                                    if(dirName.indexOf("_")>-1){
+                                                        dirName = dirName.substring(0,dirName.indexOf("_"));
+                                                    }
+                                                    //System.out.println(dirName);
+                                                    File[] list = file.listFiles();
+                                                    for(File inoFile:list){
+                                                        String fileName = inoFile.getName();
+                                                        //System.out.println("Revisando..."+dirName+" con: "+fileName);
+                                                        if(fileName.startsWith(dirName)&&fileName.endsWith(".ino")){
+                                                            out.println("<option value=\"sk_" + file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + " (Sketch)</option>");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                            
                                         %>    
                                     </select>
                                     </div>

@@ -27,8 +27,6 @@
         data.put("user", user.getId());
         data.put("name", name);
         data.put("description", description);
-        DataObject fields = new DataObject();
-        data.put("fields", fields);
         DataObject ret=ds.addObj(data);
         //System.out.println(ret);
         DataObject obj=ret.getDataObject("response").getDataObject("data");

@@ -830,7 +830,7 @@
         <script src="/plugins/blockly/javascript_compressed.js"></script>
         <script src="/plugins/blockly/msg/js/en.js"></script>
         <script src="/js/cloudino_blockly.js"></script>
-        -->        
+        
         <!--
          <script src="/plugins/codemirror/mode/xml/xml.js"></script>
          <script src="/plugins/codemirror/addon/hint/xml-hint.js"></script>

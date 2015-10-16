@@ -118,7 +118,7 @@
         </div>
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
-            <li class="header">MENU</li>
+            <li class="header">THINGING</li>
             <li class="treeview<%=("dev".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-gears"></i>
@@ -151,6 +151,99 @@
                     <li><a href="addDevice" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Device</a></li>
                 </ul>
             </li>
+            <li class="treeview<%=("dg".equals(act)?" active":"")%>">
+                <a href="#">
+                    <i class="fa fa-cubes"></i>
+                    <span>Device Groups</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <%
+                    {
+                        SWBDataSource ds = engine.getDataSource("DeviceGroup");
+                        DataObject query = new DataObject();
+                        DataObject data = new DataObject();
+                        query.put("data", data);
+                        data.put("user", user.getId());
+                        DataObject ret = ds.fetch(query);
+                        //System.out.println(ret);
+                        DataList<DataObject> list = ret.getDataObject("response").getDataList("data");
+                        if (list != null) {
+                            for (DataObject obj : list) {
+                                String id = obj.getNumId();
+                                %>
+                                <li><a href="deviceGroupDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
+                                <%
+                            }
+                        }
+                    }
+                    %>                
+                    <li><a href="addDeviceGroup" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Device Group</a></li>
+                </ul>
+            </li>
+            <li class="treeview<%=("uc".equals(act)?" active":"")%>">
+                <a href="#">
+                    <i class="fa fa-cubes"></i>
+                    <span>User Context</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <%
+                    {
+                        SWBDataSource ds = engine.getDataSource("UserContext");
+                        DataObject query = new DataObject();
+                        DataObject data = new DataObject();
+                        query.put("data", data);
+                        data.put("user", user.getId());
+                        DataObject ret = ds.fetch(query);
+                        //System.out.println(ret);
+                        DataList<DataObject> list = ret.getDataObject("response").getDataList("data");
+                        if (list != null) {
+                            for (DataObject obj : list) {
+                                String id = obj.getNumId();
+                                %>
+                                <li><a href="userContextDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
+                                <%
+                            }
+                        }
+                    }
+                    %>                
+                    <li><a href="addUserContext" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add User Context</a></li>
+                </ul>
+            </li>
+            
+            <li class="header">BLOCKING</li>
+            <li class="treeview<%=("bl".equals(act)?" active":"")%>">
+                <a href="#">
+                    <i class="fa fa-cubes"></i>
+                    <span>Blocks</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <%
+                    String workPath = DataMgr.getApplicationPath() + "/work/";
+                    {
+                        // leer estructura de archivos del usuario
+                        String userBasePath = workPath + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/blocks";
+                        File f = new File(userBasePath);
+                        if (!f.exists()) {
+                            f.mkdirs();
+                        }
+                        File[] listFiles = f.listFiles();
+                        for (File file : listFiles) {
+                            if(file.isDirectory() && !file.isHidden())
+                            {
+%>                                
+                                <li><a href="blockDetail?ID=<%=file.getName()%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=file.getName()%></a></li>
+<%                                
+                            }                                                        
+                        }
+                    }
+                    %>
+                    <li><a href="addBlock" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Block</a></li>
+                </ul>
+            </li>
+            <li class="header">CODING</li>
             <li class="treeview<%=("sket".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-laptop"></i>
@@ -159,7 +252,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <%
-                    String workPath = DataMgr.getApplicationPath() + "/work/";
+                    //String workPath = DataMgr.getApplicationPath() + "/work/";
                     {
                         //+ request.getRequestURI().substring(1, request.getRequestURI().lastIndexOf("/")) + "/"                        
                         
@@ -242,16 +335,18 @@
                     </li>
                 </ul>
             </li>
-            <li class="treeview<%=("uc".equals(act)?" active":"")%>">
+            <li class="header">CLOUDING</li>
+            
+            <li class="treeview<%=("cr".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-cubes"></i>
-                    <span>User Context</span>
+                    <span>Cloud Rules</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <%
                     {
-                        SWBDataSource ds = engine.getDataSource("UserContext");
+                        SWBDataSource ds = engine.getDataSource("CloudRule");
                         DataObject query = new DataObject();
                         DataObject data = new DataObject();
                         query.put("data", data);
@@ -263,43 +358,13 @@
                             for (DataObject obj : list) {
                                 String id = obj.getNumId();
                                 %>
-                                <li><a href="userContextDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
+                                <li><a href="cloudRuleDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
                                 <%
                             }
                         }
                     }
                     %>                
-                    <li><a href="addUserContext" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add User Context</a></li>
-                </ul>
-            </li>
-            <li class="treeview<%=("dg".equals(act)?" active":"")%>">
-                <a href="#">
-                    <i class="fa fa-cubes"></i>
-                    <span>Device Groups</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <%
-                    {
-                        SWBDataSource ds = engine.getDataSource("DeviceGroup");
-                        DataObject query = new DataObject();
-                        DataObject data = new DataObject();
-                        query.put("data", data);
-                        data.put("user", user.getId());
-                        DataObject ret = ds.fetch(query);
-                        //System.out.println(ret);
-                        DataList<DataObject> list = ret.getDataObject("response").getDataList("data");
-                        if (list != null) {
-                            for (DataObject obj : list) {
-                                String id = obj.getNumId();
-                                %>
-                                <li><a href="deviceGroupDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
-                                <%
-                            }
-                        }
-                    }
-                    %>                
-                    <li><a href="addDeviceGroup" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Device Group</a></li>
+                    <li><a href="addCloudRule" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Cloud Rule</a></li>
                 </ul>
             </li>
             <li class="treeview<%=("ds".equals(act)?" active":"")%>">
@@ -332,34 +397,35 @@
                     <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
                 </ul>
             </li>
-            <li class="treeview<%=("cr".equals(act)?" active":"")%>">
+            <li class="header">LINKING</li>
+            <li class="treeview<%=("ds".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-cubes"></i>
-                    <span>Cloud Rules</span>
+                    <span>FIWARE ContextBroker</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <%
-                    {
-                        SWBDataSource ds = engine.getDataSource("CloudRule");
-                        DataObject query = new DataObject();
-                        DataObject data = new DataObject();
-                        query.put("data", data);
-                        data.put("user", user.getId());
-                        DataObject ret = ds.fetch(query);
-                        //System.out.println(ret);
-                        DataList<DataObject> list = ret.getDataObject("response").getDataList("data");
-                        if (list != null) {
-                            for (DataObject obj : list) {
-                                String id = obj.getNumId();
-                                %>
-                                <li><a href="cloudRuleDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
-                                <%
-                            }
-                        }
-                    }
-                    %>                
-                    <li><a href="addCloudRule" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Cloud Rule</a></li>
+                    <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
+                </ul>
+            </li>
+            <li class="treeview<%=("ds".equals(act)?" active":"")%>">
+                <a href="#">
+                    <i class="fa fa-cubes"></i>
+                    <span>MQTT Server</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
+                </ul>
+            </li>
+            <li class="treeview<%=("ds".equals(act)?" active":"")%>">
+                <a href="#">
+                    <i class="fa fa-cubes"></i>
+                    <span>COAP Server</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
                 </ul>
             </li>
 

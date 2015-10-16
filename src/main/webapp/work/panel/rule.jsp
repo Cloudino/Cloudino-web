@@ -3,8 +3,40 @@
     Created on : 15-oct-2015, 0:04:21
     Author     : javiersolis
 --%>
+<%@page import="org.semanticwb.datamanager.DataMgr"%>
+<%@page import="org.semanticwb.datamanager.SWBDataSource"%>
+<%@page import="org.semanticwb.datamanager.SWBScriptEngine"%>
+<%@page import="org.semanticwb.datamanager.DataObject"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<div id="blocklyDiv" style="height: 450px; width: 100%;"></div>
+<%
+    String id=request.getParameter("ID");
+    DataObject user=(DataObject)session.getAttribute("_USER_");
+    SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
+    SWBDataSource ds=engine.getDataSource("CloudRule");
+    DataObject obj=ds.fetchObjByNumId(id);
+
+    if (obj == null || (obj != null && !obj.getString("user").equals(user.getId()))) {
+        response.sendError(404);
+        return;
+    }    
+    
+    String xml=obj.getString("xml");
+
+    String act=request.getParameter("act");
+    if("update".equals(act))
+    {
+        String script=request.getParameter("script");
+        xml=request.getParameter("xml");
+        obj.put("script", script);
+        obj.put("xml", xml);
+        ds.updateObj(obj);
+    }
+%>
+<div id="blocklyDiv" style="height: 410px; width: 100%;"></div>
+<div class="box-footer">
+    <button type="submit" class="btn btn-primary" onclick="ruleSubmit();">Submit</button>
+</div>
+
 <xml id="toolbox" style="display: none">
     <category id="general" name="General">
         <block type="cdino_context"></block>
@@ -204,62 +236,11 @@
 </xml>
 
 <script>
-    function toJSON()
+
+    function ruleSubmit()
     {
-        var xml = Blockly.Xml.workspaceToDom(workspace);
-        return xmlToJson(xml);
-    }
-
-// Changes XML to JSON
-    function xmlToJson(xml) {
-
-        // Create the return object
-        var obj = {};
-
-        if (xml.nodeType == 1) { // element
-            // do attributes
-            if (xml.attributes.length > 0) {
-                obj["@attributes"] = {};
-                for (var j = 0; j < xml.attributes.length; j++) {
-                    var attribute = xml.attributes.item(j);
-                    obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-                }
-            }
-        } else if (xml.nodeType == 3) { // text
-            obj = xml.nodeValue;
-        }
-
-        // do children
-        if (xml.hasChildNodes()) {
-            for (var i = 0; i < xml.childNodes.length; i++) {
-                var item = xml.childNodes.item(i);
-                var nodeName = item.nodeName;
-                if (typeof (obj[nodeName]) == "undefined") {
-                    obj[nodeName] = xmlToJson(item);
-                } else {
-                    if (typeof (obj[nodeName].push) == "undefined") {
-                        var old = obj[nodeName];
-                        obj[nodeName] = [];
-                        obj[nodeName].push(old);
-                    }
-                    obj[nodeName].push(xmlToJson(item));
-                }
-            }
-        }
-        return obj;
-    }
-    ;
-
-    function toXML()
-    {
-        var xml = Blockly.Xml.workspaceToDom(workspace);
-        return Blockly.Xml.domToText(xml);
-    }
-
-    function fromText(xml_text)
-    {
-        var xml = Blockly.Xml.textToDom(xml_text);
-        Blockly.Xml.domToWorkspace(workspace, xml);
+        var data = {ID:"<%=id%>",act:"update",script:Blockly.Cloudino.getCloudRuleCode(),xml:Blockly.Cloudino.getXML()};
+        loadContent('rule', "#tab2",data);
     }
 
     function getContexts()
@@ -285,12 +266,17 @@
         media: '/plugins/blockly/media/',
         toolbox: document.getElementById('toolbox')
     });
+  
+<%if(xml!=null){%>
+    Blockly.Cloudino.loadXML('<%=xml%>');
+<%}%>
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
         //e.target // newly activated tab
         //e.relatedTarget // previous active tab
         //console.lo
         Blockly.fireUiEvent(window, 'resize');
+        workspace.render();
         //console.log('shown.bs.tab', e);
     });
 </script>

@@ -4,6 +4,23 @@
  * and open the template in the editor.
  */
 
+Blockly.Cloudino={
+    getCloudRuleCode:function(){
+        return "var _cdino_events=[];\n"+Blockly.JavaScript.workspaceToCode(workspace);
+    },
+    getBlockCode:function(){
+        return Blockly.Arduino.workspaceToCode(workspace);
+    },
+    getXML:function(){
+        var xml = Blockly.Xml.workspaceToDom(workspace);
+        return Blockly.Xml.domToText(xml);        
+    },
+    loadXML:function(txt_xml)
+    {
+        var xml = Blockly.Xml.textToDom(txt_xml);
+        Blockly.Xml.domToWorkspace(workspace, xml);
+    }
+};
 
 Blockly.Blocks['cdino_context'] = {
     init: function() {
@@ -23,7 +40,7 @@ Blockly.JavaScript['cdino_context'] = function(block) {
     var dropdown_context = block.getFieldValue('context');
     var statements_events = Blockly.JavaScript.statementToCode(block, 'EVENTS');
     // TODO: Assemble JavaScript into code variable.
-    var code = '{ var _cntx="' + dropdown_context + '"; ' + statements_events + ' }';
+    var code = '{ var _cdino_cntx="' + dropdown_context + '"; ' + statements_events + ' }';
     return code;
 };
 
@@ -61,7 +78,7 @@ Blockly.JavaScript['cdino_ondevice_message'] = function(block) {
     var text_topic = block.getFieldValue('topic');
     var statements_actions = Blockly.JavaScript.statementToCode(block, 'ACTIONS');
     // TODO: Assemble JavaScript into code variable.
-    var code = 'cdino.on(_cntx,"cdino_ondevice_message","' + dropdown_device + '","' + text_topic + '",function(msg){' + statements_actions + '});';
+    var code='_cdino_events.push({context:_cdino_cntx,type:"cdino_ondevice_message",funct:function(msg){'+statements_actions+'},params:{device:"'+dropdown_device+'",topic:"'+text_topic+'"}});';
     return code;
 };
 
@@ -164,3 +181,4 @@ Blockly.Blocks['cdino_parse_number'] = {
         this.setHelpUrl('http://www.example.com/');
     }
 };
+

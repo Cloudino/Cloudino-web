@@ -3,6 +3,12 @@
     Created on : 15-oct-2015, 0:04:21
     Author     : javiersolis
 --%>
+<%@page import="java.util.Iterator"%>
+<%@page import="jdk.nashorn.api.scripting.ScriptObjectMirror"%>
+<%@page import="javax.script.ScriptEngine"%>
+<%@page import="java.util.concurrent.TimeUnit"%>
+<%@page import="io.cloudino.rules.scriptengine.NashornEngineFactory"%>
+<%@page import="io.cloudino.rules.scriptengine.RuleEngineProvider"%>
 <%@page import="org.semanticwb.datamanager.DataMgr"%>
 <%@page import="org.semanticwb.datamanager.SWBDataSource"%>
 <%@page import="org.semanticwb.datamanager.SWBScriptEngine"%>
@@ -30,6 +36,47 @@
         obj.put("script", script);
         obj.put("xml", xml);
         ds.updateObj(obj);
+        
+        //CloudRuleEvents
+        //Remove Previous Events
+        SWBDataSource dsevent=engine.getDataSource("CloudRuleEvent");
+        DataObject x=new DataObject().addParam("removeByID", false);
+        x.addSubObject("data").addParam("user", user.getId()).addParam("cloudRule", obj.getId());
+        System.out.println(x);
+        dsevent.remove(x);
+        
+        ScriptEngine eng=NashornEngineFactory.getEngine(1, TimeUnit.SECONDS);
+        ScriptObjectMirror ret=(ScriptObjectMirror)eng.eval(script+"\n_cdino_events;");
+        if(ret!=null && ret.isArray())
+        {
+            for(int i=0;i<ret.size();i++)
+            {
+                ScriptObjectMirror slot=(ScriptObjectMirror)ret.getSlot(i);
+                DataObject dobj=new DataObject();
+                dobj.put("user", user.getId());
+                dobj.put("cloudRule", obj.getId());
+                dobj.put("context", slot.get("context"));
+                dobj.put("type", slot.get("type"));  
+                dobj.put("arrayIndex", i);                  
+                //dobj.put("funct", NashornEngineFactory.serialize((ScriptObjectMirror)slot.get("funct")));  
+                DataObject params=new DataObject();
+                dobj.put("params", params);  
+                
+                ScriptObjectMirror sparams=(ScriptObjectMirror)slot.get("params");
+                Iterator<String> it=sparams.keySet().iterator();
+                while(it.hasNext())
+                {
+                    String key=it.next();
+                    params.put(key,sparams.get(key));
+                }                                
+                //String json=NashornEngineFactory.serialize(slot);
+                //System.out.println("ret:"+json);
+                System.out.println("dobj:"+dobj);
+                dsevent.addObj(dobj);
+            }            
+        }
+        
+        
     }
 %>
 <div id="blocklyDiv" style="height: 410px; width: 100%;"></div>
@@ -51,6 +98,7 @@
         <block type="cdino_invoke_after"></block>
         <block type="cduino_change_context"></block>
         <block type="cdino_push_notification"></block>
+        <block type="cdino_debug"></block>
     </category>         
     <sep></sep>
     <category id="catVariables" custom="VARIABLE" name="Variables"></category>        

@@ -107,6 +107,7 @@
 
     if ( compile != null && null != skt) 
     { 
+        if(null!=data) data.put("sketcher", skt);
         if(skt.startsWith("sk_"))
         {
             skt=skt.substring(3);
@@ -116,7 +117,6 @@
             userBasePath=userPath + "/blocks";
         }
         
-        if(null!=data) data.put("sketcher", skt);
         String sktFile = skt + ".ino";
         String path=userBasePath + "/" + skt + "/" + sktFile;
 
@@ -323,7 +323,7 @@
                                                         String fileName = inoFile.getName();
                                                         //System.out.println("Revisando..."+dirName+" con: "+fileName);
                                                         if(fileName.startsWith(dirName)&&fileName.endsWith(".ino")){
-                                                            out.println("<option value=\"bk_" + file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + " (Block)</option>");
+                                                            out.println("<option value=\"bk_" + file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals("bk_"+file.getName())?"selected":"")+" >" + file.getName() + " (Block)</option>");
                                                         }
                                                     }
                                                 }
@@ -343,7 +343,7 @@
                                                         String fileName = inoFile.getName();
                                                         //System.out.println("Revisando..."+dirName+" con: "+fileName);
                                                         if(fileName.startsWith(dirName)&&fileName.endsWith(".ino")){
-                                                            out.println("<option value=\"sk_" + file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals(file.getName())?"selected":"")+" >" + file.getName() + " (Sketch)</option>");
+                                                            out.println("<option value=\"sk_" + file.getName()+"\" "+(sketcherDefault!=null&&sketcherDefault.equals("sk_"+file.getName())?"selected":"")+" >" + file.getName() + " (Sketch)</option>");
                                                         }
                                                     }
                                                 }

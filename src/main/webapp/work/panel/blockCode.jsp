@@ -16,7 +16,7 @@
     String id = request.getParameter("ID");
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
-    String code = null;
+    String code = "";
 
     String workPath = DataMgr.getApplicationPath() + "/work/";
     String blockPath = workPath + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/blocks/" + id;
@@ -26,8 +26,12 @@
         response.sendError(404);
         return;
     } else {
-        FileInputStream in = new FileInputStream(new File(blockDir, id + ".ino"));
-        code = Utils.textInputStreamToString(in, "utf8");
+        File fc=new File(blockDir, id + ".ino");
+        if(fc.exists())
+        {
+            FileInputStream in = new FileInputStream(fc);
+            code = Utils.textInputStreamToString(in, "utf8");
+        }
     }
 %>
 

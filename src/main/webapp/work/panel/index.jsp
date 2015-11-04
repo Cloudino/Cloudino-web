@@ -73,10 +73,11 @@
             <header class="main-header">
                 <!-- Logo -->
                 <a href="/panel/" class="logo">
-                    <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><i class="fa fa-cloud"></i></span>
-                    <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg"><i class="fa fa-cloud"></i> <b>Cloudino</b> Panel</span>
+                    <img src="/img/cloudino.svg" width="170">
+                    <!-- mini logo for sidebar mini 50x50 pixels 
+                    <span class="logo-mini"><i class="fa fa-cloud"></i></span>-->
+                    <!-- logo for regular state and mobile devices 
+                    <span class="logo-lg"><i class="fa fa-cloud"></i> <b>Cloudino</b> Panel</span>-->
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top" role="navigation">
@@ -830,7 +831,7 @@
         <script src="/plugins/blockly/javascript_compressed.js"></script>
         <script src="/plugins/blockly/msg/js/en.js"></script>
         <script src="/js/cloudino_blockly.js"></script>
-        
+
         <!--
          <script src="/plugins/codemirror/mode/xml/xml.js"></script>
          <script src="/plugins/codemirror/addon/hint/xml-hint.js"></script>

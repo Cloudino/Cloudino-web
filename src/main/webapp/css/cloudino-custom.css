@@ -6,6 +6,14 @@ a 				 { outline: 0 !important; color: #666 }
 .panel-title.btnUpDown .glyphicon-chevron-down { display:none }
 .panel-title.collapsed .glyphicon-chevron-down { display:inline-block}
 section {padding-top:120px !important; padding-bottom:170px !important;}
+section li {list-style-type:none; background:url(../img/bullet.svg) no-repeat 0 11px; padding-left:20px; }
+section li.git { background:url(../img/github.svg) no-repeat left top !important; }
+h3	{ font-size:28px;}
+
+/*SPONSORS*/
+#sponsors		{ background: #666;}
+#sponsors h2 	{ font-size: 50px; font-weight: bold;  color:#FFF;}
+#sponsors img	{ margin:auto;}
 
 /*NAV BAR*/
 nav { background: rgba(45,45,45,0.95) !important;}
@@ -51,14 +59,15 @@ header {
 #innovation .btn                { margin-top:25px}
 
 /*COMPONENTS*/
-#components {
+
+#components  * {color:#FFF;}
+#components { 
   background: url(../img/components-fondo.png), -webkit-linear-gradient(#ecf3f3 , #d6e1e3); 
   background: url(../img/components-fondo.png), -o-linear-gradient(#ecf3f3 , #d6e1e3);
   background: url(../img/components-fondo.png), -moz-linear-gradient(#ecf3f3 , #d6e1e3);
   background: url(../img/components-fondo.png), linear-gradient(#0a94b3  , #47afc6  );
     background-size:contain; background-repeat: no-repeat; background-position: bottom right;}
 #components h2 { font-size:50px; margin:0px auto 50px; text-align: center; color:#144e5b; font-weight:bold}
-#components .panel *        { color: #FFF;}
 #components .panel-heading,
 #components .panel          { background:none; border: none; box-shadow: none;}
 #components .panel-heading  { text-align: center; }
@@ -71,6 +80,15 @@ header {
 #components .panel-body     { padding:0px !important}
 #components .glyphicon      { font-size:15px;}
 
+.components-download		{ background-color: rgba(255, 255, 255, 0.1); padding:10px 0; text-align:left;}
+.components-download p		{ text-align:left; padding-left:27px; font-size:20px; margin:0;}
+.seccion-components	li		{ background-position:0 5px;}
+
+
+
+
+
+ 
 /*boardStart*/
 .boardstart *   { color:#FFF; }
 .boardstart h2  { font-size:50px; margin:0 0 40px 0; font-weight:bold}
@@ -84,6 +102,7 @@ header {
 
 /*START*/
 #learn { background: url( ../img/start-fondo.png) no-repeat center; background-size:cover}
+#learn li.git { background-position:-2px 10px !important;}
 
 /*CONTACT*/
 #contact { 
@@ -116,6 +135,9 @@ footer p    { margin:0 }
 .foot3  {}
 .footthanks { position: absolute; bottom: 0; width: 100%}
 
+/*MODAL*/
+.modal-header    { background:#e63a4a; color:#FFF;} 
+.modal-header h4 { font-size:30px;}
 /*THANKS*/
 .thanks { 
   background: url(../img/cloudino-symbol.svg) no-repeat ,-webkit-linear-gradient(#ecf3f3 , #d6e1e3); 
@@ -134,6 +156,7 @@ footer p    { margin:0 }
 
 /* - - - - Escritorio grande - - - */
 @media (min-width: 1200px){ .x { background: red;} 
+  #components { padding-bottom: 195px !important;}
   #components .panel-group    { height:380px}
   #components .panel-heading a {font-size: 25px;}
   #boards { padding-left:65px !important}
@@ -142,6 +165,7 @@ footer p    { margin:0 }
 
 /* - - - - Escritorio pequeño o tablet - - - */
 @media (min-width:992px) and (max-width:1199px){.x { background: green;} 
+    #components { padding-bottom:230px !important;}
     #components .panel-group    { height:400px}
     #boards { padding-left:65px !important}
     #learn  { padding-left:50px !important}
@@ -150,7 +174,10 @@ footer p    { margin:0 }
 /* - - - - Tablet o smartphone - - - */
 @media (min-width:768px) and (max-width:991px){.x { background: blue;} 
     .seccion-header * { text-align: center !important; margin: auto}
+	#components { padding-bottom:350px !important;}
      #components .panel-group    { height:400px}
+	 #components ul {  padding:0px;}
+	 .seccion-components li {padding-left:17px;}
      #boards, #learn { height:760px}
      #boards { padding-left:65px !important}
      #learn  { padding-left:50px !important}
@@ -158,18 +185,44 @@ footer p    { margin:0 }
 
 /* - - - - Smartphone - - - */
 @media (max-width:767px){ .x { background: cyan;}
+	
+	ul { padding:0;}
+	section { padding-top:50px !important; padding-bottom:130px !important;}
     .seccion-header * { text-align: center !important; margin: auto}
-    .seccion-header   { padding:150px 0 200px; color: #666}
-    .nube1 { opacity:0.5; width:850px; top:70px; left:0%}
+    .seccion-header   { padding:85px 0 200px; color: #666}
+	.seccion-header div div:first-child, .seccion-header div div:last-child { padding-top:10px;}
+	.seccion-header .btn { margin-top:30px }
+    .nube3 { opacity:0.4; width:95%; top:67px; left:0%}
     .btn-xl { font-size:30px}
+	.navbar-default { padding:8px 0 5px;}
+	.navbar-default.navbar-shrink { padding:8px 0 5px;}
     .navbar-brand { margin-left: 10px}
-    h2 { font-size:30px !important;}
-    p  { font-size:21px !important;}
-    #innovation div {padding:10px;}
-    #components { background-size:cover; background-repeat: no-repeat; background-position: top right;}
-    #boards, #learn { padding:90px 5px 40px 20px !important}
+    h2 { font-size:22px !important; font-weight:bold;}
+	.seccion-header h2 strong { font-size: 34px;}
+    p  { font-size:18px !important; line-height:25px !important;}
+    #innovation div {padding:0 10px 10px;}
+	.seccion-innovation div div { padding-bottom:0 !important;}
+	.seccion-innovation-info { position:relative; top:-20px;}
+	.seccion-innovation h2 { margin-top:15px; margin-bottom:15px !important; }
+	#innovation .btn { margin-top:0px }
+	.seccion-components { padding-top:20px;}
+    #components { background-size:contain; background-repeat: no-repeat; background-position:right 63px; background-attachment:fixed;}
+	#components h2 { margin:0px auto 25px; }
+	#components h3 { font-size:20px;}
+	#components li { font-size:18px; font-weight:lighter;}
+	#components img { width:90px;}
+	.seccion-components * { text-align:left;}
+	.seccion-components img { margin:auto !important;}
+	.seccion-components h3 { padding-left:30px; margin-top:15px; }
+	
+    #boards, #learn { padding:90px 5px 40px 20px !important; height:620px;}
     #learn ul li { text-shadow:1px 1px 0px #be3a46  !important;}
+	#contact { padding-top:70px !important;}
+	#contact .form-group input, #contact .form-group textarea { padding:8px; font-size:18px}
+	#contact button { margin-top:20px;}
     footer p { font-size:18px !important; line-height:23px ; margin-bottom: 10px; font-weight: 300 }
     footer span { visibility: hidden;}
     .foot2, .foot3 { font-size:12px !important; }
+	.modal-header h4 { font-size:20px;}
+	#sponsors img { margin-bottom:40px; margin-top:30px;}
 }

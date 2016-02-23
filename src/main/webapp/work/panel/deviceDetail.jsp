@@ -2,7 +2,8 @@
     Document   : deviceDetail
     Created on : 04-ago-2015, 0:03:07
     Author     : javiersolis
---%><%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.net.URLEncoder"%><%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
+--%><%@page import="io.cloudino.utils.Utils"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.net.URLEncoder"%><%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
     SWBDataSource ds = engine.getDataSource("Device");
@@ -19,10 +20,10 @@
         data = ds.fetchObjByNumId(id);
     }
     
-//    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//    System.out.println("id:" + id);
-//    System.out.println("device:" + device);
-//    System.out.println("data:" + data);
+    //System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    //System.out.println("id:" + id);
+    //System.out.println("device:" + device);
+    //System.out.println("data:" + data);
     //Security
     if (data == null || (data != null && !data.getString("user").equals(user.getId()))) {
         response.sendError(404);
@@ -73,11 +74,9 @@
     String type = data.getString("type");
     String token = data.getString("authToken","");
 
-    boolean isConnected = false;
     long connectedTime = 0;
     long createdTime = 0;
     if (device != null) {
-        isConnected = device.isConnected();
         connectedTime = device.getConnectedTime();
         createdTime = device.getCreatedTime();
     }
@@ -89,18 +88,9 @@
     //String sktPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/sketchers/" + skt + "/";
 
     // leer estructura de archivos del usuario
-    String userPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId();
+    String userPath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId()+"/arduino";
     String userBasePath = userPath + "/sketchers";
     String userBuildPath = userPath + "/build";
-    
-    File fsketch = new File(userBasePath);
-    if (!fsketch.exists()) {
-        fsketch.mkdirs();
-    }
-    File fblock = new File(userPath+"/blocks");
-    if (!fblock.exists()) {
-        fblock.mkdirs();
-    }    
     
     String msg = "";
     String compile = request.getParameter("cp");
@@ -108,56 +98,61 @@
     if ( compile != null && null != skt) 
     { 
         if(null!=data) data.put("sketcher", skt);
-        if(skt.startsWith("sk_"))
-        {
-            skt=skt.substring(3);
-        }else
-        {
-            skt=skt.substring(3);
-            userBasePath=userPath + "/blocks";
-        }
         
-        String sktFile = skt + ".ino";
-        String path=userBasePath + "/" + skt + "/" + sktFile;
+        {
+            if(skt.startsWith("sk_"))
+            {
+                skt=skt.substring(3);
+            }else
+            {
+                skt=skt.substring(3);
+                userBasePath=userPath + "/blocks";
+            }
 
-        try {
+            String sktFile = skt + ".ino";
+            String path=userBasePath + "/" + skt + "/" + sktFile;
+
             try {
-                msg = "";
-                
-                ArdCompiler com = ArdCompiler.getInstance();
-                msg=com.compile(path, type, userBuildPath, userPath);
-                
-                System.out.println(path);
-                
-                msg=msg.replace("\n", "<br>\n");
+                try {
+                    msg = "";
 
-                File fino = new File(path);
-                String fname = fino.getName().split("\\.")[0];
-                String compiled = userBuildPath + "/" + fname + ".cpp.hex";
+                    ArdCompiler com = ArdCompiler.getInstance();
+                    msg=com.compile(path, type, userBuildPath, userPath);
 
-                if (device !=null && device.isConnected()) {
-                    CharArrayWriter pout=new CharArrayWriter();
-                    if(device.sendHex(new FileInputStream(compiled), pout))
-                    {
-                        msg = msg + "Device programmed successfully.";
+                    //System.out.println(path);
+
+                    msg=msg.replace("\n", "<br>\n");
+
+                    File fino = new File(path);
+                    String fname = fino.getName().split("\\.")[0];
+                    String compiled = userBuildPath + "/" + fname + ".cpp.hex";
+
+                    if (device !=null && device.isConnected()) {
+                        CharArrayWriter pout=new CharArrayWriter();
+                        if(device.sendHex(new FileInputStream(compiled), pout))
+                        {
+                            msg = msg + "Device programmed successfully.";
+                        }
+                    } else {
+                        msg = msg + "Device offline, could not be programmed."; 
                     }
-                } else {
-                    msg = msg + "Device offline, could not be programmed."; 
-                }
 
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    msg = "Error:" + e.getMessage();
+                    out.print(msg);
+                    return;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+
                 msg = "Error:" + e.getMessage();
                 out.print(msg);
                 return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            msg = "Error:" + e.getMessage();
-            out.print(msg);
-            return;
+            
         }
+        if(null!=data)ds.updateObj(data);       
         out.print(msg);
         return;
     }
@@ -192,7 +187,20 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">General</a></li>
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Code</a></li>
+<%
+    if(!type.equals("cloudino-standalone"))
+    {
+%>                    
+                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Upload Sketch</a></li>
+<%
+    }else
+    {
+%>                    
+                    <li class=""><a href="#tab_6" data-toggle="tab" aria-expanded="false">Upload Sketch</a></li>
+                    <li class=""><a href="#tab_7" data-toggle="tab" aria-expanded="false">JScript Terminal</a></li>
+<%
+    }
+%>                    
                     <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Messages</a></li>
                     <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Console</a></li>
                     <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">Controls</a></li>
@@ -208,13 +216,13 @@
                             <li role="presentation" class="divider"></li>
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
                         </ul>
-                    </li>
-             -->
+                    </li>            
                     <li class="pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"><i class="fa fa-gear"></i></a>
                         <ul class="dropdown-menu">
                             <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete</a></li>
                         </ul>
                     </li>
+            -->        
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
@@ -249,7 +257,7 @@
                                 <div class="form-group has-feedback">
                                     <label>Type</label>
                                     <select name="type" class="form-control">
-                                        <option value="cloudino-standalone">Cloudino Connector Standalone</option>
+                                        <option value="cloudino-standalone">Cloudino Standalone</option>
                                         <%
                                             ArdCompiler cmp = ArdCompiler.getInstance();
                                             Iterator<ArdDevice> it = cmp.listDevices();
@@ -275,7 +283,7 @@
 
                             <div class="box-footer">
                                 <button type="submit" class="btn btn-primary disabled">Submit</button>
-                                <button class="btn btn-danger" onclick="return removeDevice(this);">Delete</a>  
+                                <button class="btn btn-danger" onclick="return removeDevice(this);">Delete</button>  
                             </div>
                         </form>     
                                 
@@ -292,24 +300,29 @@
                     </script>
 
                     </div><!-- /.tab-pane -->
+<%
+    if(!type.equals("cloudino-standalone"))
+    {
+%>                    
                     <div class="tab-pane" id="tab_2">
-                        <%
-
-
-                        %>
                         <form data-target=".content-wrapper" data-submit="ajax" action="deviceDetail" role="form">
                             <input type="hidden" name="ID" value="<%=id%>">
                             <input type="hidden" name="cp" value="compile">
                             <div class="box-body">
                                 <!-- select -->
                                 <div class="form-group has-feedback">
-                                    <div class="col-md-1 pull-left">
-                                    <label>Sketcher</label>
+                                    <div class_="col-md-1 pull-left">
+                                    <label>Upload from Sketcher</label>
                                     </div>
-                                    <div class="col-md-10 pull-left">
+                                    <div class_="col-md-10 pull-left">
                                     <select name="skt" id="skt" class="form-control">                                        
-                                        <%
+<%
                                         {
+                                            File fblock = new File(userPath+"/blocks");
+                                            if (!fblock.exists()) {
+                                                fblock.mkdirs();
+                                            }                                                 
+                                            
                                             File[] listFiles = fblock.listFiles();
                                             for (File file : listFiles) {
                                                 if (file.isDirectory() && !file.isHidden()) {
@@ -330,6 +343,11 @@
                                             }
                                         }
                                         {
+                                            File fsketch = new File(userBasePath);
+                                            if (!fsketch.exists()) {
+                                                fsketch.mkdirs();
+                                            }                                         
+                                            
                                             File[] listFiles = fsketch.listFiles();
                                             for (File file : listFiles) {
                                                 if (file.isDirectory() && !file.isHidden()) {
@@ -353,14 +371,20 @@
                                         %>    
                                     </select>
                                     </div>
-                                    <div class="col-md-1 pull-left">
-                                    <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" onclick="editSketcher(this);" >Edit</a>
+                                    <div class="cdino_buttons">
+                                    <input type="button" value="Upload Sketcher" onclick="WS.log('Compiling...','ws_cmp'); getAsynchData('deviceDetail?cp=compile&dev=<%=type%>&skt=' + document.getElementById('skt').value + '&ID=<%=id%>', 'myCodeMirror.getValue()', 'POST',function(data){WS.log(data,'ws_cmp');});" class="btn btn-primary" >
+                                    <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" onclick="editSketcher(this);" >Edit Sketcher</a>
                                     <script type="text/javascript">
                                         function editSketcher(alink){
                                             var sketcher = document.getElementById('skt');
                                             var valSket = sketcher[sketcher.selectedIndex].value;
                                             //alert(valSket);
-                                            var urlEdit = 'sketcherDetail?act=edit&fn=' + valSket + '&skt=' + valSket ;
+                                            var urlEdit = 'sketcherDetail?act=edit&skt=' + valSket.substring(3) ;
+                                            if(valSket.startsWith('bk_'))
+                                            {
+                                                urlEdit = 'blockDetail?ID=' + valSket.substring(3) ;
+                                            }                                              
+                                            
                                             alink.href=urlEdit;
                                             alink.click();
                                         }
@@ -368,66 +392,55 @@
                                     </script>
                                     </div>
                                 </div> 
-
+                                <hr/>
                                 <div class="form-group has-feedback">
-                                    <div class="col-md-12 pull-left">
-                                    <label>Console</label>
-                                    <!--
-                                    <div><textarea name="consoleLog" id="consoleLog" class="col-md-12" rows="10"></textarea></div>
-                                    -->
-                                    <div class="callout callout-info">
-                                        <div id="ws_cmp"></div>
-                                    </div>
+                                    <div>
+                                        <label>Console</label>
+                                        <!--
+                                        <div><textarea name="consoleLog" id="consoleLog" class="col-md-12" rows="10"></textarea></div>
+                                        -->
+                                        <div class="callout callout-info">
+                                            <div id="ws_cmp"></div>
+                                        </div>
+                                        <div class="">
+                                            <input type="button" value="Clear" onclick="ws_cmp.innerHTML='';" class="btn btn-primary" >
+                                        </div> 
                                     </div>
                                 </div>     
-
-
-
                             </div><!-- /.box-body -->
-
-                            <div class="box-footer">
-                                <input type="button" value="Send" onclick="WS.log('Compiling...','ws_cmp'); getAsynchData('deviceDetail?cp=compile&dev=<%=type%>&skt=' + document.getElementById('skt').value + '&ID=<%=id%>', 'myCodeMirror.getValue()', 'POST',function(data){WS.log(data,'ws_cmp');});" class="btn btn-primary" >
-                            </div>
                         </form> 
                     </div><!-- /.tab-pane -->
+<%
+    }
+%>                    
                     <div class="tab-pane" id="tab_3">
-    <script type="text/javascript">
-        var url='ws://' + window.location.host+ '/websocket/cdino?ID=<%=id%>';
-        WS.disconnect();
-        WS.connect(url);
-    </script>                        
-                        
-    <div id="connect-container">
-        <div>
-            <button class="btn btn-primary btn-flat" id="connect" onclick="WS.connect(url);">Connect</button>
-            <button class="btn btn-primary btn-flat" id="disconnect" disabled="disabled" onclick="WS.disconnect();">Disconnect</button>
-        </div>
-        <div>
-            Topic:<br/>
-            <input id="topic" type="text" style="width: 350px"/>
-        </div>
-        <div>
-            Message:<br/>
-            <textarea id="message" style="width: 350px">Here is a message!</textarea>
-        </div>
-        <div>
-            <button class="btn btn-primary btn-flat" id="send" onclick="WS.send();" disabled="disabled">Send</button>
-        </div>
-    </div>
-    <br/>    
-    <div class="callout callout-info">
-        <div id="ws_msg"></div>
-    </div>
+                        <jsp:include page="messages.jsp" />
                     </div><!-- /.tab-pane -->
+<%
+    if(type.equals("cloudino-standalone"))
+    {
+%>                    
+                    <div class="tab-pane" id="tab_6">
+                        <jsp:include page="initialjs.jsp" />
+                    </div><!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_7">
+                        <jsp:include page="jsterminal.jsp" />
+                    </div><!-- /.tab-pane --> 
+<%
+    }
+%>                    
                     <div class="tab-pane" id="tab_4">
-    <div class="callout callout-info">
-        <div id="ws_log"/>
-    </div>
+                        <label>Console</label>
+                        <div class="callout callout-info">
+                            <div id="ws_log"/>
+                        </div>
+                        <div class="">
+                            <input type="button" value="Clear" onclick="ws_log.innerHTML='';" class="btn btn-primary" >
+                        </div>                            
                     </div><!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_5">
                         <jsp:include page="controls.jsp" />
-                    </div><!-- /.tab-pane -->
-                </div><!-- /.tab-content -->
+                    </div><!-- /.tab-pane -->                </div><!-- /.tab-content -->
             </div><!-- nav-tabs-custom -->
         </div><!-- /.col -->
 
@@ -435,29 +448,3 @@
     </div> <!-- /.row -->
     <!-- END CUSTOM TABS -->
 </section>
-
-<%!
-    byte[] readInputStream(InputStream in) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length = 0;
-        while ((length = in.read(buffer)) != -1) {
-            baos.write(buffer, 0, length);
-        }
-        return baos.toByteArray();
-    }
-
-    void getFiles(File file, String path, ArrayList<String> files) {
-        if (file.isDirectory()) {
-            File fd[] = file.listFiles();
-            for (int x = 0; x < fd.length; x++) {
-                if (path.length() > 0) {
-                    path = path + "/";
-                }
-                getFiles(fd[x], path + fd[x].getName(), files);
-            }
-        } else {
-            files.add(path);
-        }
-    }
-%>

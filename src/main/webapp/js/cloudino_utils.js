@@ -101,7 +101,7 @@ var getSynchData = function(url, data, method)
     return aRequest;
 };
 
-var loadContent = function(url, target, data)
+var loadContent = function(url, target, data, callback)
 {
     if(data)
     {
@@ -110,6 +110,7 @@ var loadContent = function(url, target, data)
                     cdino_parse(data)
                     );
             $.AdminLTE.tree($(target));
+            if(callback)callback();
         });
     }else
     {
@@ -118,8 +119,47 @@ var loadContent = function(url, target, data)
                     cdino_parse(data)
                     );
             $.AdminLTE.tree($(target));
+            if(callback)callback();
         });
     }
+}
+
+var cdino_alert = function(title, content, type, delay)
+{
+    var am=$("#alert_main");
+    am.toggleClass("alert-info",false); 
+    am.toggleClass("alert-success",false);
+    am.toggleClass("alert-warning",false);
+    am.toggleClass("alert-danger",false);
+    
+    var icon=$("#alert_icon");
+    icon.toggleClass("fa-ban",false);
+    icon.toggleClass("fa-check",false);
+    icon.toggleClass("fa-info",false);
+    icon.toggleClass("fa-warning",false);
+    
+    if(type=="success")
+    {
+        am.toggleClass("alert-success",true);  
+        icon.toggleClass("fa-check",true);
+    }else if(type=="info")
+    {
+        am.toggleClass("alert-info",true);  
+        icon.toggleClass("fa-info",true);
+    }else if(type=="warning")
+    {
+        am.toggleClass("alert-warning",true);  
+        icon.toggleClass("fa-warning",true);
+    }else if(type=="danger")
+    {
+        am.toggleClass("alert-danger",true);  
+        icon.toggleClass("fa-ban",true);
+    }
+    
+    $("#alert_title").html(title);
+    $("#alert_content").html(content);
+    am.show(500);
+    if(delay)window.setTimeout(function() { am.hide(500) }, delay);
 }
 
 var cdino_parse = function(html)

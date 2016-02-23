@@ -295,5 +295,10 @@
   ga('create', 'UA-71259031-1', 'auto');
   ga('send', 'pageview');
 </script>
+
+<!-- Meetup Link
+<a href="http://www.meetup.com/Cloudino-io/events/228352613/" data-event="228352613" class="mu-rsvp-btn">RSVP</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s); js.id=id;js.async=true;js.src="https://a248.e.akamai.net/secure.meetupstatic.com/s/script/2012676015776998360572/api/mu.btns.js?id=8b62rgeubptp7m2cgors9kn138";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","mu-bootjs");</script>
+-->
 </body>
 </html>

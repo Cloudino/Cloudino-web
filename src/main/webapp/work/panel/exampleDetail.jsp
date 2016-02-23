@@ -36,7 +36,7 @@
     String dir = appPath + "/work";
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
-    String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId();
+    String userBasePath = dir + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId()+"/arduino";
     String sktPath = userBasePath + "/sketchers/" + skt + "/";
     String arduinoPath = engine.getScriptObject().get("config").getString("arduinoPath"+"/");
     String buildPath = userBasePath + "/build/";
@@ -152,7 +152,7 @@
 //    System.out.println("=============================================================");
 //    System.out.println(name);
     boolean lint = false;
-    String mode = "text/html";
+    String mode = "text/plain";
     if (filename != null) {
         if (filename.endsWith(".js")) {
             mode = "text/javascript";
@@ -183,6 +183,8 @@
             mode = "text/x-c++src";
         } else if (filename.endsWith(".ino")) {
             mode = "text/x-c++src";
+        } else if (filename.endsWith(".pde")) {
+            mode = "text/x-c++src";
         } else if (filename.endsWith(".java")) {
             mode = "text/x-java";
         }
@@ -208,7 +210,7 @@
     
     if(request.getParameter("_rm")!=null)
     {
-        out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=sket','.main-sidebar');</script>");
+        out.println("<script type=\"text/javascript\">loadContent('/panel/arduino?act=sket','#arduino');</script>");
     }      
 %>
 
@@ -219,9 +221,10 @@
         <small></small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Forms</a></li>
-        <li class="active">General Elements</li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Panel</a></li>
+        <li><a href="#">Arduino</a></li>
+        <li><a href="#">Examples</a></li>
+        <li class="active"><%=skt%></li>
     </ol>
 </section>
 <%
@@ -266,7 +269,7 @@
                             for (DataObject dev : devices) {
                                 String id = dev.getNumId();
                                 String boardType = dev.getString("type", null);
-                                if(null!=boardType){
+                                if(null!=boardType && !"cloudino-standalone".equals(boardType)){
                                     out.println("<option value=\"" +boardType+"|"+id + "\" >" + dev.getString("name") + "</option>");
                                 }
                             }

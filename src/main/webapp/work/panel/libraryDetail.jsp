@@ -92,7 +92,7 @@
     
     if(request.getParameter("_rm")!=null)
     {
-        out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=lib','.main-sidebar');</script>");
+        out.println("<script type=\"text/javascript\">loadContent('/panel/arduino?act=lib','#arduino');</script>");
     }      
 %>
 
@@ -103,9 +103,10 @@
         <small></small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Forms</a></li>
-        <li class="active">General Elements</li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Panel</a></li>
+        <li><a href="#">Arduino</a></li>
+        <li><a href="#">Libraries</a></li>
+        <li class="active"><%=skt%></li>
     </ol>
 </section>
 <%

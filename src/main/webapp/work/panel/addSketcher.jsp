@@ -27,12 +27,12 @@
     }
     
     if (null==name){
-        name = name=request.getParameter("name");
+        name = request.getParameter("name");
     }
     
-    boolean isNewFile = Boolean.FALSE;
+    boolean isNewFile = false;
     if(null!=act&&"newfile".equals(act)){
-        isNewFile = Boolean.TRUE;
+        isNewFile = true;
     }
 
     if(name!=null) 
@@ -45,7 +45,7 @@
         
         String dir = config.getServletContext().getRealPath("/") + "/work/"  ;
         String msg =null;          
-        String userBasePath = dir+engine.getScriptObject().get("config").getString("usersWorkPath")+"/"+user.getNumId(); 
+        String userBasePath = dir+engine.getScriptObject().get("config").getString("usersWorkPath")+"/"+user.getNumId()+"/arduino"; 
         File newf = null;
         if(sktname==null){
             //TODO: validar nombre del programa sin espacios
@@ -64,6 +64,9 @@
             } else {
                 // error ya existe el Sketcher
                 msg = "There is a Sketcher with the same name.";
+%>
+<script type="text/javascript">cdino_alert("Warning",msg,"warning",5000);</script>
+<%
                 return;
             }
             newf = new File(userBasePath+"/sketchers/"+name+"/"+name+".ino");
@@ -85,6 +88,9 @@
                 newf.setWritable(true);                
             } else {
                 msg="There is a file with the same name.";
+%>
+<script type="text/javascript">cdino_alert("Warning",msg,"warning",5000);</script>
+<%                
                 return;
             }
         }
@@ -100,12 +106,6 @@
     
 %>
 <!-- Content Header (Page header) -->
-<script type="text/javascript">
-//    window.onload = function () {
-//    document.formAddSketcher.name.focus();
-//    document.formAddSketcher.addEventListener('submit', validateFileType);
-//}
-</script>
 <section class="content-header">
     <h1>
         <%
@@ -120,9 +120,10 @@
         <small>Step 1</small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Forms</a></li>
-        <li class="active">General Elements</li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Panel</a></li>
+        <li><a href="#">Arduino</a></li>
+        <li><a href="#">Sketchers</a></li>
+        <li class="active">Add Sketcher</li>
     </ol>
 </section>
 
@@ -181,14 +182,6 @@
                                 //validación de la extensión del nombre del archivo
                                 
                                     if (nombre.length > 0) {
-                                        isValid = isValidName();
-                                        if(!isValid){
-                                            alert("The name of the file is invalid.");
-                                            document.getElementById('nombre').value="";
-                                            document.getElementById('nombre').focus();
-                                            return isValid;
-                                        }
-
                                         isValid = valida_docs_type();
                                         if (!isValid) {
                                             alert("Error, " + nombre + " is invalid, allowed extensions are: c, cpp, h");
@@ -212,19 +205,6 @@
                                 
                             }
                             
-                             function isValidName() {
-                                var valid = false;
-                                var name = document.getElementById('nombre').value;
-                                var filter = /^[\w\d\_]+[.][cph]{1,3}$/;
-
-                                    if (name != null && name != '' && filter.test(name)) {
-                                        valid = true;
-                                    }
-
-                                return valid;
-                            }
-                            
-                            
                             function valida_docs_type() {
                                 var valid = false;
                                 var input;
@@ -234,7 +214,7 @@
                                     var fileName = input.value;
                                     var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
                                     ext = ext.toLowerCase();
-                                    if (ext == "c" || ext == "cpp" || ext == "h")
+                                    if (ext == "txt" || ext == "c" || ext == "cpp" || ext == "h")
                                     {
                                         valid = true;
                                     }

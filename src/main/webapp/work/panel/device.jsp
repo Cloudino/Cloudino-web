@@ -29,11 +29,11 @@
         </div>
         <div>
             Topic:<br/>
-            <input id="topic" type="text" style="width: 350px"/>
+            <input id="topic" type="text" class="form-control"/>
         </div>
         <div>
             Message:<br/>
-            <textarea id="message" style="width: 350px">Here is a message!</textarea>
+            <textarea id="message" class="form-control">Here is a message!</textarea>
         </div>
         <div>
             <button id="send" onclick="WS.send();" disabled="disabled">Send</button>

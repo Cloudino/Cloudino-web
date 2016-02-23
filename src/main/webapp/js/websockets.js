@@ -20,10 +20,14 @@ var WS = {
         }
         WS.ws.onopen = function () {
             WS.setConnected(true);
-            WS.log('Info: WebSocket connection opened.');
+            //WS.log('Info: WebSocket connection opened.');
         };
         WS.ws.onmessage = function (event) {
-            if(event.data.startsWith("msg:"))
+            console.log(event.data);
+            if(event.data.startsWith("msg:$CDINOJSRSP"))
+            {
+                WS.log(event.data.substring(15),"ws_jsrsp");
+            }else if(event.data.startsWith("msg:"))
             {
                 WS.log(event.data.substring(4),"ws_msg");
             }else if(event.data.startsWith("log:"))
@@ -36,7 +40,7 @@ var WS = {
         };
         WS.ws.onclose = function (event) {
             WS.setConnected(false);
-            WS.log('Info: WebSocket connection closed, Code: ' + event.code + (event.reason == "" ? "" : ", Reason: " + event.reason));
+            //WS.log('Info: WebSocket connection closed, Code: ' + event.code + (event.reason == "" ? "" : ", Reason: " + event.reason));
         };
     },
 
@@ -60,6 +64,18 @@ var WS = {
             var enc=WS.encodeMessage(topic,message);
             WS.ws.send(enc);
             WS.log(topic+"->"+message);
+        } else {
+            alert('WebSocket connection not established, please connect.');
+        }
+    },
+    
+    sendJS: function () {
+        if (WS.ws != null) {
+            var topic = "$CDINOJSCMD";
+            var message = document.getElementById('jscmd').value;
+            var enc=WS.encodeMessage(topic,message);
+            WS.ws.send(enc);
+            WS.log("> "+message,"ws_jsrsp");
         } else {
             alert('WebSocket connection not established, please connect.');
         }
@@ -90,4 +106,5 @@ var WS = {
         }
         //console.scrollTop = console.scrollHeight;
     },
+    
 };

@@ -24,7 +24,7 @@
         SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
         
         String workPath = DataMgr.getApplicationPath() + "/work/";
-        String blockPath = workPath + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/blocks/"+name;
+        String blockPath = workPath + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/arduino/blocks/"+name;
         File dir=new File(blockPath);
         if(!dir.exists())dir.mkdirs();
         
@@ -73,7 +73,7 @@
             </div>
 
         </div>
-
+<!--
         <div class="col-md-4 callout callout-danger lead">
             <h4>Tip!</h4>
             <p>
@@ -82,6 +82,6 @@
                 the HTML page.
             </p>
         </div>
-
+-->
     </div>   <!-- /.row -->
 </section><!-- /.content -->

@@ -15,6 +15,7 @@
     <body>
         <h1>Hello World!</h1>
 <%
+    /*
     DataObject user=(DataObject)session.getAttribute("_USER_");
     out.println(user);
     SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
@@ -22,6 +23,7 @@
     DataObject obj=ds.fetch();
     out.println(obj);
     //engine.close();
+    */
 %>        
     </body>
 </html>

@@ -123,7 +123,7 @@
 
                             <div class="box-footer">
                                 <button type="submit" class="btn btn-primary disabled">Submit</button>
-                                <button class="btn btn-danger" onclick="return removeObj(this);">Delete</a>  
+                                <button class="btn btn-danger" onclick="return removeObj(this);">Delete</button>  
                             </div>
                         </form>     
                                 

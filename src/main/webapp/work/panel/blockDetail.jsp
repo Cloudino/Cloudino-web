@@ -6,13 +6,19 @@
     DataObject user = (DataObject) session.getAttribute("_USER_");
     String id = request.getParameter("ID");
     String act = request.getParameter("act");    
+    
+    if(request.getParameter("_rm")!=null)
+    {
+        out.println("<script type=\"text/javascript\">loadContent('/panel/arduino?act=bl','#arduino');</script>");
+    }   
 %>
 
 <section class="content-header">
     <h1>Block<small> <%=id%></small></h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Panel</a></li>
-        <li><a href="#">Block</a></li>
+        <li><a href="#">Arduino</a></li>
+        <li><a href="#">Blocks</a></li>
         <li class="active"><%=id%></li>
     </ol>
 </section>

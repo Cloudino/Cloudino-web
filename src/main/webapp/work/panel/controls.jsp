@@ -3,7 +3,6 @@
     Created on : 28/08/2015, 01:51:27 PM
     Author     : juan.fernandez
 --%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="io.cloudino.engine.DeviceMgr"%>
 <%@page import="java.io.File"%>
@@ -105,6 +104,7 @@
     } else if("".equals(act)){
     %>
 <div> 
+   <label>Controls</label>
    <div> 
     <%
                         DataObject query = new DataObject();
@@ -127,8 +127,9 @@
                         } 
 %>
     </div>
-    <a href="controls?ID=<%=id%>&act=new" data-target="#tab_5" data-load="ajax" title="Add new control"><i class="fa fa-plus-square-o"></i></a>
-    <a href="controls?ID=<%=id%>&act=editlist" data-target="#tab_5" data-load="ajax" title="Edit controls"><i class="fa fa-edit"></i></a>
+    <hr/>
+    <a class="btn btn-primary" href="controls?ID=<%=id%>&act=new" data-target="#tab_5" data-load="ajax" title="Add new control">Add Control</a>
+    <a class="btn btn-primary" href="controls?ID=<%=id%>&act=editlist" data-target="#tab_5" data-load="ajax" title="Edit controls">Edit Control</a>
 </div>
 <%
     } else if("new".equals(act)){

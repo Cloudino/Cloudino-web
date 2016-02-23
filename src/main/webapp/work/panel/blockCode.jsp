@@ -19,7 +19,7 @@
     String code = "";
 
     String workPath = DataMgr.getApplicationPath() + "/work/";
-    String blockPath = workPath + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/blocks/" + id;
+    String blockPath = workPath + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/arduino/blocks/" + id;
 
     File blockDir = new File(blockPath);
     if (!blockDir.exists()) {

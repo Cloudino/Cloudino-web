@@ -170,6 +170,14 @@
     </category>
     <category name="Math">
       <block type="math_number"></block>
+      <block type="parseint"></block> 
+      <block type="unar_op">
+        <value name="val">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>          
+      </block> 
       <block type="math_arithmetic"></block>
       <!--<block type="math_single"></block>-->
       <!--<block type="math_trig"></block>-->
@@ -336,7 +344,7 @@
             colour: '#ccc',
             snap: true
         },
-        zoom: {enabled: true},
+        zoom: {enabled: false},
         media: '/plugins/blockly/media/',
         toolbox: document.getElementById('toolbox')
     });

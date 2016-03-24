@@ -268,7 +268,12 @@
                                         %>    
                                     </select>
                                 </div> 
-
+<%if(device!=null){%>
+                                <div class="form-group has-feedback">
+                                    <label>InetAddress</label>
+                                    <div><%=device.getInetAddress()%></div>
+                                </div> 
+<%}%>
                                 <div class="form-group has-feedback">
                                     <label>Created Time</label>
                                     <div><%=new Date(createdTime)%></div>
@@ -432,7 +437,7 @@
                     <div class="tab-pane" id="tab_4">
                         <label>Console</label>
                         <div class="callout callout-info">
-                            <div id="ws_log"/>
+                            <div id="ws_log"></div>
                         </div>
                         <div class="">
                             <input type="button" value="Clear" onclick="ws_log.innerHTML='';" class="btn btn-primary" >
@@ -440,11 +445,10 @@
                     </div><!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_5">
                         <jsp:include page="controls.jsp" />
-                    </div><!-- /.tab-pane -->                </div><!-- /.tab-content -->
+                    </div><!-- /.tab-pane -->                
+                </div><!-- /.tab-content -->
             </div><!-- nav-tabs-custom -->
         </div><!-- /.col -->
-
-
     </div> <!-- /.row -->
     <!-- END CUSTOM TABS -->
 </section>

@@ -103,29 +103,78 @@ Blockly.Blocks['cdino_onchange_context'] = {
     }
 };
 
+Blockly.JavaScript['cdino_onchange_context'] = function(block) {
+  var dropdown_action = block.getFieldValue('action');
+  var statements_actions = Blockly.JavaScript.statementToCode(block, 'ACTIONS');
+  var code='_cdino_events.push({context:_cdino_cntx,type:"cdino_onchange_context",funct:function(){'+statements_actions+'},params:{action:"'+dropdown_action+'"}});';
+  return code;
+};
+
+Blockly.Blocks['cdino_ondevice_connection'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("onDeviceConnection");
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Device:")
+        .appendField(new Blockly.FieldDropdown(getDevices), "device");
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Action:")
+        .appendField(new Blockly.FieldDropdown([["Connected", "connected"], ["Disconnected", "disconnected"]]), "action");
+    this.appendStatementInput("ACTIONS")
+        .setCheck("Action")
+        .appendField("do");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, "Event");
+    this.setNextStatement(true, "Event");
+    this.setColour(20);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.JavaScript['cdino_ondevice_connection'] = function(block) {
+  var dropdown_device = block.getFieldValue('device');
+  var dropdown_action = block.getFieldValue('action');
+  var statements_actions = Blockly.JavaScript.statementToCode(block, 'ACTIONS');
+  // TODO: Assemble JavaScript into code variable.
+  var code='_cdino_events.push({context:_cdino_cntx,type:"cdino_ondevice_connection",funct:function(){'+statements_actions+'},params:{device:"'+dropdown_device+'",action:"'+dropdown_action+'"}});';
+  return code;
+};
+
 Blockly.Blocks['cdino_send_device_message'] = {
-    init: function() {
-        this.appendDummyInput()
-                .appendField("sendMessage");
-        this.appendDummyInput()
-                .setAlign(Blockly.ALIGN_RIGHT)
-                .appendField("Device:")
-                .appendField(new Blockly.FieldDropdown(getDevices), "device");
-        this.appendDummyInput()
-                .setAlign(Blockly.ALIGN_RIGHT)
-                .appendField("Topic:")
-                .appendField(new Blockly.FieldTextInput("topic"), "topic");
-        this.appendValueInput("msg")
-                .setCheck("String")
-                .setAlign(Blockly.ALIGN_RIGHT)
-                .appendField("Msg:");
-        this.setInputsInline(true);
-        this.setPreviousStatement(true, "Action");
-        this.setNextStatement(true, "Action");
-        this.setColour(330);
-        this.setTooltip('');
-        this.setHelpUrl('http://www.example.com/');
-    }
+  init: function() {
+    this.appendDummyInput()
+        .appendField("sendMessage");
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Device:")
+        .appendField(new Blockly.FieldDropdown(getDevices), "device");
+    this.appendValueInput("topic")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Topic:");
+    this.appendValueInput("msg")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("msg:");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true,"Action");
+    this.setNextStatement(true,"Action");
+    this.setColour(330);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+
+Blockly.JavaScript['cdino_send_device_message'] = function(block) {
+  var dropdown_device = block.getFieldValue('device');
+  var value_topic = Blockly.JavaScript.valueToCode(block, 'topic', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_msg = Blockly.JavaScript.valueToCode(block, 'msg', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.definitions_["RuleUtils"] = 'var RuleUtils=Java.type("io.cloudino.rules.scriptengine.RuleUtils");';    
+  var code = 'RuleUtils.sendMessage(\''+dropdown_device+'\','+value_topic+','+value_msg+');';
+  return code;
 };
 
 Blockly.Blocks['cdino_invoke_after'] = {
@@ -156,19 +205,32 @@ Blockly.Blocks['cduino_change_context'] = {
     }
 };
 
+
 Blockly.Blocks['cdino_push_notification'] = {
-    init: function() {
-        this.appendValueInput("NAME")
-                .setCheck("String")
-                .appendField("pushNotification")
-                .appendField("Text:");
-        this.setInputsInline(true);
-        this.setPreviousStatement(true, "Action");
-        this.setNextStatement(true, "Action");
-        this.setColour(330);
-        this.setTooltip('');
-        this.setHelpUrl('http://www.example.com/');
-    }
+  init: function() {
+    this.appendValueInput("title")
+        .setCheck("String")
+        .appendField("pushNotification")
+        .appendField("Title:");
+    this.appendValueInput("msg")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Message:");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, "Action");
+    this.setNextStatement(true, "Action");
+    this.setColour(330);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.JavaScript['cdino_push_notification'] = function(block) {
+  var value_title = Blockly.JavaScript.valueToCode(block, 'title', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_msg = Blockly.JavaScript.valueToCode(block, 'msg', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.definitions_["RuleUtils"] = 'var RuleUtils=Java.type("io.cloudino.rules.scriptengine.RuleUtils");';    
+  var code = 'RuleUtils.pushNotification(_cdino_user,'+value_title+','+value_msg+');';
+  return code;
 };
 
 /********************************************** UTILS **********************************************/
@@ -182,7 +244,7 @@ Blockly.Blocks['cdino_debug'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(0);
+    this.setColour(330);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -210,7 +272,7 @@ Blockly.Blocks['cdino_parse_number'] = {
     }
 };
 
-/********************************************** ARDUINO BLOCKS **********************************************/
+/********************************************** BLOCKS **********************************************/
 
 
 Blockly.Blocks['cdino_print'] = {
@@ -322,6 +384,32 @@ Blockly.Blocks['cdino_cleartimer'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(0);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Blocks['parseint'] = {
+  init: function() {
+    this.appendValueInput("str")
+        .setCheck("String")
+        .appendField("parseNumber");
+    this.setOutput(true, "Number");
+    this.setColour(230);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Blocks['unar_op'] = {
+  init: function() {
+    this.appendValueInput("val")
+        .setCheck("Number")
+        .appendField(new Blockly.FieldVariable("item"), "NAME")
+        .appendField(new Blockly.FieldDropdown([["+=", "+="], ["-=", "-="], ["/=", "/="], ["*=", "*="]]), "op");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(230);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -843,6 +931,23 @@ Blockly.Arduino['text_append'] = function(block) {
   return varName + ' = ' + varName + ' + String(' + argument0 + ');\n';
 };
 
+Blockly.Arduino['parseint'] = function(block) {
+  var value_str = Blockly.Arduino.valueToCode(block, 'str', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'String('+value_str+').toInt()';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.Arduino.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Arduino['unar_op'] = function(block) {
+  var variable_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('NAME'), Blockly.Variables.NAME_TYPE);
+  var dropdown_op = block.getFieldValue('op');
+  var value_val = Blockly.Arduino.valueToCode(block, 'val', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = variable_name+dropdown_op+value_val+";\n";
+  return code;
+};
+
 /********************************************** JAVASCRIPT **********************************************/
 
 
@@ -1154,4 +1259,21 @@ Blockly.JavaScript['lists_setIndex'] = function(block) {
     }
   }
   throw 'Unhandled combination (lists_setIndex).';
+};
+
+Blockly.JavaScript['parseint'] = function(block) {
+  var value_str = Blockly.JavaScript.valueToCode(block, 'str', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'parseInt('+value_str+')';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript['unar_op'] = function(block) {
+  var variable_name = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('NAME'), Blockly.Variables.NAME_TYPE);
+  var dropdown_op = block.getFieldValue('op');
+  var value_val = Blockly.JavaScript.valueToCode(block, 'val', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = variable_name+dropdown_op+value_val+";\n";
+  return code;
 };

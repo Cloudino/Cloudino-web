@@ -3,6 +3,10 @@
     Created on : 15-oct-2015, 0:04:21
     Author     : javiersolis
 --%>
+<%@page import="io.cloudino.engine.Device"%>
+<%@page import="io.cloudino.engine.DeviceMgr"%>
+<%@page import="java.io.IOException"%>
+<%@page import="org.semanticwb.datamanager.DataList"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="jdk.nashorn.api.scripting.ScriptObjectMirror"%>
 <%@page import="javax.script.ScriptEngine"%>
@@ -14,6 +18,30 @@
 <%@page import="org.semanticwb.datamanager.SWBScriptEngine"%>
 <%@page import="org.semanticwb.datamanager.DataObject"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%!
+
+    public DataList getList(String ds, SWBScriptEngine engine, DataObject user) throws IOException
+    {
+        SWBDataSource dsctx=engine.getDataSource(ds); 
+        DataObject query=new DataObject();
+        query.addSubObject("data").addParam("user", user.getId());
+        //System.out.println(query);
+        DataObject res=dsctx.fetch(query);
+        DataList list=res.getDataObject("response").getDataList("data");
+        //System.out.println(list);
+        DataList ret=new DataList();
+        for(int x=0;x<list.size();x++)
+        {
+            DataList l=new DataList();
+            l.add(list.getDataObject(x).getString("name"));
+            l.add(list.getDataObject(x).getNumId());
+            ret.add(l);
+        }
+        //System.out.println(ret);
+        return ret;
+    }
+
+%>
 <%
     String id=request.getParameter("ID");
     DataObject user=(DataObject)session.getAttribute("_USER_");
@@ -35,14 +63,17 @@
         xml=request.getParameter("xml");
         obj.put("script", script);
         obj.put("xml", xml);
+        //System.out.println("CloudRule:"+obj);
         ds.updateObj(obj);
+        //Remove RuleEngineChache
+        RuleEngineProvider.getInstance().removeEngine(obj.getId());
         
         //CloudRuleEvents
         //Remove Previous Events
         SWBDataSource dsevent=engine.getDataSource("CloudRuleEvent");
         DataObject x=new DataObject().addParam("removeByID", false);
         x.addSubObject("data").addParam("user", user.getId()).addParam("cloudRule", obj.getId());
-        System.out.println(x);
+        //System.out.println(x);
         dsevent.remove(x);
         
         ScriptEngine eng=NashornEngineFactory.getEngine(1, TimeUnit.SECONDS);
@@ -68,10 +99,16 @@
                 {
                     String key=it.next();
                     params.put(key,sparams.get(key));
+                    //reset Events Device Cache 
+                    if(key.equals("device"))
+                    {
+                        Device dev=DeviceMgr.getInstance().getDeviceIfPresent(sparams.get(key).toString());
+                        if(dev!=null)dev.resetEvents();
+                    }
                 }                                
                 //String json=NashornEngineFactory.serialize(slot);
                 //System.out.println("ret:"+json);
-                System.out.println("dobj:"+dobj);
+                //System.out.println("CloudRuleEvent:"+dobj);
                 dsevent.addObj(dobj);
             }            
         }
@@ -91,7 +128,7 @@
     <category id="events" name="Events">
         <block type="cdino_ondevice_message"></block>
         <block type="cdino_onchange_context"></block>
-
+        <block type="cdino_ondevice_connection"></block>
     </category>
     <category id="actions" name="Actions">
         <block type="cdino_send_device_message"></block>
@@ -293,12 +330,12 @@
 
     function getContexts()
     {
-        return [["En Casa", "contx1"], ["Fuera de Casa", "contx2"], ["Durmiendo", "contx3"]];
+        return <%=getList("UserContext",engine,user)%>;
     }
 
     function getDevices()
     {
-        return [["Alarma", "dev1"], ["Casa", "dev2"], ["Jardin", "dev3"]];
+        return <%=getList("Device",engine,user)%>;
     }
 </script>
 

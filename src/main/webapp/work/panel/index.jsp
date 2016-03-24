@@ -20,10 +20,11 @@
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- Bootstrap 3.3.4 -->
         <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />    
-        <!-- FontAwesome 4.3.0 -->
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <!-- FontAwesome 4.5.0 -->
+        <link href="/static/plugins/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="/static/plugins/fontawesome-iconpicker-1.0.0/css/fontawesome-iconpicker.min.css">
         <!-- Ionicons 2.0.0 -->
-        <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />    
+        <link href="/static/plugins/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />    
         <!-- Theme style -->
         <link href="/static/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
         <!-- AdminLTE Skins. Choose a skin from the css/skins 
@@ -41,6 +42,9 @@
         <link href="/static/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
         <!-- bootstrap wysihtml5 - text editor -->
         <link href="/static/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="/static/plugins/bootstrap-switch/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        
         <!-- FileInputPlugin -->
         <link href="/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
 
@@ -78,6 +82,50 @@
             .cdino_buttons{
                 padding-top: 10px;
             }
+            
+            .cdino_control {
+                padding: 10px 5px;
+                margin: 0 0 10px 10px;
+                min-width: 90px;
+                height: 90px;
+                font-size: 14px;
+                border-radius: 3px;
+                position: relative;
+                padding: 15px 5px;
+                text-align: center;
+                color: #666;
+                border: 1px solid #ddd;
+                background-color: #f4f4f4;
+                -webkit-box-shadow: none;
+                box-shadow: none;
+                display: inline-block;
+                font-weight: 400;
+                line-height: 1.42857143;
+                white-space: nowrap;
+                vertical-align: middle;
+                -ms-touch-action: manipulation;
+                touch-action: manipulation;
+                cursor: pointer;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            
+            /* Welcome content*/
+            .boardstart *   { color:#FFF; }
+            .boardstart h2  { font-size:50px; margin:0px; font-weight:bold; padding: 10px;}
+            .boardstart li  { font-size: 21px; font-weight:300; line-height:40px}
+            .seccion-boards,
+            .seccion-learn  { padding:0;}
+            #boards, #learn { height:780px;}
+
+            /*BOARDS*/
+            #boards { background: url( ../img/boards-fondo.png) no-repeat top left; background-size:cover}
+
+            /*START*/
+            #learn { background: url( ../img/start-fondo.png) no-repeat center; background-size:cover}
+#learn li.git { background-position:-2px 10px !important;}            
         </style>  
 
 
@@ -105,6 +153,17 @@
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
                             <!-- User Account: style can be found in dropdown.less -->
+<!--                            
+                            <li>
+                                <div style="padding: 8px;">
+                                    <i class="fa fa-location-arrow" style="color: #f4f4f4;"></i>
+                                    <span style="color: #f4f4f4;">Locations:</span>
+                                    <select name="location" class="form-control" style="background-color: rgba(34, 45, 50, 0);width: 150px;/* border-color: rgba(34, 45, 50, 0); */color: #f4f4f4;/* height: 34px; *//* margin-left: -5px; *//* font-weight: 400; *//* font-size: 14px; */display: inline;">
+                                        <option>Casa Jei</option>
+                                    </select>
+                                </div>                                
+                            </li>                            
+-->                            
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="/photo" class="user-image" alt="User Image"/>
@@ -142,9 +201,14 @@
                                     </li>
                                 </ul>
                             </li>
-                            <!-- Control Sidebar Toggle Button -->
+<!--                             
                             <li>
-                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-code"></i></a>
+                                <a href="#"><i class="fa fa-gears" style="font-weight: bold;"></i> Settings</a>
+                            </li>
+-->                            
+                            <!-- Control Sidebar Toggle Button -->
+                            <li style="background-color: #367FA9;">
+                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-code" style="font-weight: bold;"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -179,62 +243,22 @@
 
                 <!-- Main content -->
                 <section class="content">
-                    <!-- Small boxes (Stat box) -->
-                    <div class="row">
-                        <div class="col-lg-3 col-xs-6">
-                            <!-- small box -->
-                            <div class="small-box bg-aqua">
-                                <div class="inner">
-                                    <h3>150</h3>
-                                    <p>New Orders</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-bag"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div><!-- ./col -->
-                        <div class="col-lg-3 col-xs-6">
-                            <!-- small box -->
-                            <div class="small-box bg-green">
-                                <div class="inner">
-                                    <h3>53<sup style="font-size: 20px">%</sup></h3>
-                                    <p>Bounce Rate</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-stats-bars"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div><!-- ./col -->
-                        <div class="col-lg-3 col-xs-6">
-                            <!-- small box -->
-                            <div class="small-box bg-yellow">
-                                <div class="inner">
-                                    <h3>44</h3>
-                                    <p>User Registrations</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-person-add"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div><!-- ./col -->
-                        <div class="col-lg-3 col-xs-6">
-                            <!-- small box -->
-                            <div class="small-box bg-red">
-                                <div class="inner">
-                                    <h3>65</h3>
-                                    <p>Unique Visitors</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-pie-graph"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div><!-- ./col -->
-                    </div><!-- /.row -->
-                   
+                    
+                <section id="learn" class="boardstart seccion-learn">
+                  <h2>Getting Started</h2>
+                  <ul>
+                    <li>Arduino Connection Squema</li>
+                    <li>Cloudino Configuration
+                      <ul>
+                        <li>Wifi Configuration</li>
+                        <li>Cloud Configuration</li>
+                      </ul>
+                    </li>
+                    <li>Programming Arduino using WIFI</li>
+                    <li>Programming Arduino using Cloud</li>
+                    <li><a target="_blank" href="/doc/Connecting_Cloudino_Connector_to_FIWARE_IoT.pdf">Connecting to FIWARE IoT</a></li>
+                  </ul>
+                </section>                   
 
                 </section><!-- /.content -->
             </div><!-- /.content-wrapper -->
@@ -284,18 +308,19 @@
         <script src="/js/fileinput.min.js"></script>
 
         <!-- Bootstrap 3.3.2 JS -->
-        <script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>    
+        <script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>  
+        <!-- Sparkline -->
+        <script src="/static/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
+        <!-- jQuery Knob Chart -->
+        <script src="/static/plugins/knob/jquery.knob.js" type="text/javascript"></script>
+        
         <!--
         <!-- Morris.js charts --
         <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
         <script src="/static/plugins/morris/morris.min.js" type="text/javascript"></script>
-        <!-- Sparkline --
-        <script src="/static/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
         <!-- jvectormap --
         <script src="/static/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
         <script src="/static/plugins/jvectormap/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
-        <!-- jQuery Knob Chart --
-        <script src="/static/plugins/knob/jquery.knob.js" type="text/javascript"></script>
         <!-- daterangepicker --
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js" type="text/javascript"></script>
         <script src="/static/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
@@ -320,10 +345,10 @@
         -->   
 
         <script src="/static/plugins/validator/validator.min.js" type="text/javascript"></script>
+        <script src="/static/plugins/bootstrap-switch/bootstrap-switch.min.js" type="text/javascript"></script>  
+        <script src="/static/plugins/fontawesome-iconpicker-1.0.0/js/fontawesome-iconpicker.min.js" type="text/javascript"></script>  
+        
         <script type="text/javascript" src="/js/websockets.js"></script>
-
-
-
         <script src="/plugins/codemirror/lib/codemirror.js"></script>  
         <script src="/plugins/codemirror/addon/hint/show-hint.js"></script>
         <script src="/plugins/codemirror/addon/selection/active-line.js"></script> 
@@ -350,30 +375,8 @@
         <script src="/plugins/codemirror/mode/javascript/javascript.js"></script>
         <script src="/plugins/codemirror/addon/hint/javascript-hint.js"></script>
         <script src="/plugins/codemirror/addon/lint/javascript-lint.js"></script>
-        <script src="http://ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js"></script>
-
-        <!--
-
-        <script src="/plugins/codemirror/mode/xml/xml.js"></script>
-         <script src="/plugins/codemirror/addon/hint/xml-hint.js"></script>
-    
-    
-         <script src="/plugins/codemirror/addon/lint/json-lint.js"></script>
-         <script src="https://rawgithub.com/zaach/jsonlint/79b553fb65c192add9066da64043458981b3972b/lib/jsonlint.js"></script>
-    
-         <script src="/plugins/codemirror/mode/css/css.js"></script>
-         <script src="/plugins/codemirror/addon/hint/css-hint.js"></script>
-         <script src="/plugins/codemirror/addon/lint/css-lint.js"></script>
-         <script src="https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"></script>        
-    
-         <script src="/plugins/codemirror/addon/mode/multiplex.js"></script>
-         <script src="/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-         <script src="/plugins/codemirror/mode/htmlembedded/htmlembedded.js"></script>
-         <script src="/plugins/codemirror/addon/hint/html-hint.js"></script>
-         <script src="/plugins/codemirror/addon/fold/xml-fold.js"></script>
-         <script src="/plugins/codemirror/addon/edit/matchtags.js"></script>        
-         <script src="/plugins/codemirror/addon/edit/closetag.js"></script>
-        -->    
+        <script src="/plugins/codemirror/addon/hint/jshint.js"></script>
+ 
         <script src="/js/cloudino_utils.js"></script>
         <script type="text/javascript">setInterval(function(){loadContent('/panel/devices','.devices');},10000);</script>
         

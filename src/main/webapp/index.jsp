@@ -17,8 +17,8 @@
 <link href="css/cloudino.css" rel="stylesheet">
 <link href="css/cloudino-custom.css" rel="stylesheet">
 <!-- Custom Fonts -->
-<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+<link href="/static/plugins/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href='css/fontgoogleapis.css' rel='stylesheet' type='text/css'>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -281,7 +281,7 @@
 </div>
 <script src="js/jquery.js"></script> 
 <script src="js/bootstrap.min.js"></script> 
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script> 
+<script src="js/jquery.easing.min.js"></script> 
 <script src="js/classie.js"></script> 
 <script src="js/cbpAnimatedHeader.js"></script> 
 <script src="js/jqBootstrapValidation.js"></script> 

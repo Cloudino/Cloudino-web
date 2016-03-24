@@ -21,7 +21,7 @@
     
     public boolean installLibrary(String file,String name, String libpath) throws IOException
     {
-        //System.out.println("file:"+file);
+        //System.out.println("path:"+file);
         //String file="https://github.com/arduino-libraries/Audio/archive/1.0.0.zip";
         //String name="Audio";
         //String userpath="/programming/proys/cloudino/server/Cloudino-web/target/Cloudino-web-1.0-SNAPSHOT/work/cloudino/users/55e0d655e4b0cb620e1910e5";
@@ -29,21 +29,28 @@
         URLConnection con=new URL(file).openConnection();
         ZipInputStream zip=new ZipInputStream((InputStream)con.getContent());
         
+        //System.out.println("con:"+con+" "+zip);
+        
         File rootDir=null;
         int BUFFER = 2048;
         ZipEntry entry=null;
         while((entry=zip.getNextEntry())!=null)
         {
-            if(entry.isDirectory())
+            //System.out.println("entry:"+entry+" "+entry.isDirectory());
+            if(!entry.isDirectory())
             {
-                //System.out.println("dir:"+entry.getName());
-                File dir=new File(libpath+entry.getName());
-                dir.mkdirs();
-                if(rootDir==null)rootDir=dir;                
-            }else
-            {
-                if(rootDir==null)break;
                 //System.out.println("file:"+entry.getName());
+                File f=new File(libpath+entry.getName());
+                f.getParentFile().mkdirs();
+                if(rootDir==null)
+                {
+                    int i=entry.getName().indexOf('/');
+                    if(i>-1)
+                    {
+                        rootDir=new File(libpath+entry.getName().substring(0,i));
+                        System.out.println(rootDir);
+                    }                    
+                }
                 FileOutputStream fout=new FileOutputStream(libpath+entry.getName());
                 BufferedOutputStream dest = new BufferedOutputStream(fout, BUFFER);
                 byte data[] = new byte[BUFFER];
@@ -54,6 +61,7 @@
                 dest.flush();
                 dest.close();
             }
+            
         }
         if(rootDir!=null)
         {

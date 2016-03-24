@@ -1,5 +1,7 @@
 var WS = {
     
+    notify:{},
+    
     ws:null,
     
     setConnected:function(connected) {
@@ -7,8 +9,20 @@ var WS = {
         document.getElementById('disconnect').disabled = !connected;
         document.getElementById('send').disabled = !connected;
     },
+    
+    onMessage:function(topic, callback)
+    {
+        if(typeof WS.notify[topic] === "undefined")
+        {
+            WS.notify[topic]=[callback];            
+        }else
+        {
+            WS.notify[topic].push(callback);
+        }
+    },
 
     connect:function(target) {
+        WS.notify={};
         //var target = "ws://" + window.location.host+ "/websocket/cdino?ID=<%=id%>";
         if ('WebSocket' in window) {
             WS.ws = new WebSocket(target);
@@ -23,13 +37,27 @@ var WS = {
             //WS.log('Info: WebSocket connection opened.');
         };
         WS.ws.onmessage = function (event) {
-            console.log(event.data);
+            //console.log(event.data);
             if(event.data.startsWith("msg:$CDINOJSRSP"))
             {
                 WS.log(event.data.substring(15),"ws_jsrsp");
             }else if(event.data.startsWith("msg:"))
             {
-                WS.log(event.data.substring(4),"ws_msg");
+                var tmp=event.data.substring(4);
+                var i=tmp.indexOf("\t");
+                if(i>-1)
+                {
+                    var topic=tmp.substring(0,i);
+                    var msg=tmp.substring(i+1);                
+                    if(WS.notify[topic])
+                    {                        
+                        WS.notify[topic].forEach(function(entry) {
+                            entry(msg);
+                        });
+                    }
+                }
+                WS.log(tmp,"ws_msg");
+                
             }else if(event.data.startsWith("log:"))
             {
                 WS.log(event.data.substring(4),"ws_log");

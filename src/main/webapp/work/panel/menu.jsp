@@ -16,16 +16,32 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar" style="overflow: scroll">
         <!-- Sidebar user panel -->
+        
         <div class="user-panel">
             <div class="pull-left image">
                 <img src="/photo" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
                 <p><%=user.getString("fullname")%></p>
-
-                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                <a href="/profile" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-user"></i> Profile</a>
             </div>
         </div>
+<!--             
+        <div>
+            <div style="
+                color: #4E6975;
+                padding: 10px;
+                background-color: #1A2226;
+                font-size: 12px;
+                padding-left: 15px;">SMART LOCATION
+                <a href=""><i class="fa fa-gears pull-right" style="padding: 5px;"></i></a>
+            </div>
+            <i class="fa fa-location-arrow" style="padding-left: 17px;color: #B8C7CE;"></i>
+            <select name="location" class="form-control" style="background-color: rgba(34, 45, 50, 0);width: 193px;border-color: rgba(34, 45, 50, 0);color: #B8C7CE;height: 34px;margin-left: -5px;font-weight: 400;font-size: 14px;display: inline;">
+                <option>Casa Jei</option>
+            </select>
+        </div>
+-->                
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             <li class="header">THINGING</li>

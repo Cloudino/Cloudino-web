@@ -33,7 +33,7 @@
             String title = contrl.getString("title");
 %>
 <div class="cdino_control" style="padding-top: 3px;">
-    <input id="<%=contrl.getNumId()%>" type="text" class="knob" data-readonly="false" value="0" data-min="0" data-max="256" data-angleOffset="-125" data-angleArc="250" data-displayPrevious=true data-width="70" data-height="70" data-fgColor="#39CCCC"/>
+    <input id="<%=contrl.getNumId()%>" type="text" class="knob" data-readonly="false" value="0" data-min="0" data-max="255" data-angleOffset="-125" data-angleArc="250" data-displayPrevious=true data-width="70" data-height="70" data-fgColor="#39CCCC"/>
     <p style="margin-top: -10px;"><%=title%></p>
 </div>
 <script type="text/javascript">   

@@ -1,4 +1,4 @@
 # Cloudino-web
 Cloudino Web Application
 
-WebSite: http://cloudino.io
+WebSite: http://cloudino.cc

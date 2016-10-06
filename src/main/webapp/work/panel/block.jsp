@@ -24,7 +24,7 @@
     String blockPath = workPath + engine.getScriptObject().get("config").getString("usersWorkPath") + "/" + user.getNumId() + "/arduino/blocks/" + id;
 
     File blockDir = new File(blockPath);
-    if (blockPath.indexOf("..")>-1 || !blockDir.exists()) {
+    if (blockPath.indexOf("..") > -1 || !blockDir.exists()) {
         response.sendError(404);
         return;
     } else {
@@ -53,7 +53,7 @@
     //remove
     if ("remove".equals(act)) {
         FileUtils.deleteDirectory(new File(blockPath));
-        out.println("<script type=\"text/javascript\">Blockly.fireUiEvent(window, 'resize');loadContent('/panel/arduino?act=bl','#arduino');</script>");
+        out.println("<script type=\"text/javascript\">Blockly.resize();loadContent('/panel/arduino?act=bl','#arduino');</script>");
 %>
 <!-- Custom Tabs -->
 <div class="nav-tabs-custom">
@@ -81,19 +81,251 @@
 </div>  
 
 <script type="text/javascript">
-    function removeBlock(alink){
-            if(confirm('Are you sure to remove this Block?')){
-                var urlRemove = 'block?ID=<%=id%>&act=remove';
-                loadContent(urlRemove,"#main_content");
-                //alink.href=urlRemove;
-                //alink.click(); 
-            }
+    function removeBlock(alink) {
+        if (confirm('Are you sure to remove this Block?')) {
+            var urlRemove = 'block?ID=<%=id%>&act=remove';
+            loadContent(urlRemove, "#main_content");
+            //alink.href=urlRemove;
+            //alink.click(); 
+        }
         return false;
-     }
+    }
 </script>
 
 
+<xml id="toolbox" style="display: none">
+    <category name="Cloudino" colour="0">
+        <block type="cdino_print"></block>
+        <block type="cdino_post"></block>
+        <block type="cdino_on"></block>
+        <block type="cdino_setinterval">
+            <value name="time">
+                <block type="math_number">
+                    <field name="NUM">1000</field>
+                </block>
+            </value>            
+        </block>
+        <block type="cdino_settimeout">
+            <value name="time">
+                <block type="math_number">
+                    <field name="NUM">1000</field>
+                </block>
+            </value>               
+        </block>
+        <block type="cdino_cleartimer"></block> 
+    </category>  
+    <category id="catInputOutput" name="Input/Output" colour="250">    
+        <block type="io_digitalwrite">      
+            <value name="STATE">        
+                <block type="io_highlow"></block>      
+            </value>    
+        </block>    
+        <block type="io_digitalread"></block>    
+        <block type="io_builtin_led">      
+            <value name="STATE">        
+                <block type="io_highlow"></block>      
+            </value>    
+        </block>    
+        <block type="io_analogwrite"></block>    
+        <block type="io_analogread"></block>    
+        <block type="io_highlow"></block>    
+        <block type="io_pulsein">      
+            <value name="PULSETYPE">        
+                <shadow type="io_highlow"></shadow>      
+            </value>    
+        </block>    
+        <block type="io_pulsetimeout">      
+            <value name="PULSETYPE">        
+                <shadow type="io_highlow"></shadow>      
+            </value>      
+            <value name="TIMEOUT">        
+                <block type="math_number"></block>      
+            </value>    
+        </block>  
+    </category>  
+    <category id="catTime" name="Time" colour="140">    
+        <block type="time_delay">      
+            <value name="DELAY_TIME_MILI">        
+                <block type="math_number">          
+                    <field name="NUM">1000</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="time_delaymicros">      
+            <value name="DELAY_TIME_MICRO">        
+                <block type="math_number">          
+                    <field name="NUM">100</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="time_millis"></block>    
+        <block type="time_micros"></block>    
+        <block type="infinite_loop"></block>  
+    </category>      
+    <category id="catLogic" name="Logic" colour="210">    
+        <block type="controls_if"></block>    
+        <block type="logic_compare"></block>    
+        <block type="logic_operation"></block>    
+        <block type="logic_negate"></block>    
+        <block type="logic_boolean"></block>    
+        <block type="logic_null"></block>    
+        <block type="logic_ternary"></block>  
+    </category>  
+    <category id="catLoops" name="Loops" colour="120">    
+        <block type="controls_repeat_ext">      
+            <value name="TIMES">        
+                <block type="math_number">          
+                    <field name="NUM">10</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="controls_whileUntil"></block>    
+        <block type="controls_for">      
+            <value name="FROM">        
+                <block type="math_number">          
+                    <field name="NUM">1</field>        
+                </block>      
+            </value>      
+            <value name="TO">        
+                <block type="math_number">          
+                    <field name="NUM">10</field>        
+                </block>      
+            </value>      
+            <value name="BY">        
+                <block type="math_number">          
+                    <field name="NUM">1</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="controls_flow_statements"></block>  
+    </category>
+    <category id="catMath" name="Math" colour="230">    
+        <block type="math_number"></block>    
+        <block type="math_arithmetic"></block>    
+        <block type="math_single"></block>    
+        <block type="math_trig"></block>    
+        <block type="math_constant"></block>    
+        <block type="math_number_property"></block>    
+        <block type="math_change">      
+            <value name="DELTA">        
+                <block type="math_number">          
+                    <field name="NUM">1</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="math_round"></block>    
+        <block type="math_modulo"></block>    
+        <block type="math_constrain">      
+            <value name="LOW">        
+                <block type="math_number">          
+                    <field name="NUM">1</field>        
+                </block>      
+            </value>      
+            <value name="HIGH">        
+                <block type="math_number">          
+                    <field name="NUM">100</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="math_random_int">      
+            <value name="FROM">        
+                <block type="math_number">          
+                    <field name="NUM">1</field>        
+                </block>      
+            </value>      
+            <value name="TO">        
+                <block type="math_number">          
+                    <field name="NUM">100</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="math_random_float"></block>    
+        <block type="base_map"></block>  
+    </category>
+    <category id="catText" name="Text" colour="160">    
+        <block type="text"></block>    
+        <block type="text_join"></block>    
+        <block type="text_append">      
+            <value name="TEXT">        
+                <block type="text"></block>      
+            </value>    
+        </block>    
+        <block type="text_length"></block>    
+        <block type="text_isEmpty"></block>  
+    </category>
+    <sep></sep>
+    <category id="catVariables" name="Variables" colour="330">    
+        <block type="variables_get"></block>    
+        <block type="variables_set"></block>    
+        <block type="variables_set">      
+            <value name="VALUE">        
+                <block type="variables_set_type"></block>      
+            </value>    
+        </block>    
+        <block type="variables_set_type"></block>  
+    </category>
+    <category id="catFunctions" name="Functions" custom="PROCEDURE" colour="290"></category>  
+    <sep></sep>  
+    <category id="catMusic" name="Music" colour="250">    
+        <block type="io_tone">      
+            <field name="TONEPIN">0</field>      
+            <value name="FREQUENCY">        
+                <shadow type="math_number">          
+                    <field name="NUM">220</field>        
+                </shadow>      
+            </value>    
+        </block>    
+        <block type="io_notone"></block>  
+    </category>  
+    <category id="catMotors" name="Motors" colour="80">    
+        <block type="servo_write">      
+            <value name="SERVO_ANGLE">        
+                <block type="math_number">          
+                    <field name="NUM">90</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="servo_read"></block>    
+        <block type="stepper_config">      
+            <field name="STEPPER_PIN1">1</field>      
+            <field name="STEPPER_PIN2">2</field>      
+            <value name="STEPPER_STEPS">        
+                <block type="math_number">          
+                    <field name="NUM">100</field>        
+                </block>      
+            </value>      
+            <value name="STEPPER_SPEED">        
+                <block type="math_number">          
+                    <field name="NUM">10</field>        
+                </block>      
+            </value>    
+        </block>    
+        <block type="stepper_step">      
+            <value name="STEPPER_STEPS">        
+                <block type="math_number">          
+                    <field name="NUM">10</field>        
+                </block>      
+            </value>    
+        </block>  
+    </category>  
+    <sep></sep>  
+    <category id="catComms" name="Comms" colour="170">    
+<!--        
+        <block type="serial_setup"></block>    
+        <block type="serial_print"></block>    
+        <block type="text_prompt_ext">      
+            <value name="TEXT">        
+                <block type="text"></block>      
+            </value>    
+        </block>    
+-->
+        <block type="spi_setup"></block>    
+        <block type="spi_transfer"></block>    
+        <block type="spi_transfer_return"></block>  
+    </category>
+</xml>
 
+<!--
 <xml id="toolbox" style="display: none">
     <category name="Cloudino" colour="0">
         <block type="cdino_print"></block>
@@ -260,31 +492,43 @@
         </category>
     </category>
 </xml>
+-->
 
 <script>
     function codeSubmit()
     {
         var data = {ID: "<%=id%>", act: "update", script: Blockly.Cloudino.getBlockCode(), xml: Blockly.Cloudino.getXML()};
-        loadContent('block', "#tab2", data, function(){consoleLog.innerHTML="Block saved...";});
+        loadContent('block', "#tab2", data, function() {
+            consoleLog.innerHTML = "Block saved...";
+        });
     }
 </script>
 
 <script>
+    if(Blockly.Blocks['arduino_functions']==undefined)
+    {
+        Blockly.Blocks['arduino_functions']=Blockly.Blocks['arduino_functions_'];
+    }        
+    
     var blocklyDiv = document.getElementById('blocklyDiv');
     var workspace = Blockly.inject(blocklyDiv, {
-        grid: {
-            spacing: 25,
-            length: 3,
-            colour: '#ccc',
-            snap: true
+        grid: false,
+        zoom: {
+            controls: true,
+            wheel: false,
+            startScale: 1.0,
+            maxScale: 2,
+            minScale: 0.2,
+            scaleSpeed: 1.2
         },
-        zoom: {enabled: false},
         media: '/plugins/blockly/media/',
         toolbox: document.getElementById('toolbox')
     });
-    
-    profile.default.analog=[["A0","A0"],["A1","A1"],["A2","A2"],["A3","A3"],["A4","A4"],["A5","A5"],["A6","A6"],["A7","A7"]];
-    profile.default.digital=[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"],["10","10"],["11","11"],["12","12"],["13","13"],["A0","A0"],["A1","A1"],["A2","A2"],["A3","A3"],["A4","A4"],["A5","A5"],["A6","A6"],["A7","A7"]];
+     
+    Blockly.Arduino.Boards.changeBoard(workspace,"uno"); 
+    //profile.default.analog = [["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"], ["A6", "A6"], ["A7", "A7"]];
+    //profile.default.digital = [["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"], ["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"], ["A6", "A6"], ["A7", "A7"]];
+
     <%if (xml != null) {%>
     Blockly.Cloudino.loadXML('<%=xml%>');
     <%}%>
@@ -293,7 +537,7 @@
         //e.target // newly activated tab
         //e.relatedTarget // previous active tab
         //console.lo
-        Blockly.fireUiEvent(window, 'resize');
+        Blockly.resize();
         workspace.render();
         myCodeMirror.setValue(Blockly.Cloudino.getBlockCode());
         myCodeMirror.refresh();

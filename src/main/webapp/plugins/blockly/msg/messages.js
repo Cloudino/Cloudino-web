@@ -43,16 +43,16 @@ goog.require('Blockly.Msg');
  */
 
 /**
- * Tip: Generate URLs for read-only blocks by creating the blocks in the Code app,
- * then evaluating this in the console:
- * 'http://blockly-demo.appspot.com/static/apps/code/readonly.html?lang=en&xml=' + encodeURIComponent(Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(Blockly.mainWorkspace)).slice(5, -6))
+ * Each message is preceded with a tripple-slash comment that becomes the
+ * message descriptor.  The build process extracts these descriptors, adds
+ * them to msg/json/qqq.json, and they show up in the translation console.
  */
 
 /// default name - A simple, general default name for a variable, preferably short.
 /// For more context, see
 /// [[Translating:Blockly#infrequent_message_types]].\n{{Identical|Item}}
 Blockly.Msg.VARIABLES_DEFAULT_NAME = 'item';
-/// button text - Botton that sets a calendar to today's date.\n{{Identical|Today}}
+/// button text - Button that sets a calendar to today's date.\n{{Identical|Today}}
 Blockly.Msg.TODAY = 'Today';
 
 // Context menus.
@@ -70,13 +70,17 @@ Blockly.Msg.INLINE_INPUTS = 'Inline Inputs';
 Blockly.Msg.DELETE_BLOCK = 'Delete Block';
 /// context menu - Permanently delete the %1 selected blocks.\n\nParameters:\n* %1 - an integer greater than 1.
 Blockly.Msg.DELETE_X_BLOCKS = 'Delete %1 Blocks';
+/// confirmation prompt - Question the user if they really wanted to permanently delete all %1 blocks.\n\nParameters:\n* %1 - an integer greater than 1.
+Blockly.Msg.DELETE_ALL_BLOCKS = 'Delete all %1 blocks?';
+/// context menu - Reposition all the blocks so that they form a neat line.
+Blockly.Msg.CLEAN_UP = 'Clean up Blocks';
 /// context menu - Make the appearance of the selected block smaller by hiding some information about it.
 Blockly.Msg.COLLAPSE_BLOCK = 'Collapse Block';
-/// context menu - Make the appearance of the selected blocks smaller by hiding some information about it.  Use the same terminology as in the previous message.
+/// context menu - Make the appearance of all blocks smaller by hiding some information about it.  Use the same terminology as in the previous message.
 Blockly.Msg.COLLAPSE_ALL = 'Collapse Blocks';
 /// context menu - Restore the appearance of the selected block by showing information about it that was hidden (collapsed) earlier.
 Blockly.Msg.EXPAND_BLOCK = 'Expand Block';
-/// context menu - Restore the appearance of the selected block by showing information about it that was hidden (collapsed) earlier.  Use the same terminology as in the previous message.
+/// context menu - Restore the appearance of all blocks by showing information about it that was hidden (collapsed) earlier.  Use the same terminology as in the previous message.
 Blockly.Msg.EXPAND_ALL = 'Expand Blocks';
 /// context menu - Make the selected block have no effect (unless reenabled).
 Blockly.Msg.DISABLE_BLOCK = 'Disable Block';
@@ -84,6 +88,10 @@ Blockly.Msg.DISABLE_BLOCK = 'Disable Block';
 Blockly.Msg.ENABLE_BLOCK = 'Enable Block';
 /// context menu - Provide helpful information about the selected block.\n{{Identical|Help}}
 Blockly.Msg.HELP = 'Help';
+/// context menu - Undo the previous action.\n{{Identical|Undo}}
+Blockly.Msg.UNDO = 'Undo';
+/// context menu - Undo the previous undo action.\n{{Identical|Redo}}
+Blockly.Msg.REDO = 'Redo';
 
 // Realtime collaboration.
 /// collaboration instruction - Tell the user that they can talk with other users.
@@ -246,11 +254,11 @@ Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE = 'Return true if the first input is great
 Blockly.Msg.LOGIC_OPERATION_HELPURL = 'https://github.com/google/blockly/wiki/Logic#logical-operations';
 /// tooltip - See [https://en.wikipedia.org/wiki/Logical_conjunction https://en.wikipedia.org/wiki/Logical_conjunction].
 Blockly.Msg.LOGIC_OPERATION_TOOLTIP_AND = 'Return true if both inputs are true.';
-/// block text - See [https://en.wikipedia.org/wiki/Logical_conjunction https://en.wikipedia.org/wiki/Logical_conjunction].
+/// block text - See [https://en.wikipedia.org/wiki/Logical_conjunction https://en.wikipedia.org/wiki/Logical_conjunction].\n{{Identical|And}}
 Blockly.Msg.LOGIC_OPERATION_AND = 'and';
 /// block text - See [https://en.wikipedia.org/wiki/Disjunction https://en.wikipedia.org/wiki/Disjunction].
 Blockly.Msg.LOGIC_OPERATION_TOOLTIP_OR = 'Return true if at least one of the inputs is true.';
-/// block text - See [https://en.wikipedia.org/wiki/Disjunction https://en.wikipedia.org/wiki/Disjunction].
+/// block text - See [https://en.wikipedia.org/wiki/Disjunction https://en.wikipedia.org/wiki/Disjunction].\n{{Identical|Or}}
 Blockly.Msg.LOGIC_OPERATION_OR = 'or';
 
 /// url - Information about logical negation.  The translation of [https://en.wikipedia.org/wiki/Logical_negation https://en.wikipedia.org/wiki/Logical_negation] is recommended if it exists in the target language.
@@ -263,16 +271,16 @@ Blockly.Msg.LOGIC_NEGATE_TOOLTIP = 'Returns true if the input is false. Returns 
 
 /// url - Information about the logic values ''true'' and ''false''.  Consider using the translation of [https://en.wikipedia.org/wiki/Truth_value https://en.wikipedia.org/wiki/Truth_value] if it exists in your language.
 Blockly.Msg.LOGIC_BOOLEAN_HELPURL = 'https://github.com/google/blockly/wiki/Logic#values';
-/// block text - The word for the [https://en.wikipedia.org/wiki/Truth_value logical value] ''true''.
+/// block text - The word for the [https://en.wikipedia.org/wiki/Truth_value logical value] ''true''.\n{{Identical|True}}
 Blockly.Msg.LOGIC_BOOLEAN_TRUE = 'true';
-/// block text - The word for the [https://en.wikipedia.org/wiki/Truth_value logical value] ''false''.
+/// block text - The word for the [https://en.wikipedia.org/wiki/Truth_value logical value] ''false''.\n{{Identical|False}}
 Blockly.Msg.LOGIC_BOOLEAN_FALSE = 'false';
 /// tooltip - Indicates that the block returns either of the two possible [https://en.wikipedia.org/wiki/Truth_value logical values].
 Blockly.Msg.LOGIC_BOOLEAN_TOOLTIP = 'Returns either true or false.';
 
 /// url - Provide a link to the translation of [https://en.wikipedia.org/wiki/Nullable_type https://en.wikipedia.org/wiki/Nullable_type], if it exists in your language; otherwise, do not worry about translating this advanced concept.
 Blockly.Msg.LOGIC_NULL_HELPURL = 'https://en.wikipedia.org/wiki/Nullable_type';
-/// block text - In computer languages, ''null'' is a special value that indicates that no value has been set.  You may use your language's word for "nothing" or "invalid".
+/// block text - In computer languages, ''null'' is a special value that indicates that no value has been set.  You may use your language's word for "nothing" or "invalid".\n{{Identical|Null}}
 Blockly.Msg.LOGIC_NULL = 'null';
 /// tooltip - This should use the word from the previous message.
 Blockly.Msg.LOGIC_NULL_TOOLTIP = 'Returns null.';
@@ -967,6 +975,23 @@ Blockly.Msg.LISTS_GET_SUBLIST_TAIL = '';
 /// [[File:Blockly-get-sublist.png]]
 Blockly.Msg.LISTS_GET_SUBLIST_TOOLTIP = 'Creates a copy of the specified portion of a list.';
 
+/// url - Information describing sorting a list.
+Blockly.Msg.LISTS_SORT_HELPURL = 'https://github.com/google/blockly/wiki/Lists#sorting-a-list';
+/// Sort as type %1 (numeric or alphabetic) in order %2 (ascending or descending) a list of items %3.
+Blockly.Msg.LISTS_SORT_TITLE = 'sort %1 %2 %3';
+/// tooltip - See [https://github.com/google/blockly/wiki/Lists#sorting-a-list].
+Blockly.Msg.LISTS_SORT_TOOLTIP = 'Sort a copy of a list.';
+/// sorting order or direction from low to high value for numeric, or A-Z for alphabetic.\n{{Identical|Ascending}}
+Blockly.Msg.LISTS_SORT_ORDER_ASCENDING = 'ascending';
+/// sorting order or direction from high to low value for numeric, or Z-A for alphabetic.\n{{Identical|Descending}}
+Blockly.Msg.LISTS_SORT_ORDER_DESCENDING = 'descending';
+/// sort by treating each item as a number.
+Blockly.Msg.LISTS_SORT_TYPE_NUMERIC = 'numeric';
+/// sort by treating each item alphabetically, case-sensitive.
+Blockly.Msg.LISTS_SORT_TYPE_TEXT = 'alphabetic';
+/// sort by treating each item alphabetically, ignoring differences in case.
+Blockly.Msg.LISTS_SORT_TYPE_IGNORECASE = 'alphabetic, ignore case';
+
 /// url - Information describing splitting text into a list, or joining a list into text.
 Blockly.Msg.LISTS_SPLIT_HELPURL = 'https://github.com/google/blockly/wiki/Lists#splitting-strings-and-joining-lists';
 /// dropdown - Indicates that text will be split up into a list (e.g. "a-b-c" -> ["a", "b", "c"]).
@@ -1034,16 +1059,18 @@ Blockly.Msg.PROCEDURES_CALL_BEFORE_PARAMS = 'with:';
 Blockly.Msg.PROCEDURES_DEFNORETURN_DO = '';
 /// tooltip
 Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP = 'Creates a function with no output.';
+/// Placeholder text that the user is encouraged to replace with a description of what their function does.
+Blockly.Msg.PROCEDURES_DEFNORETURN_COMMENT = 'Describe this function...';
 /// url - Information about defining [https://en.wikipedia.org/wiki/Procedure_(computer_science) functions] that have return values.
 Blockly.Msg.PROCEDURES_DEFRETURN_HELPURL = 'https://en.wikipedia.org/wiki/Procedure_%28computer_science%29';
 Blockly.Msg.PROCEDURES_DEFRETURN_TITLE = Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE;
 Blockly.Msg.PROCEDURES_DEFRETURN_PROCEDURE = Blockly.Msg.PROCEDURES_DEFNORETURN_PROCEDURE;
 Blockly.Msg.PROCEDURES_DEFRETURN_DO = Blockly.Msg.PROCEDURES_DEFNORETURN_DO;
+Blockly.Msg.PROCEDURES_DEFRETURN_COMMENT = Blockly.Msg.PROCEDURES_DEFNORETURN_COMMENT;
 /// block text - This imperative or infinite verb precedes the value that is used as the return value
 /// (output) of this function.  See
 /// [https://blockly-demo.appspot.com/static/apps/code/index.html?lang=en#6ot5y5 this sample
 /// function that returns a value].
-
 Blockly.Msg.PROCEDURES_DEFRETURN_RETURN = 'return';
 /// tooltip
 Blockly.Msg.PROCEDURES_DEFRETURN_TOOLTIP = 'Creates a function with an output.';
@@ -1055,16 +1082,11 @@ Blockly.Msg.PROCEDURES_DEF_DUPLICATE_WARNING = 'Warning: This function has dupli
 
 /// url - Information about calling [https://en.wikipedia.org/wiki/Procedure_(computer_science) functions] that do not return values.
 Blockly.Msg.PROCEDURES_CALLNORETURN_HELPURL = 'https://en.wikipedia.org/wiki/Procedure_%28computer_science%29';
-/// block text - In most (if not all) languages, this will be the empty string.
-/// It precedes the name of the function that should be run.  See, for example,
-/// the "draw square" block in [https://blockly-demo.appspot.com/static/apps/turtle/index.html#ztz96g].
-Blockly.Msg.PROCEDURES_CALLNORETURN_CALL = '';
 /// tooltip - This block causes the body (blocks inside) of the named function definition to be run.
 Blockly.Msg.PROCEDURES_CALLNORETURN_TOOLTIP = 'Run the user-defined function "%1".';
 
 /// url - Information about calling [https://en.wikipedia.org/wiki/Procedure_(computer_science) functions] that return values.
 Blockly.Msg.PROCEDURES_CALLRETURN_HELPURL = 'https://en.wikipedia.org/wiki/Procedure_%28computer_science%29';
-Blockly.Msg.PROCEDURES_CALLRETURN_CALL = Blockly.Msg.PROCEDURES_CALLNORETURN_CALL;
 /// tooltip - This block causes the body (blocks inside) of the named function definition to be run.\n\nParameters:\n* %1 - the name of the function.
 Blockly.Msg.PROCEDURES_CALLRETURN_TOOLTIP = 'Run the user-defined function "%1" and use its output.';
 
@@ -1094,5 +1116,121 @@ Blockly.Msg.PROCEDURES_CREATE_DO = 'Create "%1"';
 /// tooltip - If the first value is true, this causes the second value to be returned
 /// immediately from the enclosing function.
 Blockly.Msg.PROCEDURES_IFRETURN_TOOLTIP = 'If a value is true, then return a second value.';
+/// url - Information about guard clauses.
+Blockly.Msg.PROCEDURES_IFRETURN_HELPURL = 'http://c2.com/cgi/wiki?GuardClause';
 /// warning - This appears if the user tries to use this block outside of a function definition.
 Blockly.Msg.PROCEDURES_IFRETURN_WARNING = 'Warning: This block may be used only within a function definition.';
+//Arduino blocks define as a specific type
+Blockly.Msg.ARD_TYPE_CHAR = 'Character';
+Blockly.Msg.ARD_TYPE_TEXT = 'Text';
+Blockly.Msg.ARD_TYPE_BOOL = 'Boolean';
+Blockly.Msg.ARD_TYPE_SHORT = 'Short Number';
+Blockly.Msg.ARD_TYPE_NUMBER = 'Number';
+Blockly.Msg.ARD_TYPE_LONG = 'Large Number';
+Blockly.Msg.ARD_TYPE_DECIMAL = 'Decimal';
+Blockly.Msg.ARD_TYPE_ARRAY = 'Array';
+Blockly.Msg.ARD_TYPE_NULL = 'Null';
+Blockly.Msg.ARD_TYPE_UNDEF = 'Undefined';
+Blockly.Msg.ARD_TYPE_CHILDBLOCKMISSING = 'ChildBlockMissing';
+Blockly.Msg.ARD_HIGH = 'HIGH';
+Blockly.Msg.ARD_LOW = 'LOW';
+Blockly.Msg.ARD_ANALOGREAD = 'read analog pin#';
+Blockly.Msg.ARD_ANALOGREAD_TIP = 'Return value between 0 and 1024';
+Blockly.Msg.ARD_ANALOGWRITE = 'set analog pin#';
+Blockly.Msg.ARD_VALUE = "value";
+Blockly.Msg.ARD_ANALOGWRITE_TIP = 'Write analog value between 0 and 255 to a specific PWM Port';
+Blockly.Msg.ARD_HIGHLOW_TIP = 'Set a pin state logic High or Low.';
+Blockly.Msg.ARD_DIGITALREAD = 'read digital pin#';
+Blockly.Msg.ARD_DIGITALREAD_TIP = 'Read digital value on a pin: HIGH or LOW';
+Blockly.Msg.ARD_DIGITALWRITE = 'set digitial pin#';
+Blockly.Msg.ARD_WRITE_TO = 'to';
+Blockly.Msg.ARD_DIGITALWRITE_TIP = 'Write digital value HIGH or LOW to a specific Port';
+Blockly.Msg.ARD_BUILTIN_LED = 'set built-in LED';
+Blockly.Msg.ARD_BUILTIN_LED_TIP = 'Light on or off for the built-in LED of the Arduino';
+Blockly.Msg.ARD_DEFINE = 'Define';
+Blockly.Msg.ARD_TONE_PIN = 'Tone PIN#';
+Blockly.Msg.ARD_TONE_FREQ = 'frequency';
+Blockly.Msg.ARD_TONE_PIN_TIP = 'Generate audio tones on a pin';
+Blockly.Msg.ARD_NOTONE_PIN = 'No tone PIN#';
+Blockly.Msg.ARD_NOTONE_PIN_TIP = 'Stop generating a tone on a pin';
+Blockly.Msg.ARD_MAP = 'Map';
+Blockly.Msg.ARD_MAP_VAL = 'value to [0-';
+Blockly.Msg.ARD_MAP_TIP = 'Re-maps a number from [0-1024] to another.';
+Blockly.Msg.ARD_FUN_RUN_SETUP = 'Arduino run first:';
+Blockly.Msg.ARD_FUN_RUN_LOOP = 'Arduino loop forever:';
+Blockly.Msg.ARD_FUN_RUN_TIP = 'Defines the Arduino setup() and loop() functions.';
+Blockly.Msg.ARD_PIN_WARN1 = 'Pin %1 is needed for %2 as pin %3. Already used as %4.';
+Blockly.Msg.ARD_SERIAL_SETUP = 'Setup';
+Blockly.Msg.ARD_SERIAL_SPEED = ':  speed to';
+Blockly.Msg.ARD_SERIAL_BPS = 'bps';
+Blockly.Msg.ARD_SERIAL_SETUP_TIP = 'Selects the speed for a specific Serial peripheral';
+Blockly.Msg.ARD_SERIAL_PRINT = 'print';
+Blockly.Msg.ARD_SERIAL_PRINT_NEWLINE = 'add new line';
+Blockly.Msg.ARD_SERIAL_PRINT_TIP = 'Prints data to the console/serial port as human-readable ASCII text.';
+Blockly.Msg.ARD_SERIAL_PRINT_WARN = 'A setup block for %1 must be added to the workspace to use this block!'
+Blockly.Msg.ARD_SERVO_WRITE = 'set SERVO from Pin';
+Blockly.Msg.ARD_SERVO_WRITE_TO = 'to';
+Blockly.Msg.ARD_SERVO_WRITE_DEG_180 = 'Degrees (0~180)';
+Blockly.Msg.ARD_SERVO_WRITE_TIP = 'Set a Servo to an specified angle';
+Blockly.Msg.ARD_SERVO_READ = 'read SERVO from PIN#';
+Blockly.Msg.ARD_SERVO_READ_TIP = 'Read a Servo angle';
+Blockly.Msg.ARD_SPI_SETUP = 'Setup';
+Blockly.Msg.ARD_SPI_SETUP_CONF = 'configuration:';
+Blockly.Msg.ARD_SPI_SETUP_SHIFT = 'data shift';
+Blockly.Msg.ARD_SPI_SETUP_MSBFIRST = 'MSBFIRST';
+Blockly.Msg.ARD_SPI_SETUP_LSBFIRST = 'LSBFIRST';
+Blockly.Msg.ARD_SPI_SETUP_DIVIDE = 'clock divide';
+Blockly.Msg.ARD_SPI_SETUP_MODE = 'SPI mode (idle - edge)';
+Blockly.Msg.ARD_SPI_SETUP_MODE0 = '0 (Low - Falling)';
+Blockly.Msg.ARD_SPI_SETUP_MODE1 = '1 (Low - Rising)';
+Blockly.Msg.ARD_SPI_SETUP_MODE2 = '2 (High - Falling)';
+Blockly.Msg.ARD_SPI_SETUP_MODE3 = '3 (High - Rising)';
+Blockly.Msg.ARD_SPI_SETUP_TIP = 'Configures the SPI peripheral.';
+Blockly.Msg.ARD_SPI_TRANS_NONE = 'none';
+Blockly.Msg.ARD_SPI_TRANS_VAL = 'transfer';
+Blockly.Msg.ARD_SPI_TRANS_SLAVE = 'to slave pin';
+Blockly.Msg.ARD_SPI_TRANS_TIP = 'Send a SPI message to an specified slave device.';
+Blockly.Msg.ARD_SPI_TRANS_WARN1 = 'A setup block for %1 must be added to the workspace to use this block!';
+Blockly.Msg.ARD_SPI_TRANS_WARN2 = 'Old pin value %1 is no longer available.';
+Blockly.Msg.ARD_SPI_TRANSRETURN_TIP = 'Send a SPI message to an specified slave device and get data back.';
+Blockly.Msg.ARD_STEPPER_SETUP = 'Setup stepper motor';
+Blockly.Msg.ARD_STEPPER_MOTOR = '';
+Blockly.Msg.ARD_STEPPER_DEFAULT_NAME = 'MyStepper';
+Blockly.Msg.ARD_STEPPER_PIN1 = 'pin1#';
+Blockly.Msg.ARD_STEPPER_PIN2 = 'pin2#';
+Blockly.Msg.ARD_STEPPER_REVOLVS = 'how many steps per revolution';
+Blockly.Msg.ARD_STEPPER_SPEED = 'set speed (rpm) to';
+Blockly.Msg.ARD_STEPPER_SETUP_TIP = 'Configures a stepper motor pinout and other settings.';
+Blockly.Msg.ARD_STEPPER_STEP = 'move stepper';
+Blockly.Msg.ARD_STEPPER_STEPS = 'steps';
+Blockly.Msg.ARD_STEPPER_STEP_TIP = 'Turns the stepper motor a specific number of steps.';
+Blockly.Msg.ARD_STEPPER_COMPONENT = 'stepper';
+Blockly.Msg.ARD_COMPONENT_WARN1 = 'A %1 configuration block with the same %1 name must be added to use this block!';
+Blockly.Msg.ARD_TIME_DELAY = 'wait';
+Blockly.Msg.ARD_TIME_MS = 'milliseconds';
+Blockly.Msg.ARD_TIME_DELAY_TIP = 'Wait specific time in milliseconds';
+Blockly.Msg.ARD_TIME_DELAY_MICROS = 'microseconds';
+Blockly.Msg.ARD_TIME_DELAY_MICRO_TIP = 'Wait specific time in microseconds';
+Blockly.Msg.ARD_TIME_MILLIS = 'current elapsed Time (milliseconds)';
+Blockly.Msg.ARD_TIME_MILLIS_TIP = 'Returns the number of milliseconds since the Arduino board began running the current program. Has to be stored in a positive long integer';
+Blockly.Msg.ARD_TIME_MICROS = 'current elapsed Time (microseconds)';
+Blockly.Msg.ARD_TIME_MICROS_TIP = 'Returns the number of microseconds since the Arduino board began running the current program. Has to be stored in a positive long integer';
+Blockly.Msg.ARD_TIME_INF = 'wait forever (end program)';
+Blockly.Msg.ARD_TIME_INF_TIP = 'Wait indefinitely, stopping the program.'
+Blockly.Msg.ARD_VAR_AS = 'as';
+Blockly.Msg.ARD_VAR_AS_TIP = 'Sets a value to a specific type';
+Blockly.Msg.REPLACE_EXISTING_BLOCKS = 'Replace existing blocks? "Cancel" will merge.';
+
+Blockly.Msg.ARD_PULSEREAD = 'Read';
+Blockly.Msg.ARD_PULSEON = 'pulse on pin #';
+Blockly.Msg.ARD_PULSETIMEOUT = 'timeout after';
+Blockly.Msg.ARD_PULSETIMEOUT_MS = '';
+Blockly.Msg.ARD_PULSE_TIP = 'Measures the duration of a pulse on the selected pin.';
+Blockly.Msg.ARD_PULSETIMEOUT_TIP = 'Measures the duration of a pulse on the selected pin, if it is within the timeout.';
+Blockly.Msg.ARD_SETTONE = 'Set tone on pin #';
+Blockly.Msg.ARD_TONEFREQ = 'at frequency';
+Blockly.Msg.ARD_TONE_TIP = 'Sets tone on pin to specified frequency within range 31 - 65535';
+Blockly.Msg.ARD_TONE_WARNING = 'Frequency must be in range 31 - 65535';
+Blockly.Msg.ARD_NOTONE = 'Turn off tone on pin #';
+Blockly.Msg.ARD_NOTONE_TIP = 'Turns the tone off on the selected pin';
+

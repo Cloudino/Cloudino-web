@@ -60,6 +60,8 @@
   <!-- /.container-fluid --> 
 </nav>
 
+<!--<a href="https://github.com/Cloudino"><img src="/img/forkme_right_red.png" style="position: fixed; right: 0; top: 0; z-index: 1032;"></a>-->
+
 <!-- Header -->
 <header> <img src="img/nube-1.svg" class="nube1 hidden-xs"> <img src="img/nube-2.svg" class="nube2 hidden-xs"> <img src="img/nube-3.svg" class="nube3">
   <div class="container seccion-header">
@@ -221,7 +223,28 @@
 <section id="learn" class="boardstart seccion-learn">
   <h2>Getting Started</h2>
   <ul>
-    <li>Arduino Connection Squema</li>
+    <li><a href="https://github.com/Cloudino/Cloudino-Doc">Cloudino Documentation</a></li>  
+    <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-Arquitecture">Cloudino Arquitecture</a></li>  
+    <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-WiFi-Connector">Cloudino WiFi Cloud Connector</a>
+      <ul>    
+        <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-WiFi-Connector-Schema">Cloudino Connector Squema</a></li>
+        <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Make-your-first-Cloudino">Make your first Cloudino </a></li>
+      </ul>
+    </li>  
+    <li>Cloudino with Arduino
+      <ul>    
+        <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-with-Arduino-Connection-Squema">Arduino Connection Squema</a></li>
+        <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-Library-for-Arduino">Cloudino Library for Arduino</a></li>
+        <li><a href="https://github.com/Cloudino/Cloudino-ArduinoLib">Download Arduino Library</a></li>
+      </ul>
+    </li>    
+    <li>Cloudino with JavaScript
+      <ul>    
+        <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/CloudinoJS-Examples">CloudinoJS Examples</a></li>
+        <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/CloudinoJS-Language-Reference">CloudinoJS Language Reference</a></li>
+      </ul>
+    </li>    
+<!--    
     <li>Cloudino Configuration
       <ul>
         <li>Wifi Configuration</li>
@@ -230,6 +253,7 @@
     </li>
     <li>Programming Arduino using WIFI</li>
     <li>Programming Arduino using Cloud</li>
+-->
     <li><a href="/doc/Connecting_Cloudino_Connector_to_FIWARE_IoT.pdf">Connecting to FIWARE IoT</a></li>
   </ul>
 </section>
@@ -275,7 +299,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
         <h4 class="modal-title" id="myModalLabel"> Cloudino Architecture </h4>
       </div>
-      <div class="modal-body"> <img src="img/arquitecture.png" class="img-responsive"> </div>
+      <div class="modal-body"> <img src="img/Cloudino_Achitecture.png" class="img-responsive"> </div>
     </div>
   </div>
 </div>

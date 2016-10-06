@@ -164,66 +164,6 @@ Blockly.unbindEvent_ = function(bindData) {
 };
 
 /**
- * Fire a synthetic event synchronously.
- * @param {!EventTarget} node The event's target node.
- * @param {string} eventName Name of event (e.g. 'click').
- */
-Blockly.fireUiEventNow = function(node, eventName) {
-  // Remove the event from the anti-duplicate database.
-  var list = Blockly.fireUiEvent.DB_[eventName];
-  if (list) {
-    var i = list.indexOf(node);
-    if (i != -1) {
-      list.splice(i, 1);
-    }
-  }
-  // Fire the event in a browser-compatible way.
-  if (document.createEvent) {
-    // W3
-    var evt = document.createEvent('UIEvents');
-    evt.initEvent(eventName, true, true);  // event type, bubbling, cancelable
-    node.dispatchEvent(evt);
-  } else if (document.createEventObject) {
-    // MSIE
-    var evt = document.createEventObject();
-    node.fireEvent('on' + eventName, evt);
-  } else {
-    throw 'FireEvent: No event creation mechanism.';
-  }
-};
-
-/**
- * Fire a synthetic event asynchronously.  Groups of simultaneous events (e.g.
- * a tree of blocks being deleted) are merged into one event.
- * @param {!EventTarget} node The event's target node.
- * @param {string} eventName Name of event (e.g. 'click').
- */
-Blockly.fireUiEvent = function(node, eventName) {
-  var list = Blockly.fireUiEvent.DB_[eventName];
-  if (list) {
-    if (list.indexOf(node) != -1) {
-      // This event is already scheduled to fire.
-      return;
-    }
-    list.push(node);
-  } else {
-    Blockly.fireUiEvent.DB_[eventName] = [node];
-  }
-  var fire = function() {
-    Blockly.fireUiEventNow(node, eventName);
-  };
-  setTimeout(fire, 0);
-};
-
-/**
- * Database of upcoming firing event types.
- * Used to fire only one event after multiple changes.
- * @type {!Object}
- * @private
- */
-Blockly.fireUiEvent.DB_ = {};
-
-/**
  * Don't do anything for this event, just halt propagation.
  * @param {!Event} e An event.
  */
@@ -318,7 +258,7 @@ Blockly.getSvgXY_ = function(element, workspace) {
     x += xy.x * scale;
     y += xy.y * scale;
     element = element.parentNode;
-  } while (element && element != workspace.options.svg);
+  } while (element && element != workspace.getParentSvg());
   return new goog.math.Coordinate(x, y);
 };
 
@@ -347,26 +287,6 @@ Blockly.createSvgElement = function(name, attrs, parent, opt_workspace) {
     parent.appendChild(e);
   }
   return e;
-};
-
-/**
- * Deselect any selections on the webpage.
- * Chrome will select text outside the SVG when double-clicking.
- * Deselect this text, so that it doesn't mess up any subsequent drag.
- */
-Blockly.removeAllRanges = function() {
-  if (window.getSelection) {
-    setTimeout(function() {
-        try {
-          var selection = window.getSelection();
-          if (!selection.isCollapsed) {
-            selection.removeAllRanges();
-          }
-        } catch (e) {
-          // MSIE throws 'error 800a025e' here.
-        }
-      }, 0);
-  }
 };
 
 /**
@@ -550,4 +470,56 @@ Blockly.tokenizeInterpolation = function(message) {
     tokens.push(text);
   }
   return tokens;
+};
+
+/**
+ * Generate a unique ID.  This should be globally unique.
+ * 87 characters ^ 20 length > 128 bits (better than a UUID).
+ * @return {string} A globally unique ID string.
+ */
+Blockly.genUid = function() {
+  var length = 20;
+  var soupLength = Blockly.genUid.soup_.length;
+  var id = [];
+  for (var i = 0; i < length; i++) {
+    id[i] = Blockly.genUid.soup_.charAt(Math.random() * soupLength);
+  }
+  return id.join('');
+};
+
+/**
+ * Legal characters for the unique ID.
+ * Should be all on a US keyboard.  No XML special characters or control codes.
+ * Removed $ due to issue 251.
+ * @private
+ */
+Blockly.genUid.soup_ = '!#%()*+,-./:;=?@[]^_`{|}~' +
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+/**
+ * Local prompt function created to allow blockly developers to overwrite it
+ * with a customised version. This version uses the default window.prompt
+ * functionality, but it has been designed to be easily replaced by an 
+ * asynchronous HTML based prompt.
+ * @param {string} message Main text message for the window prompt.
+ * @param {string=} opt_defaultInput Input string to be displayed by default.
+ * @param {function=} opt_callback Optional function callback to process the
+ *     user input.
+ * @return {undefined|null|string} If no callback is provided it returns the
+ *     value directly from window.prompt (null or string), otherwise it
+ *     returns undefined.
+ */
+Blockly.prompt = function(message, opt_defaultInput, opt_callback) {
+  if (opt_callback === undefined) {
+    // If no callback provided to revert back to the normal blockly prompt
+    return window.prompt(message, opt_defaultInput);
+  } else {
+    // window.prompt still a blocking function, but returns value via callback
+    if (typeof opt_callback == 'function') {
+      opt_callback(window.prompt(message, opt_defaultInput));
+    } else {
+      console.log('Blocky prompt callback needs to be a callable function.');
+    }
+  }
+  return undefined;
 };

@@ -27,6 +27,7 @@
 goog.provide('Blockly.Blocks.math');
 
 goog.require('Blockly.Blocks');
+goog.require('Blockly.Types');
 
 
 /**
@@ -43,10 +44,27 @@ Blockly.Blocks['math_number'] = {
     this.setHelpUrl(Blockly.Msg.MATH_NUMBER_HELPURL);
     this.setColour(Blockly.Blocks.math.HUE);
     this.appendDummyInput()
-        .appendField(new Blockly.FieldTextInput('0',
-        Blockly.FieldTextInput.numberValidator), 'NUM');
-    this.setOutput(true, 'Number');
-    this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
+        .appendField(
+            new Blockly.FieldTextInput(
+                '0', Blockly.FieldTextInput.numberValidator),
+            'NUM');
+    this.setOutput(true, Blockly.Types.NUMBER.output);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+    // Number block is trivial.  Use tooltip of parent block if it exists.
+    this.setTooltip(function() {
+      var parent = thisBlock.getParent();
+      return (parent && parent.getInputsInline() && parent.tooltip) ||
+          Blockly.Msg.MATH_NUMBER_TOOLTIP;
+    });
+  },
+  /**
+   * Reads the numerical value from the block and assigns a block type.
+   * @this Blockly.Block
+   */
+  getBlockType: function() {
+    var numString = this.getFieldValue('NUM');
+    return Blockly.Types.identifyNumber(numString);
   }
 };
 
@@ -56,21 +74,35 @@ Blockly.Blocks['math_arithmetic'] = {
    * @this Blockly.Block
    */
   init: function() {
-    var OPERATORS =
-        [[Blockly.Msg.MATH_ADDITION_SYMBOL, 'ADD'],
-         [Blockly.Msg.MATH_SUBTRACTION_SYMBOL, 'MINUS'],
-         [Blockly.Msg.MATH_MULTIPLICATION_SYMBOL, 'MULTIPLY'],
-         [Blockly.Msg.MATH_DIVISION_SYMBOL, 'DIVIDE'],
-         [Blockly.Msg.MATH_POWER_SYMBOL, 'POWER']];
-    this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
-    this.setColour(Blockly.Blocks.math.HUE);
-    this.setOutput(true, 'Number');
-    this.appendValueInput('A')
-        .setCheck('Number');
-    this.appendValueInput('B')
-        .setCheck('Number')
-        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP');
-    this.setInputsInline(true);
+    this.jsonInit({
+      "message0": "%1 %2 %3",
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "A",
+          "check": Blockly.Types.NUMBER.checkList
+        },
+        {
+          "type": "field_dropdown",
+          "name": "OP",
+          "options":
+            [[Blockly.Msg.MATH_ADDITION_SYMBOL, 'ADD'],
+             [Blockly.Msg.MATH_SUBTRACTION_SYMBOL, 'MINUS'],
+             [Blockly.Msg.MATH_MULTIPLICATION_SYMBOL, 'MULTIPLY'],
+             [Blockly.Msg.MATH_DIVISION_SYMBOL, 'DIVIDE'],
+             [Blockly.Msg.MATH_POWER_SYMBOL, 'POWER']]
+        },
+        {
+          "type": "input_value",
+          "name": "B",
+          "check": Blockly.Types.NUMBER.checkList
+        }
+      ],
+      "inputsInline": true,
+      "output": Blockly.Types.NUMBER.output,
+      "colour": Blockly.Blocks.math.HUE,
+      "helpUrl": Blockly.Msg.MATH_ARITHMETIC_HELPURL
+    });
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     this.setTooltip(function() {
@@ -85,6 +117,7 @@ Blockly.Blocks['math_arithmetic'] = {
       return TOOLTIPS[mode];
     });
   }
+  //TODO: a getBlockType based on the two input types following C++ rules
 };
 
 Blockly.Blocks['math_single'] = {
@@ -93,20 +126,32 @@ Blockly.Blocks['math_single'] = {
    * @this Blockly.Block
    */
   init: function() {
-    var OPERATORS =
-        [[Blockly.Msg.MATH_SINGLE_OP_ROOT, 'ROOT'],
-         [Blockly.Msg.MATH_SINGLE_OP_ABSOLUTE, 'ABS'],
-         ['-', 'NEG'],
-         ['ln', 'LN'],
-         ['log10', 'LOG10'],
-         ['e^', 'EXP'],
-         ['10^', 'POW10']];
-    this.setHelpUrl(Blockly.Msg.MATH_SINGLE_HELPURL);
-    this.setColour(Blockly.Blocks.math.HUE);
-    this.setOutput(true, 'Number');
-    this.appendValueInput('NUM')
-        .setCheck('Number')
-        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP');
+    this.jsonInit({
+      "message0": "%1 %2",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "OP",
+          "options": [
+            [Blockly.Msg.MATH_SINGLE_OP_ROOT, 'ROOT'],
+            [Blockly.Msg.MATH_SINGLE_OP_ABSOLUTE, 'ABS'],
+            ['-', 'NEG'],
+            ['ln', 'LN'],
+            ['log10', 'LOG10'],
+            ['e^', 'EXP'],
+            ['10^', 'POW10']
+          ]
+        },
+        {
+          "type": "input_value",
+          "name": "NUM",
+          "check": Blockly.Types.DECIMAL.checkList
+        }
+      ],
+      "output": Blockly.Types.DECIMAL.output,
+      "colour": Blockly.Blocks.math.HUE,
+      "helpUrl": Blockly.Msg.MATH_SINGLE_HELPURL
+    });
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     this.setTooltip(function() {
@@ -122,6 +167,10 @@ Blockly.Blocks['math_single'] = {
       };
       return TOOLTIPS[mode];
     });
+  },
+  /** @return {!string} Type of the block, all these operations are floats. */
+  getBlockType: function() {
+    return Blockly.Types.DECIMAL;
   }
 };
 
@@ -131,19 +180,31 @@ Blockly.Blocks['math_trig'] = {
    * @this Blockly.Block
    */
   init: function() {
-    var OPERATORS =
-        [[Blockly.Msg.MATH_TRIG_SIN, 'SIN'],
-         [Blockly.Msg.MATH_TRIG_COS, 'COS'],
-         [Blockly.Msg.MATH_TRIG_TAN, 'TAN'],
-         [Blockly.Msg.MATH_TRIG_ASIN, 'ASIN'],
-         [Blockly.Msg.MATH_TRIG_ACOS, 'ACOS'],
-         [Blockly.Msg.MATH_TRIG_ATAN, 'ATAN']];
-    this.setHelpUrl(Blockly.Msg.MATH_TRIG_HELPURL);
-    this.setColour(Blockly.Blocks.math.HUE);
-    this.setOutput(true, 'Number');
-    this.appendValueInput('NUM')
-        .setCheck('Number')
-        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP');
+    this.jsonInit({
+      "message0": "%1 %2",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "OP",
+          "options": [
+            [Blockly.Msg.MATH_TRIG_SIN, 'SIN'],
+            [Blockly.Msg.MATH_TRIG_COS, 'COS'],
+            [Blockly.Msg.MATH_TRIG_TAN, 'TAN'],
+            [Blockly.Msg.MATH_TRIG_ASIN, 'ASIN'],
+            [Blockly.Msg.MATH_TRIG_ACOS, 'ACOS'],
+            [Blockly.Msg.MATH_TRIG_ATAN, 'ATAN']
+          ]
+        },
+        {
+          "type": "input_value",
+          "name": "NUM",
+          "check": Blockly.Types.DECIMAL.checkList
+        }
+      ],
+      "output": Blockly.Types.DECIMAL.output,
+      "colour": Blockly.Blocks.math.HUE,
+      "helpUrl": Blockly.Msg.MATH_TRIG_HELPURL
+    });
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     this.setTooltip(function() {
@@ -158,6 +219,10 @@ Blockly.Blocks['math_trig'] = {
       };
       return TOOLTIPS[mode];
     });
+  },
+  /** @return {!string} Type of the block, all these operations are floats. */
+  getBlockType: function() {
+    return Blockly.Types.DECIMAL;
   }
 };
 
@@ -167,19 +232,27 @@ Blockly.Blocks['math_constant'] = {
    * @this Blockly.Block
    */
   init: function() {
-    var CONSTANTS =
-        [['\u03c0', 'PI'],
-         ['e', 'E'],
-         ['\u03c6', 'GOLDEN_RATIO'],
-         ['sqrt(2)', 'SQRT2'],
-         ['sqrt(\u00bd)', 'SQRT1_2'],
-         ['\u221e', 'INFINITY']];
-    this.setHelpUrl(Blockly.Msg.MATH_CONSTANT_HELPURL);
-    this.setColour(Blockly.Blocks.math.HUE);
-    this.setOutput(true, 'Number');
-    this.appendDummyInput()
-        .appendField(new Blockly.FieldDropdown(CONSTANTS), 'CONSTANT');
-    this.setTooltip(Blockly.Msg.MATH_CONSTANT_TOOLTIP);
+    this.jsonInit({
+      "message0": "%1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "CONSTANT",
+          "options": [
+            ['\u03c0', 'PI'],
+            ['e', 'E'],
+            ['\u03c6', 'GOLDEN_RATIO'],
+            ['sqrt(2)', 'SQRT2'],
+            ['sqrt(\u00bd)', 'SQRT1_2'],
+            ['\u221e', 'INFINITY']
+          ]
+        }
+      ],
+      "output": Blockly.Types.DECIMAL.output,
+      "colour": Blockly.Blocks.math.HUE,
+      "tooltip": Blockly.Msg.MATH_CONSTANT_TOOLTIP,
+      "helpUrl": Blockly.Msg.MATH_CONSTANT_HELPURL
+    });
   }
 };
 
@@ -200,7 +273,7 @@ Blockly.Blocks['math_number_property'] = {
          [Blockly.Msg.MATH_IS_DIVISIBLE_BY, 'DIVISIBLE_BY']];
     this.setColour(Blockly.Blocks.math.HUE);
     this.appendValueInput('NUMBER_TO_CHECK')
-        .setCheck('Number');
+        .setCheck(Blockly.Types.NUMBER.checkList);
     var dropdown = new Blockly.FieldDropdown(PROPERTIES, function(option) {
       var divisorInput = (option == 'DIVISIBLE_BY');
       this.sourceBlock_.updateShape_(divisorInput);
@@ -208,7 +281,7 @@ Blockly.Blocks['math_number_property'] = {
     this.appendDummyInput()
         .appendField(dropdown, 'PROPERTY');
     this.setInputsInline(true);
-    this.setOutput(true, 'Boolean');
+    this.setOutput(true, Blockly.Types.BOOLEAN.output);
     this.setTooltip(Blockly.Msg.MATH_IS_TOOLTIP);
   },
   /**
@@ -243,11 +316,15 @@ Blockly.Blocks['math_number_property'] = {
     if (divisorInput) {
       if (!inputExists) {
         this.appendValueInput('DIVISOR')
-            .setCheck('Number');
+            .setCheck(Blockly.Types.NUMBER.checkList);
       }
     } else if (inputExists) {
       this.removeInput('DIVISOR');
     }
+  },
+  /** @return {!string} Type of the block, all these operations are bools. */
+  getBlockType: function() {
+    return Blockly.Types.BOOLEAN;
   }
 };
 
@@ -268,7 +345,8 @@ Blockly.Blocks['math_change'] = {
         {
           "type": "input_value",
           "name": "DELTA",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList,
+          "align": "RIGHT"
         }
       ],
       "previousStatement": null,
@@ -284,24 +362,13 @@ Blockly.Blocks['math_change'] = {
     });
   },
   /**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
+   * Gets the variable type selected in the drop down, always an integer.
+   * @param {!string} varName Name of the variable selected in this block to
+   *     check.
+   * @return {string} String to indicate the variable type.
    */
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-      this.setFieldValue(newName, 'VAR');
-    }
+  getVarType: function(varName) {
+    return Blockly.Types.NUMBER;
   }
 };
 
@@ -311,17 +378,33 @@ Blockly.Blocks['math_round'] = {
    * @this Blockly.Block
    */
   init: function() {
-    var OPERATORS =
-        [[Blockly.Msg.MATH_ROUND_OPERATOR_ROUND, 'ROUND'],
-         [Blockly.Msg.MATH_ROUND_OPERATOR_ROUNDUP, 'ROUNDUP'],
-         [Blockly.Msg.MATH_ROUND_OPERATOR_ROUNDDOWN, 'ROUNDDOWN']];
-    this.setHelpUrl(Blockly.Msg.MATH_ROUND_HELPURL);
-    this.setColour(Blockly.Blocks.math.HUE);
-    this.setOutput(true, 'Number');
-    this.appendValueInput('NUM')
-        .setCheck('Number')
-        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP');
-    this.setTooltip(Blockly.Msg.MATH_ROUND_TOOLTIP);
+    this.jsonInit({
+      "message0": "%1 %2",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "OP",
+          "options": [
+            [Blockly.Msg.MATH_ROUND_OPERATOR_ROUND, 'ROUND'],
+            [Blockly.Msg.MATH_ROUND_OPERATOR_ROUNDUP, 'ROUNDUP'],
+            [Blockly.Msg.MATH_ROUND_OPERATOR_ROUNDDOWN, 'ROUNDDOWN']
+          ]
+        },
+        {
+          "type": "input_value",
+          "name": "NUM",
+          "check": Blockly.Types.DECIMAL.checkList
+        }
+      ],
+      "output": Blockly.Types.DECIMAL.output,
+      "colour": Blockly.Blocks.math.HUE,
+      "tooltip": Blockly.Msg.MATH_ROUND_TOOLTIP,
+      "helpUrl": Blockly.Msg.MATH_ROUND_HELPURL
+    });
+  },
+  /** @return {!string} Type of the block, round always returns a float. */
+  getBlockType: function() {
+    return Blockly.Types.DECIMAL;
   }
 };
 
@@ -345,12 +428,12 @@ Blockly.Blocks['math_on_list'] = {
     var thisBlock = this;
     this.setHelpUrl(Blockly.Msg.MATH_ONLIST_HELPURL);
     this.setColour(Blockly.Blocks.math.HUE);
-    this.setOutput(true, 'Number');
+    this.setOutput(true, Blockly.Types.NUMBER.output);
     var dropdown = new Blockly.FieldDropdown(OPERATORS, function(newOp) {
       thisBlock.updateType_(newOp);
     });
     this.appendValueInput('LIST')
-        .setCheck('Array')
+        .setCheck(Blockly.Types.ARRAY.checkList)
         .appendField(dropdown, 'OP');
     this.setTooltip(function() {
       var mode = thisBlock.getFieldValue('OP');
@@ -375,9 +458,9 @@ Blockly.Blocks['math_on_list'] = {
    */
   updateType_: function(newOp) {
     if (newOp == 'MODE') {
-      this.outputConnection.setCheck('Array');
+      this.outputConnection.setCheck(Blockly.Types.ARRAY.output);
     } else {
-      this.outputConnection.setCheck('Number');
+      this.outputConnection.setCheck(Blockly.Types.NUMBER.output);
     }
   },
   /**
@@ -398,6 +481,7 @@ Blockly.Blocks['math_on_list'] = {
   domToMutation: function(xmlElement) {
     this.updateType_(xmlElement.getAttribute('op'));
   }
+  //TODO: a getBlockType once the list code is finished.
 };
 
 Blockly.Blocks['math_modulo'] = {
@@ -412,20 +496,26 @@ Blockly.Blocks['math_modulo'] = {
         {
           "type": "input_value",
           "name": "DIVIDEND",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList
         },
         {
           "type": "input_value",
           "name": "DIVISOR",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList
         }
       ],
       "inputsInline": true,
-      "output": "Number",
+      "output": Blockly.Types.NUMBER.output,
       "colour": Blockly.Blocks.math.HUE,
       "tooltip": Blockly.Msg.MATH_MODULO_TOOLTIP,
       "helpUrl": Blockly.Msg.MATH_MODULO_HELPURL
     });
+  },
+  /** @return {!string} Type of the block, modulus only works on integers. */
+  getBlockType: function() {
+    //TODO: Right now the block inputs are set to integer but will accept the
+    //      "compatible" type float or plain "number", need to fix to integer.
+    return Blockly.Types.NUMBER;
   }
 };
 
@@ -441,26 +531,27 @@ Blockly.Blocks['math_constrain'] = {
         {
           "type": "input_value",
           "name": "VALUE",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList
         },
         {
           "type": "input_value",
           "name": "LOW",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList
         },
         {
           "type": "input_value",
           "name": "HIGH",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList
         }
       ],
       "inputsInline": true,
-      "output": "Number",
+      "output": Blockly.Types.NUMBER.output,
       "colour": Blockly.Blocks.math.HUE,
       "tooltip": Blockly.Msg.MATH_CONSTRAIN_TOOLTIP,
       "helpUrl": Blockly.Msg.MATH_CONSTRAIN_HELPURL
     });
   }
+  //TODO: a getBlockType of the same type as the inputs.
 };
 
 Blockly.Blocks['math_random_int'] = {
@@ -475,20 +566,24 @@ Blockly.Blocks['math_random_int'] = {
         {
           "type": "input_value",
           "name": "FROM",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList
         },
         {
           "type": "input_value",
           "name": "TO",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList
         }
       ],
       "inputsInline": true,
-      "output": "Number",
+      "output": Blockly.Types.NUMBER.output,
       "colour": Blockly.Blocks.math.HUE,
       "tooltip": Blockly.Msg.MATH_RANDOM_INT_TOOLTIP,
       "helpUrl": Blockly.Msg.MATH_RANDOM_INT_HELPURL
     });
+  },
+  /** @return {!string} Type of the block, by definition always an integer. */
+  getBlockType: function() {
+    return Blockly.Types.NUMBER;
   }
 };
 
@@ -498,11 +593,16 @@ Blockly.Blocks['math_random_float'] = {
    * @this Blockly.Block
    */
   init: function() {
-    this.setHelpUrl(Blockly.Msg.MATH_RANDOM_FLOAT_HELPURL);
-    this.setColour(Blockly.Blocks.math.HUE);
-    this.setOutput(true, 'Number');
-    this.appendDummyInput()
-        .appendField(Blockly.Msg.MATH_RANDOM_FLOAT_TITLE_RANDOM);
-    this.setTooltip(Blockly.Msg.MATH_RANDOM_FLOAT_TOOLTIP);
+    this.jsonInit({
+      "message0": Blockly.Msg.MATH_RANDOM_FLOAT_TITLE_RANDOM,
+      "output": Blockly.Types.DECIMAL.output,
+      "colour": Blockly.Blocks.math.HUE,
+      "tooltip": Blockly.Msg.MATH_RANDOM_FLOAT_TOOLTIP,
+      "helpUrl": Blockly.Msg.MATH_RANDOM_FLOAT_HELPURL
+    });
+  },
+  /** @return {!string} Type of the block, by definition always a float. */
+  getBlockType: function() {
+    return Blockly.Types.DECIMAL;
   }
 };

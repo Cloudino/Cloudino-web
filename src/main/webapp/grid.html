@@ -8,9 +8,10 @@ and open the template in the editor.
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
         <link href="/plugins/gridster/jquery.gridster.min.css" rel="stylesheet" type="text/css"/>
         <style>
+            
             .gridster li{
                 list-style: none;
                 display: table;
@@ -94,19 +95,47 @@ and open the template in the editor.
                 cursor: default;
                 z-index: 20;
             }
+            
+.close {
+  position: absolute;
+  right: 2px;
+  top: 3px;
+  width: 17px;
+  height: 17px;
+  //opacity: 0.3;
+  cursor: default;
+}
+.close:hover {
+  opacity: 1;
+}
+.close:before, .close:after {
+  position: absolute;
+  left: 7px;
+  margin-top: 1px;
+  content: ' ';
+  height: 10px;
+  width: 2px;
+  background-color: #555;
+}
+.close:before {
+  transform: rotate(45deg);
+}
+.close:after {
+  transform: rotate(-45deg);
+}
 
 
         </style>
     </head>
     <body>
-        <div>TODO write content</div>
         <div class="gridster">
             <ul>
-                <li data-row="1" data-col="1" data-sizex="1" data-sizey="1" onclick="alert('hola')">Hola</li>
-                <li data-row="2" data-col="1" data-sizex="1" data-sizey="1"><button>Hola</button></li>
-                <li data-row="3" data-col="1" data-sizex="1" data-sizey="1"><a href="#" class="myButton">turquoise</a><span class="gs-resize-handle gs-resize-handle-remove">x</span></li>
-
-                <li data-row="1" data-col="2" data-sizex="2" data-sizey="1"></li>
+                <li data-row="1" data-col="1" data-sizex="2" data-sizey="2" onclick="alert('hola')">Hola</li>
+                <li data-row="2" data-col="1" data-sizex="2" data-sizey="2"><button>Hola</button></li>
+                <li data-row="3" data-col="1" data-sizex="2" data-sizey="2"><a class="myButton" onclick="alert('hola link')">turquoise</a><span class="gs-resize-handle close" onclick="alert('hola x')"></span></li>
+                <li data-row="1" data-col="2" data-sizex="2" data-sizey="1"><canvas id="myCanvas" width="100%" height="50"></canvas></li>
+<!--
+                
                 <li data-row="2" data-col="2" data-sizex="2" data-sizey="2"></li>
 
                 <li data-row="1" data-col="4" data-sizex="1" data-sizey="1"></li>
@@ -118,33 +147,68 @@ and open the template in the editor.
 
                 <li data-row="1" data-col="6" data-sizex="1" data-sizey="1"></li>
                 <li data-row="2" data-col="6" data-sizex="1" data-sizey="2"></li>
+-->
             </ul>
         </div>
         <script src="/js/jquery.js" type="text/javascript"></script>     
         <script src="plugins/gridster/jquery.gridster.js" type="text/javascript"></script>
         <script>
+                    
+                    document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
                     var gridster;
 
                     $(function() {
 
-                        gridster = $(".gridster ul").gridster({
-                            widget_base_dimensions: [50, 50],
+                        gridster = $(".gridster > ul").gridster({
+                            //widget_base_dimensions: [75, 75],
+                            widget_base_dimensions: ['auto', 70],
                             widget_margins: [5, 5],
+                            max_cols: 8,
+                            max_rows: 9,
+                            //autogrow_cols: false,
                             helper: 'clone',
                             resize: {
                                 enabled: true,
                                 //max_size: [4, 4],
                                 //min_size: [1, 1]
-                            }
+                                stop: function (e, ui, $widget) {
+                                    var canvas=$widget[0].firstChild;
+                                    canvas.width=$widget[0].clientWidth;
+                                    //canvas.height=ui.position.top;
+                                    
+                                    console.log($widget, ui);
+                                }
+                            },
+                            shift_widgets_up: false,
+                            shift_larger_widgets_down: false,
+                            collision: {
+                                wait_for_mouseup: true
+                            }                            
                         }).data('gridster');
-
-
+                        
                     });
+                    
+                    //$(".gridster ul:first").gridster().data('gridster').draggable().disable();
 
                     function add()
                     {
                         gridster.add_widget('<li><a href="#" class="myButton"><span>turquoise</span></a></li>', 2, 1);
                     }
+                    
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var radius = centerX;
+
+      context.beginPath();
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = 'green';
+      context.fill();
+      context.lineWidth = 5;
+      context.strokeStyle = '#003300';
+      context.stroke();
+                    
         </script>
         <button onclick="add();">Add</button>
     </body>

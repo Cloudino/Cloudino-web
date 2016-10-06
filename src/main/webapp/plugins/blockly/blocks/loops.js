@@ -27,6 +27,7 @@
 goog.provide('Blockly.Blocks.loops');
 
 goog.require('Blockly.Blocks');
+goog.require('Blockly.Types');
 
 
 /**
@@ -46,7 +47,7 @@ Blockly.Blocks['controls_repeat_ext'] = {
         {
           "type": "input_value",
           "name": "TIMES",
-          "check": "Number"
+          "check": Blockly.Types.NUMBER.checkList
         }
       ],
       "previousStatement": null,
@@ -71,8 +72,9 @@ Blockly.Blocks['controls_repeat'] = {
       "message0": Blockly.Msg.CONTROLS_REPEAT_TITLE,
       "args0": [
         {
-          "type": "field_input",
+          "type": "field_number",
           "name": "TIMES",
+          "check": Blockly.Types.NUMBER.checkList,
           "text": "10"
         }
       ],
@@ -84,7 +86,7 @@ Blockly.Blocks['controls_repeat'] = {
     });
     this.appendStatementInput('DO')
         .appendField(Blockly.Msg.CONTROLS_REPEAT_INPUT_DO);
-    this.getField('TIMES').setChangeHandler(
+    this.getField('TIMES').setValidator(
         Blockly.FieldTextInput.nonnegativeIntegerValidator);
   }
 };
@@ -101,7 +103,7 @@ Blockly.Blocks['controls_whileUntil'] = {
     this.setHelpUrl(Blockly.Msg.CONTROLS_WHILEUNTIL_HELPURL);
     this.setColour(Blockly.Blocks.loops.HUE);
     this.appendValueInput('BOOL')
-        .setCheck('Boolean')
+        .setCheck(Blockly.Types.BOOLEAN.checkList)
         .appendField(new Blockly.FieldDropdown(OPERATORS), 'MODE');
     this.appendStatementInput('DO')
         .appendField(Blockly.Msg.CONTROLS_WHILEUNTIL_INPUT_DO);
@@ -137,19 +139,19 @@ Blockly.Blocks['controls_for'] = {
         {
           "type": "input_value",
           "name": "FROM",
-          "check": "Number",
+          "check": Blockly.Types.NUMBER.checkList,
           "align": "RIGHT"
         },
         {
           "type": "input_value",
           "name": "TO",
-          "check": "Number",
+          "check": Blockly.Types.NUMBER.checkList,
           "align": "RIGHT"
         },
         {
           "type": "input_value",
           "name": "BY",
-          "check": "Number",
+          "check": Blockly.Types.NUMBER.checkList,
           "align": "RIGHT"
         }
       ],
@@ -169,26 +171,6 @@ Blockly.Blocks['controls_for'] = {
     });
   },
   /**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
-   */
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-      this.setFieldValue(newName, 'VAR');
-    }
-  },
-  /**
    * Add menu option to create getter block for loop variable.
    * @param {!Array} options List of menu options to add to.
    * @this Blockly.Block
@@ -205,6 +187,14 @@ Blockly.Blocks['controls_for'] = {
       option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
       options.push(option);
     }
+  },
+  /**
+   * Defines the type of the variable selected in the drop down, an integer.
+   * @return {string} String to indicate the type if it has not been defined
+   *                  before.
+   */
+  getVarType: function(varName) {
+    return Blockly.Types.NUMBER;
   }
 };
 
@@ -225,7 +215,7 @@ Blockly.Blocks['controls_forEach'] = {
         {
           "type": "input_value",
           "name": "LIST",
-          "check": "Array"
+          "check": Blockly.Types.ARRAY.checkList
         }
       ],
       "previousStatement": null,
@@ -242,27 +232,11 @@ Blockly.Blocks['controls_forEach'] = {
           thisBlock.getFieldValue('VAR'));
     });
   },
-  /**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
-   */
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-      this.setFieldValue(newName, 'VAR');
-    }
-  },
-  customContextMenu: Blockly.Blocks['controls_for'].customContextMenu
+  customContextMenu: Blockly.Blocks['controls_for'].customContextMenu,
+  /** @returns {!string} The type of the variable used in this block */
+  getVarType: function(varName) {
+    return Blockly.Types.NUMBER;
+  }
 };
 
 Blockly.Blocks['controls_flow_statements'] = {
@@ -293,18 +267,15 @@ Blockly.Blocks['controls_flow_statements'] = {
   /**
    * Called whenever anything on the workspace changes.
    * Add warning if this flow block is not nested inside a loop.
+   * @param {!Blockly.Events.Abstract} e Change event.
    * @this Blockly.Block
    */
-  onchange: function() {
+  onchange: function(e) {
     var legal = false;
     // Is the block nested in a loop?
     var block = this;
     do {
-      if (block.type == 'controls_repeat' ||
-          block.type == 'controls_repeat_ext' ||
-          block.type == 'controls_forEach' ||
-          block.type == 'controls_for' ||
-          block.type == 'controls_whileUntil') {
+      if (this.LOOP_TYPES.indexOf(block.type) != -1) {
         legal = true;
         break;
       }
@@ -315,5 +286,12 @@ Blockly.Blocks['controls_flow_statements'] = {
     } else {
       this.setWarningText(Blockly.Msg.CONTROLS_FLOW_STATEMENTS_WARNING);
     }
-  }
+  },
+  /**
+   * List of block types that are loops and thus do not need warnings.
+   * To add a new loop type add this to your code:
+   * Blockly.Blocks['controls_flow_statements'].LOOP_TYPES.push('custom_loop');
+   */
+  LOOP_TYPES: ['controls_repeat', 'controls_repeat_ext', 'controls_forEach',
+      'controls_for', 'controls_whileUntil']
 };

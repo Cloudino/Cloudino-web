@@ -14,7 +14,7 @@
     String act=request.getParameter("act");
 %>
     <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar" style="overflow: scroll">
+    <section class="sidebar" style_="overflow: scroll">
         <!-- Sidebar user panel -->
         
         <div class="user-panel">

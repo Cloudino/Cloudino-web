@@ -53,7 +53,7 @@
     //remove
     if ("remove".equals(act)) {
         FileUtils.deleteDirectory(new File(blockPath));
-        out.println("<script type=\"text/javascript\">Blockly.fireUiEvent(window, 'resize');loadContent('/panel/cloudinojs?act=bl','#cloudinojs');</script>");
+        out.println("<script type=\"text/javascript\">Blockly.resize();loadContent('/panel/cloudinojs?act=bl','#cloudinojs');</script>");
 %>
 <!-- Custom Tabs -->
 <div class="nav-tabs-custom">
@@ -92,14 +92,44 @@
      }
 </script>
 
-
-
 <xml id="toolbox" style="display: none">
     <category name="Cloudino" colour="0">
         <block type="cdinojs_print"></block>
         <block type="cdino_post"></block>
         <block type="cdinojs_on"></block>       
     </category>    
+    <category id="catInputOutput" name="Input/Output" colour="250">    
+        <block type="io_digitalwrite">      
+            <value name="STATE">        
+                <block type="io_highlow"></block>      
+            </value>    
+        </block>    
+        <block type="io_digitalread"></block>    
+        <block type="io_builtin_led">      
+            <value name="STATE">        
+                <block type="io_highlow"></block>      
+            </value>    
+        </block>    
+        <block type="io_analogwrite"></block>    
+        <block type="io_analogread"></block>    
+        <block type="io_highlow"></block>  
+<!--        
+        <block type="io_pulsein">      
+            <value name="PULSETYPE">        
+                <shadow type="io_highlow"></shadow>      
+            </value>    
+        </block>    
+        <block type="io_pulsetimeout">      
+            <value name="PULSETYPE">        
+                <shadow type="io_highlow"></shadow>      
+            </value>      
+            <value name="TIMEOUT">        
+                <block type="math_number"></block>      
+            </value>    
+        </block>  
+-->
+    </category>  
+<!--    
     <category name="Input/Output">
         <block type="inout_highlow"></block>
         <block type="inout_digital_write"></block>
@@ -112,8 +142,9 @@
             </value>
         </block>
         <block type="inout_analog_read"></block>
-    </category>    
-    <category name="Timer">
+    </category>  
+-->
+    <category name="Timer" colour="0">
         <block type="cdinojs_setinterval">
             <value name="time">
                 <block type="math_number">
@@ -130,7 +161,7 @@
         </block>
         <block type="cdino_cleartimer"></block>         
     </category>    
-    <category name="Logic">
+    <category name="Logic" colour="210">
       <block type="controls_if"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
@@ -139,7 +170,7 @@
       <block type="logic_null"></block>
       <block type="logic_ternary"></block>
     </category>
-    <category name="Loops">
+    <category name="Loops" colour="120">
       <block type="controls_repeat_ext">
         <value name="TIMES">
           <block type="math_number">
@@ -168,7 +199,7 @@
       <!--<block type="controls_forEach"></block>-->
       <block type="controls_flow_statements"></block>      
     </category>
-    <category name="Math">
+    <category name="Math" colour="230">
       <block type="math_number"></block>
       <block type="parseint"></block> 
       <block type="unar_op">
@@ -226,7 +257,7 @@
       <block type="math_random_float"></block>
       -->
     </category>
-    <category name="Text">
+    <category name="Text" colour="160">
       <block type="text"></block>
       <block type="text_join"></block>
       <block type="text_append">
@@ -268,7 +299,7 @@
       </block>
       -->
     </category>
-    <category name="Lists">
+    <category name="Lists" colour="260">
       <block type="lists_create_with">
         <mutation items="0"></mutation>
       </block>
@@ -323,8 +354,10 @@
       -->
     </category>    
     <sep></sep>
-    <category name="Variables" custom="VARIABLE"></category>
-    <category name="Functions" custom="PROCEDURE"></category>    
+    <category name="Variables" custom="VARIABLE" colour="330"></category>
+    <category name="Functions" custom="PROCEDURE" colour="290">
+        <block type="procedures_defnoreturn"></block>        
+    </category>    
 </xml>
 
 <script>
@@ -336,20 +369,30 @@
 </script>
 
 <script>
+    if(Blockly.Blocks['arduino_functions']!==undefined)
+    {
+        Blockly.Blocks['arduino_functions_']=Blockly.Blocks['arduino_functions'];
+        Blockly.Blocks['arduino_functions']=undefined;
+    }
+        
     var blocklyDiv = document.getElementById('blocklyDiv');
     var workspace = Blockly.inject(blocklyDiv, {
-        grid: {
-            spacing: 25,
-            length: 3,
-            colour: '#ccc',
-            snap: true
+        grid: false,
+        zoom: {
+            controls: true,
+            wheel: false,
+            startScale: 1.0,
+            maxScale: 2,
+            minScale: 0.2,
+            scaleSpeed: 1.2
         },
-        zoom: {enabled: false},
         media: '/plugins/blockly/media/',
         toolbox: document.getElementById('toolbox')
     });
-    profile.default.analog=[["A0","A0"]];
-    profile.default.digital=[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"],["10","10"],["11","11"],["12","12"],["13","13"],["14","14"],["15","15"],["16","16"],["A0","A0"]];
+    
+    Blockly.Arduino.Boards.changeBoard(workspace,"esp8266_cloudino");    
+    //profile.default.analog=[["A0","A0"]];
+    //profile.default.digital=[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"],["10","10"],["11","11"],["12","12"],["13","13"],["14","14"],["15","15"],["16","16"],["A0","A0"]];
 
     <%if (xml != null) {%>
     Blockly.Cloudino.loadXML('<%=xml%>');
@@ -359,7 +402,7 @@
         //e.target // newly activated tab
         //e.relatedTarget // previous active tab
         //console.lo
-        Blockly.fireUiEvent(window, 'resize');
+        Blockly.resize();
         workspace.render();
         myCodeMirror.setValue(Blockly.Cloudino.getBlockJSCode());
         myCodeMirror.refresh();

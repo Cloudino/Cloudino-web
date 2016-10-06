@@ -108,6 +108,8 @@ Blockly.JavaScript.ORDER_NONE = 99;          // (...)
  * @param {!Blockly.Workspace} workspace Workspace to generate code from.
  */
 Blockly.JavaScript.init = function(workspace) {
+  // Create a dictionary of requires to be printed before the code.
+  Blockly.JavaScript.requires_ = Object.create(null);
   // Create a dictionary of definitions to be printed before the code.
   Blockly.JavaScript.definitions_ = Object.create(null);
   // Create a dictionary mapping desired function names in definitions_
@@ -123,12 +125,14 @@ Blockly.JavaScript.init = function(workspace) {
 
   var defvars = [];
   var variables = Blockly.Variables.allVariables(workspace);
-  for (var i = 0; i < variables.length; i++) {
-    defvars[i] = 'var ' +
-        Blockly.JavaScript.variableDB_.getName(variables[i],
-        Blockly.Variables.NAME_TYPE) + ';';
+  if (variables.length) {
+    for (var i = 0; i < variables.length; i++) {
+      defvars[i] = Blockly.JavaScript.variableDB_.getName(variables[i],
+          Blockly.Variables.NAME_TYPE);
+    }
+    Blockly.JavaScript.definitions_['variables'] =
+        'var ' + defvars.join(', ') + ';';
   }
-  Blockly.JavaScript.definitions_['variables'] = defvars.join('\n');
 };
 
 /**
@@ -139,14 +143,19 @@ Blockly.JavaScript.init = function(workspace) {
 Blockly.JavaScript.finish = function(code) {
   // Convert the definitions dictionary into a list.
   var definitions = [];
+  var requires = [];
   for (var name in Blockly.JavaScript.definitions_) {
     definitions.push(Blockly.JavaScript.definitions_[name]);
   }
+  for (var name in Blockly.JavaScript.requires_) {
+    requires.push(Blockly.JavaScript.requires_[name]);
+  }  
   // Clean up temporary data.
+  delete Blockly.JavaScript.requires_;
   delete Blockly.JavaScript.definitions_;
   delete Blockly.JavaScript.functionNames_;
   Blockly.JavaScript.variableDB_.reset();
-  return definitions.join('\n\n') + '\n\n\n' + code;
+  return requires.join('\n') + '\n\n' + definitions.join('\n') + '\n\n' + code;
 };
 
 /**

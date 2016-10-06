@@ -360,7 +360,7 @@
         //e.target // newly activated tab
         //e.relatedTarget // previous active tab
         //console.lo
-        Blockly.fireUiEvent(window, 'resize');
+        Blockly.resize();
         workspace.render();
         //console.log('shown.bs.tab', e);
     });

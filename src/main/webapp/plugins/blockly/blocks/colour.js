@@ -27,6 +27,7 @@
 goog.provide('Blockly.Blocks.colour');
 
 goog.require('Blockly.Blocks');
+goog.require('Blockly.Types');
 
 
 /**
@@ -51,8 +52,15 @@ Blockly.Blocks['colour_picker'] = {
       ],
       "output": "Colour",
       "colour": Blockly.Blocks.colour.HUE,
-      "tooltip": Blockly.Msg.COLOUR_PICKER_TOOLTIP,
       "helpUrl": Blockly.Msg.COLOUR_PICKER_HELPURL
+    });
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+    // Colour block is trivial.  Use tooltip of parent block if it exists.
+    this.setTooltip(function() {
+      var parent = thisBlock.getParent();
+      return (parent && parent.getInputsInline() && parent.tooltip) ||
+          Blockly.Msg.COLOUR_PICKER_TOOLTIP;
     });
   }
 };
@@ -82,16 +90,16 @@ Blockly.Blocks['colour_rgb'] = {
     this.setHelpUrl(Blockly.Msg.COLOUR_RGB_HELPURL);
     this.setColour(Blockly.Blocks.colour.HUE);
     this.appendValueInput('RED')
-        .setCheck('Number')
+        .setCheck(Blockly.Types.NUMBER.checkList)
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField(Blockly.Msg.COLOUR_RGB_TITLE)
         .appendField(Blockly.Msg.COLOUR_RGB_RED);
     this.appendValueInput('GREEN')
-        .setCheck('Number')
+        .setCheck(Blockly.Types.NUMBER.checkList)
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField(Blockly.Msg.COLOUR_RGB_GREEN);
     this.appendValueInput('BLUE')
-        .setCheck('Number')
+        .setCheck(Blockly.Types.NUMBER.checkList)
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField(Blockly.Msg.COLOUR_RGB_BLUE);
     this.setOutput(true, 'Colour');
@@ -117,7 +125,7 @@ Blockly.Blocks['colour_blend'] = {
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField(Blockly.Msg.COLOUR_BLEND_COLOUR2);
     this.appendValueInput('RATIO')
-        .setCheck('Number')
+        .setCheck(Blockly.Types.NUMBER.checkList)
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField(Blockly.Msg.COLOUR_BLEND_RATIO);
     this.setOutput(true, 'Colour');

@@ -126,14 +126,29 @@
                     File fino = new File(path);
                     String fname = fino.getName().split("\\.")[0];
                     String compiled = userBuildPath + "/" + fname + ".cpp.hex";
-
-                    if (device !=null && device.isConnected()) {
+                    
+                    if (device !=null && device.isConnected()) 
+                    {
+                        /*
                         CharArrayWriter pout=new CharArrayWriter();
                         if(device.sendHex(new FileInputStream(compiled), pout))
                         {
                             msg = msg + "Device programmed successfully.";
-                        }
-                    } else {
+                        }                        
+                        */                       
+                        int speed=57600;
+                        if(device.getData()!=null)
+                        {
+                            io.cloudino.compiler_.ArdCompiler cmp=io.cloudino.compiler_.ArdCompiler.getInstance();
+                            String stype=device.getData().getString("type");
+                            //System.out.println("type:"+type);
+                            io.cloudino.compiler_.ArdDevice dvc=cmp.getDevices().get(stype);
+                            //System.out.println("dvc:"+dvc);
+                            if(dvc!=null)speed=dvc.speed;
+                        }                                                
+                        
+                        device.post("$CDINOUPDT2", speed+"|:"+request.getLocalPort()+"/arduinoDownload.jsp?fname="+fname+"&uid="+user.getNumId());
+                    }else {
                         msg = msg + "Device offline, could not be programmed."; 
                     }
 

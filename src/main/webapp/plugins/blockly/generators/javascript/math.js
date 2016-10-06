@@ -42,7 +42,7 @@ Blockly.JavaScript['math_arithmetic'] = function(block) {
     'MINUS': [' - ', Blockly.JavaScript.ORDER_SUBTRACTION],
     'MULTIPLY': [' * ', Blockly.JavaScript.ORDER_MULTIPLICATION],
     'DIVIDE': [' / ', Blockly.JavaScript.ORDER_DIVISION],
-    'POWER': [null, Blockly.JavaScript.ORDER_COMMA]  // Handle power separately.
+    'POWER': [' ^ ', Blockly.JavaScript.ORDER_COMMA]  // Handle power separately.
   };
   var tuple = OPERATORS[block.getFieldValue('OP')];
   var operator = tuple[0];
@@ -50,11 +50,11 @@ Blockly.JavaScript['math_arithmetic'] = function(block) {
   var argument0 = Blockly.JavaScript.valueToCode(block, 'A', order) || '0';
   var argument1 = Blockly.JavaScript.valueToCode(block, 'B', order) || '0';
   var code;
-  // Power in JavaScript requires a special case since it has no operator.
-  if (!operator) {
-    code = 'Math.pow(' + argument0 + ', ' + argument1 + ')';
-    return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
-  }
+//  // Power in JavaScript requires a special case since it has no operator.
+//  if (!operator) {
+//    code = 'Math.pow(' + argument0 + ', ' + argument1 + ')';
+//    return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+//  }
   code = argument0 + operator + argument1;
   return [code, order];
 };

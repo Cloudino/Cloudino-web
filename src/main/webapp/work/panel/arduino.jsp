@@ -104,7 +104,7 @@
     File usersWorkPath=new File(engine.getScriptObject().get("config").getString("usersWorkPath"));
 
 %>
-    <section class="sidebar" style="overflow: scroll">
+    <section class="sidebar" style_="overflow: scroll">
         <ul class="sidebar-menu">
             <li class="header">BLOCKING</li>
             <li class="treeview<%=("bl".equals(act)?" active":"")%>">

@@ -56,7 +56,24 @@ var WS = {
                         });
                     }
                 }
-                WS.log(tmp,"ws_msg");
+                WS.log("> "+topic+": "+msg,"ws_msg");
+                
+            }else if(event.data.startsWith("rmsg:"))
+            {
+                var tmp=event.data.substring(5);
+                var i=tmp.indexOf("\t");
+                if(i>-1)
+                {
+                    var topic=tmp.substring(0,i);
+                    var msg=tmp.substring(i+1);                
+                    if(WS.notify[topic])
+                    {                        
+                        WS.notify[topic].forEach(function(entry) {
+                            entry(msg);
+                        });
+                    }
+                }
+                WS.log("< "+topic+": "+msg,"ws_msg");
                 
             }else if(event.data.startsWith("log:"))
             {
@@ -91,7 +108,7 @@ var WS = {
             var message = document.getElementById('message').value;
             var enc=WS.encodeMessage(topic,message);
             WS.ws.send(enc);
-            WS.log(topic+"->"+message);
+            WS.log("< "+topic+": "+message,"ws_msg");
         } else {
             alert('WebSocket connection not established, please connect.');
         }
@@ -103,7 +120,7 @@ var WS = {
             var message = document.getElementById('jscmd').value;
             var enc=WS.encodeMessage(topic,message);
             WS.ws.send(enc);
-            WS.log("> "+message,"ws_jsrsp");
+            WS.log("< "+message,"ws_jsrsp");
         } else {
             alert('WebSocket connection not established, please connect.');
         }
@@ -113,20 +130,20 @@ var WS = {
         if (WS.ws != null) {
             var enc=WS.encodeMessage(topic,message);
             WS.ws.send(enc);
-            WS.log(topic+"->"+message);
+            WS.log("< "+topic+": "+message,"ws_msg");
         } else {
             alert('WebSocket connection not established, please connect.');
         }
     },
     
     log:function (message,div) {
-        if(!div)div="ws_msg";
+        if(!div)div="ws_log";
         var console = document.getElementById(div);
         if(console)
         {
             var p = document.createElement('div');
             //p.style.wordWrap = 'break-word';
-            p.innerHTML=message;
+            p.innerHTML=new Date().toISOString()+": <b>"+message+"</b>";
             console.appendChild(p);
             while (console.childNodes.length > 25) {
                 console.removeChild(console.firstChild);

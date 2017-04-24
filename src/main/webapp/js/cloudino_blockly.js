@@ -189,19 +189,39 @@ Blockly.JavaScript['cdino_send_device_message'] = function(block) {
 };
 
 Blockly.Blocks['cdino_invoke_after'] = {
-    init: function() {
-        this.appendDummyInput()
-                .appendField("invoke after:")
-                .appendField(new Blockly.FieldTextInput("10"), "time")
-                .appendField(new Blockly.FieldDropdown([["seconds", "s"], ["minuts", "m"], ["hours", "h"], ["days", "d"]]), "metric");
-        this.appendStatementInput("ACTIONS")
-                .setCheck("Action")
-                .appendField("do");
-        this.setPreviousStatement(true, "Action");
-        this.setColour(330);
-        this.setTooltip('');
-        this.setHelpUrl('http://www.example.com/');
-    }
+  init: function() {
+    this.appendDummyInput()
+        .appendField("invoke after:")
+        .appendField(new Blockly.FieldTextInput("10"), "time")
+        .appendField(new Blockly.FieldDropdown([["seconds", "s"], ["minuts", "m"], ["hours", "h"], ["days", "d"]]), "metric");
+    this.appendStatementInput("do")
+        .setCheck(null);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(330);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.JavaScript['cdino_invoke_after'] = function(block) {
+  var text_time = block.getFieldValue('time');
+  var dropdown_metric = block.getFieldValue('metric');
+  var statements_do = Blockly.JavaScript.statementToCode(block, 'do');
+  
+  var time=parseInt(text_time);
+  if(dropdown_metric==="s")time*=1000;
+  if(dropdown_metric==="m")time*=1000*60;
+  if(dropdown_metric==="h")time*=1000*60*60;
+  if(dropdown_metric==="d")time*=1000*60*60*24;
+  
+  Blockly.JavaScript.definitions_["RuleTimer"] = "var _Timer_ = Java.type('java.util.Timer');";
+  
+  // TODO: Assemble JavaScript into code variable.
+  //console.log(text_time,dropdown_metric,statements_do);
+  var code = 'var _timer_ = new _Timer_("RuleTimer", false);_timer_.schedule(function(){'+statements_do+'},'+time+');\n';
+  return code;
 };
 
 Blockly.Blocks['cduino_change_context'] = {
@@ -243,6 +263,64 @@ Blockly.JavaScript['cdino_push_notification'] = function(block) {
     var code = 'RuleUtils.pushNotification(_cdino_user,' + value_title + ',' + value_msg + ');';
     return code;
 };
+
+Blockly.Blocks['cdino_email_notification'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("emailNotification");
+    this.appendValueInput("subject")
+        .setCheck(Blockly.Types.TEXT.checkList)
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Subject:");
+    this.appendValueInput("msg")
+        .setCheck(Blockly.Types.TEXT.checkList)
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Message:");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(330);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.JavaScript['cdino_email_notification'] = function(block) {
+  var value_subject = Blockly.JavaScript.valueToCode(block, 'subject', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_msg = Blockly.JavaScript.valueToCode(block, 'msg', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.definitions_["RuleUtils"] = 'var RuleUtils=Java.type("io.cloudino.rules.scriptengine.RuleUtils");';
+  var code = 'RuleUtils.emailNotification(_cdino_user,' + value_subject + ',' + value_msg + ');';
+  return code;
+};
+
+Blockly.Blocks['cdino_sms_notification'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("smsNotification");
+    this.appendValueInput("phone")
+        .setCheck(Blockly.Types.TEXT.checkList)
+        .appendField("PhoneNumber");
+    this.appendValueInput("msg")
+        .setCheck(Blockly.Types.TEXT.checkList)
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Message:");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(330);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.JavaScript['cdino_sms_notification'] = function(block) {
+  var value_phone = Blockly.JavaScript.valueToCode(block, 'phone', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_msg = Blockly.JavaScript.valueToCode(block, 'msg', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.definitions_["RuleUtils"] = 'var RuleUtils=Java.type("io.cloudino.rules.scriptengine.RuleUtils");';
+  var code = 'RuleUtils.smsNotification(_cdino_user,'+ value_phone +',' + value_msg + ');';
+  return code;
+};
+
 
 /********************************************** UTILS **********************************************/
 
@@ -1034,7 +1112,7 @@ Blockly.JavaScript['io_digitalread'] = function(block) {
     //Blockly.JavaScript.reservePin(block, pin, Blockly.JavaScript.PinTypes.INPUT, 'Digital Read');
 
     Blockly.JavaScript.requires_['GPIO'] = "require(\"GPIO\");";
-    Blockly.JavaScript.definitions_['setup_input_' + dropdown_pin] = 'pinMode(' + dropdown_pin + ', INPUT);';
+    Blockly.JavaScript.definitions_['setup_input_' + pin] = 'pinMode(' + pin + ', INPUT);';
 
     var code = 'digitalRead(' + pin + ')';
     return [code, Blockly.JavaScript.ORDER_ATOMIC];

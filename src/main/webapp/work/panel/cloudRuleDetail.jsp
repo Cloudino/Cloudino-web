@@ -2,7 +2,8 @@
     Document   : objDetail
     Created on : 23/09/2015, 07:27:50 PM
     Author     : javier.solis
---%><%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.net.URLEncoder"%><%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
+--%><%@page import="io.cloudino.rules.scriptengine.RuleEngineProvider"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.net.URLEncoder"%><%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
     SWBDataSource ds = engine.getDataSource("CloudRule");
@@ -29,6 +30,16 @@
     if("remove".equals(act))
     {
         ds.removeObjById(obj.getId());
+        
+        //RemoveCloudRuleEvents
+        SWBDataSource dsevent=engine.getDataSource("CloudRuleEvent");
+        DataObject x=new DataObject().addParam("removeByID", false);
+        x.addSubObject("data").addParam("user", user.getId()).addParam("cloudRule", obj.getId());
+        //System.out.println(x);
+        dsevent.remove(x);       
+        
+        //Remove RuleEngineProvider cache
+        RuleEngineProvider.getInstance().removeEngine(obj.getId());
         out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=cr','.main-sidebar');</script>");
 %>
             <!-- Custom Tabs -->

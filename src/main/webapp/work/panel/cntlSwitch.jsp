@@ -45,10 +45,23 @@
             String title = contrl.getString("title");
 %>
 <div class="cdino_control" style="padding-top: 25px;">
-    <i><input id="<%=contrl.getNumId()%>" type="checkbox" onchange="if(this.checked)WS.post('<%=topic%>','<%=msg_on%>');else WS.post('<%=topic%>','<%=msg_off%>');"></i>
+    <i><input id="<%=contrl.getNumId()%>" type="checkbox"></i>
     <p style="padding-top: 9px;"><%=title%></p>
 </div>
-<script type="text/javascript">$("#<%=contrl.getNumId()%>").bootstrapSwitch();</script>
+<script type="text/javascript">
+    $("#<%=contrl.getNumId()%>").bootstrapSwitch();  
+    
+    $("#<%=contrl.getNumId()%>").on('switchChange.bootstrapSwitch', function(evt, state){
+        if(state)WS.post('<%=topic%>','<%=msg_on%>');else WS.post('<%=topic%>','<%=msg_off%>');
+    });
+    
+    WS.onMessage('<%=topic%>',function(msg){
+        if(msg=='<%=msg_on%>')
+            $("#<%=contrl.getNumId()%>").bootstrapSwitch("state",true,true);
+        else if(msg=='<%=msg_off%>')
+            $("#<%=contrl.getNumId()%>").bootstrapSwitch("state",false,true);
+    });
+</script>
 <%
         }
     }

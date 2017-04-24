@@ -20,7 +20,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%!
 
-    public DataList getList(String ds, SWBScriptEngine engine, DataObject user) throws IOException
+    public DataList getList(String ds, SWBScriptEngine engine, DataObject user, DataList def) throws IOException
     {
         SWBDataSource dsctx=engine.getDataSource(ds); 
         DataObject query=new DataObject();
@@ -37,6 +37,7 @@
             l.add(list.getDataObject(x).getNumId());
             ret.add(l);
         }
+        if(def!=null && ret.size()==0)ret.add(def);
         //System.out.println(ret);
         return ret;
     }
@@ -135,6 +136,8 @@
         <block type="cdino_invoke_after"></block>
         <block type="cduino_change_context"></block>
         <block type="cdino_push_notification"></block>
+        <block type="cdino_email_notification"></block>
+        <block type="cdino_sms_notification"></block>
         <block type="cdino_debug"></block>
     </category>         
     <sep></sep>
@@ -330,12 +333,16 @@
 
     function getContexts()
     {
-        return <%=getList("UserContext",engine,user)%>;
+<%
+    DataList def=new DataList();
+    def.add("No Context");
+    def.add("-");
+%>        return <%=getList("UserContext",engine,user, def)%>;
     }
 
     function getDevices()
     {
-        return <%=getList("Device",engine,user)%>;
+        return <%=getList("Device",engine,user,null)%>;
     }
 </script>
 

@@ -20,6 +20,7 @@
     
     if(name!=null)
     {
+        name=name.replace(" ", "_");
         DataObject user=(DataObject)session.getAttribute("_USER_");
         SWBScriptEngine engine=DataMgr.getUserScriptEngine("/cloudino.js",user);
         

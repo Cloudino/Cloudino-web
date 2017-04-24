@@ -186,7 +186,7 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
+                    <li><a href="addOCBEntity" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Entity</a></li>
                 </ul>
             </li>
             <li class="treeview<%=("ds".equals(act)?" active":"")%>">

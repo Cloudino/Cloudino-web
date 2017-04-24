@@ -8,19 +8,29 @@
     {
         DataObject data=(DataObject)request.getAttribute("data"); 
         data.put("topic", request.getParameter("topic"));
+        data.put("min", request.getParameter("min"));
+        data.put("max", request.getParameter("max"));
     }else if("c".equals(m))
     {
         String topic="";
+        String min="0";
+        String max="255";
         DataObject ctrl=(DataObject)request.getAttribute("control");  
         if(ctrl!=null)
         {
             DataObject data = ctrl.getDataObject("data");
             topic = data.getString("topic");
+            min = data.getString("min");
+            max = data.getString("max");
         }
 
 %>
 <label>Topic</label>
 <input name="topic" value="<%=topic%>" type="text" class="form-control" placeholder="Topic label..." required>
+<label>Min Value</label>
+<input name="min" value="<%=min%>" type="number" class="form-control" placeholder="0" required>
+<label>Max Value</label>
+<input name="max" value="<%=max%>" type="number" class="form-control" placeholder="255" required>
 <%
     }else{
         DataObject contrl=(DataObject)request.getAttribute("control");
@@ -30,10 +40,14 @@
             //String ctrtype = contrl.getString("type");
             DataObject doData = contrl.getDataObject("data");
             String topic = doData.getString("topic");
+            String min = doData.getString("min");
+            if(min==null)min="0";
+            String max = doData.getString("max");
+            if(max==null)max="255";
             String title = contrl.getString("title");
 %>
 <div class="cdino_control" style="padding-top: 3px;">
-    <input id="<%=contrl.getNumId()%>" type="text" class="knob" data-readonly="false" value="0" data-min="0" data-max="255" data-angleOffset="-125" data-angleArc="250" data-displayPrevious=true data-width="70" data-height="70" data-fgColor="#39CCCC"/>
+    <input id="<%=contrl.getNumId()%>" type="text" class="knob" data-readonly="false" value="0" data-min="<%=min%>" data-max="<%=max%>" data-angleOffset="-125" data-angleArc="250" data-displayPrevious=true data-width="70" data-height="70" data-fgColor="#39CCCC"/>
     <p style="margin-top: -10px;"><%=title%></p>
 </div>
 <script type="text/javascript">   

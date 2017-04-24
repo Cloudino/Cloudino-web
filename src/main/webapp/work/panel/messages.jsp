@@ -24,7 +24,7 @@
         </div>
         <div>
             Message:<br/>
-            <textarea id="message" class="form-control">Here is a message!</textarea>
+            <textarea id="message" class="form-control"></textarea>
         </div>
         <div class="cdino_buttons">
             <button class="btn btn-primary btn-flat" id="send" onclick="WS.send();" disabled="disabled">Send</button>

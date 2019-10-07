@@ -15,7 +15,11 @@
     <title>Cloudino Device</title>
     <script type="text/javascript" src="js/websockets.js"></script>
     <script type="text/javascript">
-        var url='ws://' + window.location.host+ '/websocket/cdino?ID=<%=id%>';
+        var url="";
+        var proto=window.location.protocol;        
+        if(proto=="https:")url+='wss://';
+        else url+='ws://';
+        url+=window.location.host+ '/websocket/cdino?ID=<%=id%>';
     </script>
 </head>
 <body onload="WS.connect(url)"> 

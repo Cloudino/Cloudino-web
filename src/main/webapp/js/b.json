@@ -1,3 +1,82 @@
-{
-    "name": "javiersolis"
-}
+[
+    {
+        "timestamp": "Wed Jun 28 07:00:00 CDT 2017",        
+        "dataStream": "59529cdc73b02ddc5ff682de",
+        "_id": "_suri:Cloudino:DataStreamData:5953a16ecb2ed5a94e20244b",
+        "samples": {
+            "total": 3,
+            "devices": {
+                "5601e5cfe4b0d64156108e06": 3
+            }
+        },
+        "devices": {
+            "5601e5cfe4b0d64156108e06": {
+                "30": {
+                    "38": {
+                        "altitude": "2150",
+                        "temperature": "28",
+                        "humidity": "45",
+                        "pressure": "76"
+                    }
+                },
+                "31": {
+                    "3": {
+                        "altitude": "2150",
+                        "temperature": "28",
+                        "humidity": "45",
+                        "pressure": "76"
+                    },
+                    "4": {
+                        "altitude": "2150",
+                        "temperature": "28",
+                        "humidity": "45",
+                        "pressure": "76"
+                    }
+                }
+            }
+        },
+    }, 
+    {
+        "timestamp": "Wed Jun 28 06:00:00 CDT 2017",      
+        "dataStream": "59529cdc73b02ddc5ff682de",
+        "_id": "_suri:Cloudino:DataStreamData:59539396cb2ed5a94e20244a",
+        "samples": {
+            "total": 4,
+            "devices": {
+                "5601e5cfe4b0d64156108e06": 4
+            }
+        },
+        "devices": {
+            "5601e5cfe4b0d64156108e06": {
+                "31": {
+                    "34": {
+                        "altitude": "2150",
+                        "temperature": "28",
+                        "humidity": "45",
+                        "pressure": "76"
+                    }
+                },
+                "32": {
+                    "1": {
+                        "altitude": "2150",
+                        "temperature": "28",
+                        "humidity": "45",
+                        "pressure": "76"
+                    },
+                    "3": {
+                        "altitude": "2150",
+                        "temperature": "28",
+                        "humidity": "45",
+                        "pressure": "76"
+                    },
+                    "4": {
+                        "altitude": "2150",
+                        "temperature": "28",
+                        "humidity": "45",
+                        "pressure": "76"
+                    }
+                }
+            }
+        },
+    }
+]

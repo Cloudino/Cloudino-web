@@ -5,9 +5,12 @@ var WS = {
     ws:null,
     
     setConnected:function(connected) {
-        document.getElementById('connect').disabled = connected;
-        document.getElementById('disconnect').disabled = !connected;
-        document.getElementById('send').disabled = !connected;
+        if(document.getElementById('connect'))
+        {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+            document.getElementById('send').disabled = !connected;
+        }
     },
     
     onMessage:function(topic, callback)
@@ -18,6 +21,27 @@ var WS = {
         }else
         {
             WS.notify[topic].push(callback);
+        }
+    },
+    
+    notifyObject:function(topic, obj)
+    {
+        for(var key in obj){
+            if(WS.notify[topic+"."+key])
+            {                        
+                WS.notify[topic+"."+key].forEach(function(entry) 
+                {
+                    var msg=obj[key];
+                    if(typeof msg === 'object')
+                    {
+                        entry(JSON.stringify(msg));
+                        WS.notifyObject(topic+"."+key,msg);
+                    }else
+                    {
+                        entry(msg);
+                    }
+                });
+            }                            
         }
     },
 
@@ -49,11 +73,17 @@ var WS = {
                 {
                     var topic=tmp.substring(0,i);
                     var msg=tmp.substring(i+1);                
+                    //is object
                     if(WS.notify[topic])
                     {                        
                         WS.notify[topic].forEach(function(entry) {
                             entry(msg);
                         });
+                    }                                        
+                    if((msg.startsWith('{') && msg.endsWith('}')) || (msg.startsWith('[') && msg.endsWith(']')))
+                    {
+                        var obj=JSON.parse(msg);
+                        WS.notifyObject(topic,obj);
                     }
                 }
                 WS.log("> "+topic+": "+msg,"ws_msg");
@@ -98,8 +128,8 @@ var WS = {
     },
 
     encodeMessage: function (topic,message)
-    {
-        return "|M"+topic.length+"|"+topic+"S"+message.length+"|"+message;
+    {                
+        return "|M"+WS.byteLength(topic)+"|"+topic+"S"+WS.byteLength(message)+"|"+message;
     },
 
     send: function () {
@@ -151,5 +181,17 @@ var WS = {
         }
         //console.scrollTop = console.scrollHeight;
     },
+    
+    byteLength:function(str)
+    {
+        // returns the byte length of an utf8 string
+        var s = str.length;
+        for (var i=str.length-1; i>=0; i--) {
+          var code = str.charCodeAt(i);
+          if (code > 0x7f && code <= 0x7ff) s++;
+          else if (code > 0x7ff && code <= 0xffff) s+=2;
+        }
+        return s;
+    }            
     
 };

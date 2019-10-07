@@ -34,6 +34,7 @@
 <%
     }else{
         DataObject contrl=(DataObject)request.getAttribute("control");
+        Object value=request.getAttribute("value");
         if(contrl!=null)
         {
             //String ctrlid = contrl.getNumId();
@@ -43,9 +44,10 @@
             String msg_on = doData.getString("msg_on");
             String msg_off = doData.getString("msg_off");
             String title = contrl.getString("title");
+            //System.out.println("topic:"+topic+" value:"+value+" msg_on:"+msg_on);
 %>
 <div class="cdino_control" style="padding-top: 25px;">
-    <i><input id="<%=contrl.getNumId()%>" type="checkbox"></i>
+    <i><input id="<%=contrl.getNumId()%>" type="checkbox" <%=(msg_on!=null && value!=null && msg_on.equals(value.toString()))?"checked":""%>></i>
     <p style="padding-top: 9px;"><%=title%></p>
 </div>
 <script type="text/javascript">

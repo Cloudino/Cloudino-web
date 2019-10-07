@@ -129,6 +129,7 @@
         File srcpath = new File(srcDir);
         
         File[] flist = srcpath.listFiles();
+        Arrays.sort(flist);
         for(File f:flist){
             File tof = null;
             if(f.getName().startsWith(skt)&&f.getName().equals(skt+".js")&&!skt.equals(skt_n_name)){
@@ -256,6 +257,7 @@
                         <%
                         SWBDataSource ds = engine.getDataSource("Device");
                         DataObject query = new DataObject();
+                        query.addSubList("sortBy").add("name");
                         DataObject data = new DataObject();
                         query.put("data", data);
                         data.put("user", user.getId());
@@ -282,7 +284,7 @@
                         <%
                         }
                         %>
-                    </div><div class="col-md-3 pull-left">
+                    </div><div class="col-md-5 pull-left">
                 <%
                     String skt_mainFile = skt + ".js";
                     if (onlyName.equals(skt_mainFile)) {

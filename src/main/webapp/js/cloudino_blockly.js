@@ -346,21 +346,6 @@ Blockly.JavaScript['cdino_debug'] = function(block) {
     return code;
 };
 
-
-//Math
-Blockly.Blocks['cdino_parse_number'] = {
-    init: function() {
-        this.appendValueInput("NAME")
-                .setCheck(Blockly.Types.TEXT.checkList)
-                .appendField("parseNumber");
-        this.setInputsInline(true);
-        this.setOutput(true, "Number");
-        this.setColour(225);
-        this.setTooltip('Convert Text to Number');
-        this.setHelpUrl('http://www.example.com/');
-    }
-};
-
 /********************************************** BLOCKS **********************************************/
 
 

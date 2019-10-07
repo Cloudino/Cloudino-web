@@ -17,31 +17,32 @@
     <head>
         <meta charset="UTF-8">
         <title>Cloudino | Dashboard</title>
-        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=.7, user-scalable=no' name='viewport'>
         <!-- Bootstrap 3.3.4 -->
-        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />    
+        <link href="/static/admin/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />    
+        <link href="/static/admin/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/static/plugins/jquery.scrolling-tabs/jquery.scrolling-tabs.min.css" rel="stylesheet">
+        
         <!-- FontAwesome 4.5.0 -->
-        <link href="/static/plugins/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="/static/plugins/fontawesome-iconpicker-1.0.0/css/fontawesome-iconpicker.min.css">
+        <link href="/static/admin/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="/static/plugins/fontawesome-iconpicker-1.3.1/css/fontawesome-iconpicker.min.css">
         <!-- Ionicons 2.0.0 -->
-        <link href="/static/plugins/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />    
+        <link href="/static/admin/bower_components/Ionicons/css/ionicons.min.css" rel="stylesheet" type="text/css" />    
         <!-- Theme style -->
-        <link href="/static/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+        <link href="/static/admin/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
         <!-- AdminLTE Skins. Choose a skin from the css/skins 
              folder instead of downloading all of them to reduce the load. -->
-        <link href="/static/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
-        <!-- iCheck -->
-        <link href="/static/plugins/iCheck/flat/blue.css" rel="stylesheet" type="text/css" />
-        <!-- Morris chart -->
-        <link href="/static/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-        <!-- jvectormap -->
-        <link href="/static/plugins/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+        <link href="/static/admin/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="/static/admin/plugins/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
         <!-- Date Picker -->
-        <link href="/static/plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
+        <link href="/static/admin/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
         <!-- Daterange picker -->
-        <link href="/static/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+        <link href="/static/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" />
+        <!-- Bootstrap time Picker -->
+        <link rel="stylesheet" href="/static/admin/plugins/timepicker/bootstrap-timepicker.min.css">
         <!-- bootstrap wysihtml5 - text editor -->
-        <link href="/static/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+        <link href="/static/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
         
         <link href="/static/plugins/bootstrap-switch/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
         
@@ -55,20 +56,22 @@
             <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-        <link rel="stylesheet" href="/plugins/codemirror/lib/codemirror.css"> 
-        <link rel="stylesheet" href="/plugins/codemirror/addon/hint/show-hint.css">
-        <link rel="stylesheet" href="/plugins/codemirror/theme/eclipse.css">   
-        <link rel="stylesheet" href="/plugins/codemirror/addon/dialog/dialog.css">
-        <link rel="stylesheet" href="/plugins/codemirror/addon/lint/lint.css">  
+        <link rel="stylesheet" href="/static/plugins/codemirror/lib/codemirror.css"> 
+        <link rel="stylesheet" href="/static/plugins/codemirror/addon/hint/show-hint.css">
+        <link rel="stylesheet" href="/static/plugins/codemirror/theme/eclipse.css">   
+        <link rel="stylesheet" href="/static/plugins/codemirror/addon/dialog/dialog.css">
+        <link rel="stylesheet" href="/static/plugins/codemirror/addon/lint/lint.css">  
 
         <style type="text/css">
             .CodeMirror {border: 1px solid black; font-size:13px}
             
+            /*
             .control-sidebar-bg, .control-sidebar {
                 right: -250px;
-                width: 250px;
-            }                        
-            
+                width: 250px;  
+            }        
+            */            
+
             @media (min-width: 768px) {
                 .main-header .sidebar-toggle {
                     display: none;
@@ -77,17 +80,38 @@
                 {
                     padding-left: 250px
                 }
+                .control-text{
+                    padding-top: 7px;
+                }
+                .control-switch{                    
+                    top: -20px;
+                }
             }
+            
+            
             
             .cdino_buttons{
                 padding-top: 10px;
             }
             
             .cdino_control {
+                height: 90px;   
+                display: inline-block;
+            }
+            
+            .cdino_control_image {
+                display: table;
+            }    
+            
+            .cdino_text_menu{
+                overflow:hidden;
+                text-overflow:ellipsis;
+            }
+            
+            .cdino_control_image, .cdino_control{
                 padding: 10px 5px;
                 margin: 0 0 10px 10px;
                 min-width: 90px;
-                height: 90px;
                 font-size: 14px;
                 border-radius: 3px;
                 position: relative;
@@ -97,8 +121,7 @@
                 border: 1px solid #ddd;
                 background-color: #f4f4f4;
                 -webkit-box-shadow: none;
-                box-shadow: none;
-                display: inline-block;
+                box-shadow: none;                
                 font-weight: 400;
                 line-height: 1.42857143;
                 white-space: nowrap;
@@ -125,7 +148,7 @@
 
             /*START*/
             #learn { background: url( ../img/start-fondo.png) no-repeat center; background-size:cover}
-#learn li.git { background-position:-2px 10px !important;}            
+            #learn li.git { background-position:-2px 10px !important;}              
         </style>  
 
 
@@ -146,8 +169,9 @@
                 <nav class="navbar navbar-static-top" role="navigation">
                     <!-- Sidebar toggle button-->
                    
-                    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                        <span class="sr-only">Toggle navigation</span>
+                    <!-- Sidebar toggle button-->
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                      <span class="sr-only">Toggle navigation</span>
                     </a>
                     
                     <div class="navbar-custom-menu">
@@ -196,7 +220,7 @@
                                             <a href="/profile" class="btn btn-default btn-flat" data-target=".content-wrapper" data-load="ajax">Profile</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="/login?logout=true" class="btn btn-default btn-flat">Sign out</a>
+                                            <a href="/panel/logout" class="btn btn-default btn-flat">Sign out</a>
                                         </div>
                                     </li>
                                 </ul>
@@ -208,7 +232,7 @@
 -->                            
                             <!-- Control Sidebar Toggle Button -->
                             <li style="background-color: #367FA9;">
-                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-code" style="font-weight: bold;"></i></a>
+                                <a href="#" id="code_button" data-slide_="false" data-toggle="control-sidebar"><i class="fa fa-code" style="font-weight: bold;"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -242,23 +266,45 @@
                 </section>
 
                 <!-- Main content -->
-                <section class="content">
+                <section class="content">                                        
                     
-                <section id="learn" class="boardstart seccion-learn">
-                  <h2>Getting Started</h2>
-                  <ul>
-                    <li>Arduino Connection Squema</li>
-                    <li>Cloudino Configuration
+                    <section id="learn" class="boardstart seccion-learn">
+                      <h2>Getting Started</h2>
                       <ul>
-                        <li>Wifi Configuration</li>
-                        <li>Cloud Configuration</li>
+                        <li><a href="https://github.com/Cloudino/Cloudino-Doc">Cloudino Documentation</a></li>  
+                        <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-Arquitecture">Cloudino Arquitecture</a></li>  
+                        <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-WiFi-Connector">Cloudino WiFi Cloud Connector</a>
+                          <ul>    
+                            <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-WiFi-Connector-Schema">Cloudino Connector Squema</a></li>
+                            <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Make-your-first-Cloudino">Make your first Cloudino </a></li>
+                          </ul>
+                        </li>  
+                        <li>Cloudino with Arduino
+                          <ul>    
+                            <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-with-Arduino-Connection-Squema">Arduino Connection Squema</a></li>
+                            <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/Cloudino-Library-for-Arduino">Cloudino Library for Arduino</a></li>
+                            <li><a href="https://github.com/Cloudino/Cloudino-ArduinoLib">Download Arduino Library</a></li>
+                          </ul>
+                        </li>    
+                        <li>Cloudino with JavaScript
+                          <ul>    
+                            <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/CloudinoJS-Examples">CloudinoJS Examples</a></li>
+                            <li><a href="https://github.com/Cloudino/Cloudino-Doc/wiki/CloudinoJS-Language-Reference">CloudinoJS Language Reference</a></li>
+                          </ul>
+                        </li>    
+                    <!--    
+                        <li>Cloudino Configuration
+                          <ul>
+                            <li>Wifi Configuration</li>
+                            <li>Cloud Configuration</li>
+                          </ul>
+                        </li>
+                        <li>Programming Arduino using WIFI</li>
+                        <li>Programming Arduino using Cloud</li>
+                    -->
+                        <li><a href="/doc/Connecting_Cloudino_Connector_to_FIWARE_IoT.pdf">Connecting to FIWARE IoT</a></li>
                       </ul>
-                    </li>
-                    <li>Programming Arduino using WIFI</li>
-                    <li>Programming Arduino using Cloud</li>
-                    <li><a target="_blank" href="/doc/Connecting_Cloudino_Connector_to_FIWARE_IoT.pdf">Connecting to FIWARE IoT</a></li>
-                  </ul>
-                </section>                   
+                    </section>                                          
 
                 </section><!-- /.content -->
             </div><!-- /.content-wrapper -->
@@ -280,12 +326,23 @@
                 <div class="tab-content" style="padding: 1px 1px;">
                     <!-- Home tab content -->
                     <div class="tab-pane active" id="arduino">
-                        <jsp:include page="arduino.jsp" />
+                        <%--jsp:include page="arduino.jsp" /--%>
+                        <section class="sidebar">
+                            <ul class="sidebar-menu" data-widget="tree">
+                                <li class="header">Loading...</li>
+                            </ul>
+                        </section>                        
                     </div><!-- /.tab-pane -->
                     <!-- Settings tab content -->
                     <div class="tab-pane" id="cloudinojs">            
-                        <jsp:include page="cloudinojs.jsp" />
+                        <%--jsp:include page="cloudinojs.jsp" /--%>
+                        <section class="sidebar">
+                            <ul class="sidebar-menu" data-widget="tree">
+                                <li class="header">Loading...</li>
+                            </ul>
+                        </section>                        
                     </div><!-- /.tab-pane -->
+                    
                 </div>
             </aside><!-- /.control-sidebar -->
             <!-- Add the sidebar's background. This div must be placed
@@ -293,94 +350,77 @@
             <div class='control-sidebar-bg'></div>
         </div><!-- ./wrapper -->
 
-        <!-- jQuery 2.1.4 -->
-        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
-        <script src="/static/plugins/jQuery/jQuery-2.1.4.min.js"></script>
-        <!-- jQuery UI 1.11.2 --
-        <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
-        <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip --
-        <script>
-          $.widget.bridge('uibutton', $.ui.button);
-        </script>
-        <!-- Just needed for resize --
-        <script src="path/to/js/plugins/canvas-to-blob.min.js" type="text/javascript"></script>
-        <!-- FileInputPlugin -->
+        <script src="/static/admin/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="/js/fileinput.min.js"></script>
 
         <!-- Bootstrap 3.3.2 JS -->
-        <script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>  
+        <script src="/static/admin/bower_components/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>  
         <!-- Sparkline -->
-        <script src="/static/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
+        <script src="/static/admin/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js" type="text/javascript"></script>
         <!-- jQuery Knob Chart -->
-        <script src="/static/plugins/knob/jquery.knob.js" type="text/javascript"></script>
+        <script src="/static/admin/bower_components/jquery-knob/dist/jquery.knob.min.js" type="text/javascript"></script>
         
-        <!--
-        <!-- Morris.js charts --
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-        <script src="/static/plugins/morris/morris.min.js" type="text/javascript"></script>
-        <!-- jvectormap --
-        <script src="/static/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
-        <script src="/static/plugins/jvectormap/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
-        <!-- daterangepicker --
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js" type="text/javascript"></script>
-        <script src="/static/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
-        <!-- datepicker --
-        <script src="/static/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
-        <!-- Bootstrap WYSIHTML5 --
-        <script src="/static/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>
-        <!-- Slimscroll --
-        <script src="/static/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <!-- FastClick --
-        <script src='/static/plugins/fastclick/fastclick.min.js'></script>
-        -->
-        <!--<script src="/static/bootstrap/js/bootbox.min.js" type="text/javascript"></script>  -->
+        <!-- bootstrap time picker -->
+        <script src="/static/admin/plugins/timepicker/bootstrap-timepicker.min.js"></script>
+
+        <script src="/static/plugins/jquery.scrolling-tabs/jquery.scrolling-tabs.js"></script>
 
         <!-- AdminLTE App -->
-        <script src="/static/dist/js/app.min.js" type="text/javascript"></script>    
-
-        <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-        <!--    
-            <script src="/static/dist/js/pages/dashboard.js" type="text/javascript"></script> 
-            <script src="/static/dist/js/demo.js" type="text/javascript"></script>
-        -->   
+        <script src="/static/admin/dist/js/adminlte.min.js" type="text/javascript"></script>    
 
         <script src="/static/plugins/validator/validator.min.js" type="text/javascript"></script>
         <script src="/static/plugins/bootstrap-switch/bootstrap-switch.min.js" type="text/javascript"></script>  
-        <script src="/static/plugins/fontawesome-iconpicker-1.0.0/js/fontawesome-iconpicker.min.js" type="text/javascript"></script>  
+        <script src="/static/plugins/fontawesome-iconpicker-1.3.1/js/fontawesome-iconpicker.min.js" type="text/javascript"></script> 
+        
+        <script src="/static/admin/bower_components/moment/min/moment.min.js"></script>        
+        <script src="/static/plugins/Chart.js-2.7.1/dist/Chart.bundle.min.js"></script>        
+        <!-- daterangepicker -->
+        <script src="/static/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script>
+        <!-- datepicker -->
+        <script src="/static/admin/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
         
         <script type="text/javascript" src="/js/websockets.js"></script>
-        <script src="/plugins/codemirror/lib/codemirror.js"></script>  
-        <script src="/plugins/codemirror/addon/hint/show-hint.js"></script>
-        <script src="/plugins/codemirror/addon/selection/active-line.js"></script> 
-        <script src="/plugins/codemirror/addon/lint/lint.js"></script>       
-        <script src="/plugins/codemirror/addon/search/search.js"></script> 
-        <script src="/plugins/codemirror/addon/search/searchcursor.js"></script>
-        <script src="/plugins/codemirror/addon/dialog/dialog.js"></script>
+        <script src="/static/plugins/codemirror/lib/codemirror.js"></script>  
+        <script src="/static/plugins/codemirror/addon/hint/show-hint.js"></script>
+        <script src="/static/plugins/codemirror/addon/selection/active-line.js"></script> 
+        <script src="/static/plugins/codemirror/addon/lint/lint.js"></script>       
+        <script src="/static/plugins/codemirror/addon/search/search.js"></script> 
+        <script src="/static/plugins/codemirror/addon/search/searchcursor.js"></script>
+        <script src="/static/plugins/codemirror/addon/dialog/dialog.js"></script>
 
-        <script src="/plugins/codemirror/addon/edit/matchbrackets.js"></script>  
-        <script src="/plugins/codemirror/addon/edit/closebrackets.js"></script>  
-        <script src="/plugins/codemirror/addon/comment/continuecomment.js"></script>
-        <script src="/plugins/codemirror/addon/comment/comment.js"></script> 
+        <script src="/static/plugins/codemirror/addon/edit/matchbrackets.js"></script>  
+        <script src="/static/plugins/codemirror/addon/edit/closebrackets.js"></script>  
+        <script src="/static/plugins/codemirror/addon/comment/continuecomment.js"></script>
+        <script src="/static/plugins/codemirror/addon/comment/comment.js"></script> 
 
-        <script src="/plugins/codemirror/mode/clike/clike.js"></script>        
+        <script src="/static/plugins/codemirror/mode/clike/clike.js"></script>        
 
 
-        <script src="/plugins/blockly/blockly_compressed.js"></script>
-        <script src="/plugins/blockly/blocks_compressed.js"></script>
-        <script src="/plugins/blockly/arduino_compressed.js"></script>
-        <script src="/plugins/blockly/javascript_compressed.js"></script>
-        <script src="/plugins/blockly/msg/js/en.js"></script>
+        <script src="/static/plugins/blockly/blockly_compressed.js"></script>
+        <script src="/static/plugins/blockly/blocks_compressed.js"></script>
+        <script src="/static/plugins/blockly/arduino_compressed.js"></script>
+        <script src="/static/plugins/blockly/javascript_compressed.js"></script>
+        <script src="/static/plugins/blockly/msg/js/en.js"></script>
         <script src="/js/cloudino_blockly.js"></script>
         
-        <script src="/plugins/codemirror/mode/javascript/javascript.js"></script>
-        <script src="/plugins/codemirror/addon/hint/javascript-hint.js"></script>
-        <script src="/plugins/codemirror/addon/lint/javascript-lint.js"></script>
-        <script src="/plugins/codemirror/addon/hint/jshint.js"></script>
+        <script src="/static/plugins/codemirror/mode/javascript/javascript.js"></script>
+        <script src="/static/plugins/codemirror/addon/hint/javascript-hint.js"></script>
+        <script src="/static/plugins/codemirror/addon/lint/javascript-lint.js"></script>
+        <script src="/static/plugins/codemirror/addon/hint/jshint.js"></script>
+        
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS11cq98QRzhvPbDC-Fsdwd68vIfne5vg"></script>
  
         <script src="/js/cloudino_utils.js"></script>
-        <script type="text/javascript">setInterval(function(){loadContent('/panel/devices','.devices');},10000);</script>
         
-        <style type="text/css">
+        <script type="text/javascript">setInterval(function(){loadContent('/panel/menuDevices','.devices');},10000);</script>
+        <script type="text/javascript">
+            setTimeout(function(){
+                loadContent('/panel/arduino','#arduino');
+                loadContent('/panel/cloudinojs','#cloudinojs');
+            },0);
+        </script>
+        
+        <style type="text/css">            
             .blocklyToolboxDiv {
                 background-color: #F3F3F3;
                 overflow-x: visible;

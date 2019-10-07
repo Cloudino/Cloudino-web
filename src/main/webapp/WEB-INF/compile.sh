@@ -1,3 +1,3 @@
 #!/bin/bash
 cd $1
-java -cp $2/antlr.jar:$2/guava-18.0.jar:$2/apple.jar:$2/jackson-annotations-2.2.3.jar:$2/arduino-core.jar:$2/jackson-core-2.2.3.jar:$2/bcpg-jdk15on-152.jar:$2/jackson-databind-2.2.3.jar:$2/bcprov-jdk15on-152.jar:$2/jackson-module-mrbean-2.2.3.jar:$2/commons-codec-1.7.jar:$2/java-semver-0.8.0.jar:$2/commons-compress-1.8.jar:$2/jmdns-3.4.1.jar:$2/commons-exec-1.1.jar:$2/jsch-0.1.50.jar:$2/commons-httpclient-3.1.jar:$2/jssc-2.8.0.jar:$2/commons-lang3-3.3.2.jar:$2/pde.jar:$2/commons-logging-1.0.4.jar:$2/rsyntaxtextarea-2.5.6.1+arduino.jar:$2/ecj.jar processing.app.BaseNoGui --board $3 --pref build.path=$4 --pref sketchbook.path=$5 --verify $6
+java -cp $2/* processing.app.BaseNoGui --board $3 --pref build.path=$4 --pref sketchbook.path=$5 --verify $6

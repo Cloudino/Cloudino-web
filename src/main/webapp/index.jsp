@@ -50,7 +50,7 @@
         <li> <a class="page-scroll" href="#boards">Boards</a> </li>
         <li> <a class="page-scroll" href="#learn">Learn</a> </li>
         <li> <a class="page-scroll" href="#sponsors">Sponsors</a> </li>
-        <li> <a class="page-scroll" href="panel/"><span aria-hidden="true" class="glyphicon glyphicon-log-in"></span> Log In</a> 
+        <li> <a class="page-scroll" href="https://cloudino.io/panel/"><span aria-hidden="true" class="glyphicon glyphicon-log-in"></span> Log In</a> 
           <!--<a href="panel/"><i class="glyphicon glyphicon-cog" style="font-size: 30px;position: absolute;padding-top: 10px;"></i></a>--> 
         </li>
       </ul>

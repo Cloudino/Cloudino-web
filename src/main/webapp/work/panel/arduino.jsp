@@ -1,3 +1,4 @@
+<%@page import="java.util.Arrays"%>
 <%@page import="java.io.FileFilter"%>
 <%@page import="io.cloudino.utils.ParamsMgr"%>
 <%@page import="java.io.IOException"%>
@@ -10,12 +11,13 @@
     void addFile(File file, JspWriter out, File base, String tool, ParamsMgr params) throws IOException
     {
         if (file.isDirectory() && !file.isHidden()) {
-            out.print("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>" + file.getName());
+            out.print("<li class=\"treeview\"><a href=\"#\" class=\"cdino_text_menu\"><i class=\"fa fa-file-code-o\"></i>" + file.getName());
             out.print("<i class=\"fa fa-angle-left pull-right\"></i>");
             out.println("</a>");
      
             out.println("<ul class=\"treeview-menu\">");
             File[] sketcherFiles = file.listFiles();
+            Arrays.sort(sketcherFiles);
             for (File sktFile : sketcherFiles) {
                 if(sktFile.isDirectory())
                 {
@@ -28,22 +30,22 @@
                         if(base!=null)
                         {
                             if(sktFile.getName().endsWith(".txt")||sktFile.getName().endsWith(".ino")||sktFile.getName().endsWith(".c")||sktFile.getName().endsWith(".cpp")||sktFile.getName().endsWith(".h")){
-                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName(),"act","")+"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                out.println("<li><a data-target=\".content-wrapper\" class=\"cdino_text_menu\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName(),"act","")+"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
                             } else {
-                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName(),"act","showImage") + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                out.println("<li><a data-target=\".content-wrapper\" class=\"cdino_text_menu\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"skt",file.getName(),"act","showImage") + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
                             }
                         }else{
                             if(sktFile.getName().endsWith(".txt")||sktFile.getName().endsWith(".ino")||sktFile.getName().endsWith(".c")||sktFile.getName().endsWith(".cpp")||sktFile.getName().endsWith(".h")){
-                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fn",sktFile.getName(),"skt",file.getName(),"act","")+"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                out.println("<li><a data-target=\".content-wrapper\" class=\"cdino_text_menu\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fn",sktFile.getName(),"skt",file.getName(),"act","")+"\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
                             } else {
-                                out.println("<li><a data-target=\".content-wrapper\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"fn", sktFile.getName(),"skt",file.getName(),"act","showImage") + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
+                                out.println("<li><a data-target=\".content-wrapper\" class=\"cdino_text_menu\" data-load=\"ajax\" href=\""+tool+"?k="+params.setDataValues("fp",sktFile.getCanonicalPath(),"fn", sktFile.getName(),"skt",file.getName(),"act","showImage") + "\"><i class=\"fa fa-code\"></i>" + sktFile.getName() + "</a></li>");
                             }
                         }
                     }
                 }
             }
             if("sketcherDetail".equals(tool)){
-                out.println("<li><a href=\"addSketcher?k="+params.setDataValues("skt", file.getName(),"act","newfile")+"\" data-target=\".content-wrapper\" data-load=\"ajax\"><i class=\"fa fa-gear\"></i> Nuevo Archivo</a></li> ");
+                out.println("<li><a href=\"addSketcher?k="+params.setDataValues("skt", file.getName(),"act","newfile")+"\" class=\"cdino_text_menu\" data-target=\".content-wrapper\" data-load=\"ajax\"><i class=\"fa fa-gear\"></i> Nuevo Archivo</a></li> ");
             }
             out.println("</ul>");
             out.println("</li>");
@@ -53,6 +55,7 @@
     void addExamples(File dir, JspWriter out, ParamsMgr params) throws IOException
     {
         File[] listFiles = dir.listFiles();
+        Arrays.sort(listFiles);
         for(File file : listFiles) {
             addFile(file, out,dir,"exampleDetail",params);
         }            
@@ -76,10 +79,11 @@
                     return pathname.isDirectory();
                 }
             });
+            Arrays.sort(dirs);
             for(File dir : dirs) {
                 if(dir.getName().equals("examples"))
                 {
-                    out.print("<li><a href=\"#\"><i class=\"fa fa-file-code-o\"></i>" + base.getName());
+                    out.print("<li class=\"treeview\"><a href=\"#\" class=\"cdino_text_menu\"><i class=\"fa fa-file-code-o\"></i>" + base.getName());
                     out.print("<i class=\"fa fa-angle-left pull-right\"></i>");
                     out.println("</a>");
                     out.println("<ul class=\"treeview-menu\">");                    
@@ -105,7 +109,7 @@
 
 %>
     <section class="sidebar" style_="overflow: scroll">
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu" data-widget="tree">
             <li class="header">BLOCKING</li>
             <li class="treeview<%=("bl".equals(act)?" active":"")%>">
                 <a href="#">
@@ -124,11 +128,12 @@
                             f.mkdirs();
                         }
                         File[] listFiles = f.listFiles();
+                        Arrays.sort(listFiles);
                         for (File file : listFiles) {
                             if(file.isDirectory() && !file.isHidden())
                             {
 %>                                
-                                <li><a href="blockDetail?ID=<%=file.getName()%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=file.getName()%></a></li>
+                                <li><a href="blockDetail?ID=<%=file.getName()%>" class="cdino_text_menu" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=file.getName()%></a></li>
 <%                                
                             }                                                        
                         }
@@ -157,6 +162,7 @@
                             f.mkdirs();
                         }
                         File[] listFiles = f.listFiles();
+                        Arrays.sort(listFiles);
                         for (File file : listFiles) {
                             addFile(file, out,null,"sketcherDetail",params);
                         }
@@ -194,7 +200,7 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li>
+                    <li class="treeview">
                         <a href="#"><i class="fa fa-globe"></i> Builtin Libraries<i class="fa fa-angle-left pull-right"></i></a>
                         <ul class="treeview-menu">
 <%
@@ -202,6 +208,7 @@
                             String path = arduinoPath + "/libraries";
                             File f = new File(path);
                             File[] listFiles = f.listFiles();
+                            Arrays.sort(listFiles);
                             for (File file : listFiles) {
                                 addFile(file, out,f,"libraryDetail",params);
                             }
@@ -209,7 +216,7 @@
 %>
                         </ul>
                     </li>
-                    <li><a href="#"><i class="fa fa-book"></i> User Libraries<i class="fa fa-angle-left pull-right"></i></a>
+                    <li class="treeview"><a href="#"><i class="fa fa-book"></i> User Libraries<i class="fa fa-angle-left pull-right"></i></a>
                         <ul class="treeview-menu">
 <%
                         {
@@ -219,6 +226,7 @@
                                 f.mkdirs();
                             }
                             File[] listFiles = f.listFiles();
+                            Arrays.sort(listFiles);
                             for (File file : listFiles) {
                                 addFile(file, out,f,"libraryDetail",params);
                             }

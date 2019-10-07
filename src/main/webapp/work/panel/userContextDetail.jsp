@@ -97,24 +97,28 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
 
-                        <form data-target=".content-wrapper" data-submit="ajax" action="userContextDetail" role="form">
+                        <form class="form-horizontal" data-target=".content-wrapper" data-submit="ajax" action="userContextDetail" role="form">
                             <div class="box-body">
 
                                 <div class="form-group has-feedback">
-                                    <label>Id</label>
-                                    <div><%=id%></div>
+                                    <label class="col-sm-2 control-label">Id</label>
+                                    <div class="col-sm-10 control-text"><%=id%></div>
                                     <input type="hidden" name="ID" value="<%=id%>">
                                 </div>  
 
                                 <!-- text input -->
                                 <div class="form-group has-feedback">
-                                    <label>Name</label>
-                                    <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ..." required="true">
+                                    <label class="col-sm-2 control-label">Name</label>
+                                    <div class="col-sm-10">
+                                        <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ..." required="true">
+                                    </div>
                                 </div>
                                 
                                 <div class="form-group has-feedback">
-                                    <label>Description</label>
-                                    <textarea name="description" class="form-control" rows="3" placeholder="Enter ..."><%=description%></textarea>
+                                    <label class="col-sm-2 control-label">Description</label>
+                                    <div class="col-sm-10">
+                                        <textarea name="description" class="form-control" rows="3" placeholder="Enter ..."><%=description%></textarea>
+                                    </div>
                                 </div>
 
                             </div><!-- /.box-body -->

@@ -1,9 +1,8 @@
 <%-- 
-    Document   : addDataSet
+    Document   : addUserContext
     Created on : 23/09/2015, 07:27:14 PM
     Author     : juan.fernandez
 --%>
-<%@page import="io.cloudino.utils.TokenGenerator"%>
 <%@page import="io.cloudino.compiler.ArdCompiler"%>
 <%@page import="org.semanticwb.datamanager.SWBDataSource"%>
 <%@page import="org.semanticwb.datamanager.DataMgr"%>
@@ -87,7 +86,7 @@
             </div>
 
         </div>
-
+<!--
         <div class="col-md-4 callout callout-danger lead">
             <h4>Tip!</h4>
             <p>
@@ -96,6 +95,6 @@
                 the HTML page.
             </p>
         </div>
-
+-->
     </div>   <!-- /.row -->
 </section><!-- /.content -->

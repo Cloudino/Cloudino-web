@@ -129,15 +129,14 @@
         File srcpath = new File(srcDir);
         
         File[] flist = srcpath.listFiles();
+        Arrays.sort(flist);
         for(File f:flist){
             File tof = null;
             if(f.getName().startsWith(skt)&&f.getName().equals(skt+".ino")&&!skt.equals(skt_n_name)){
                 tof = new File(toDir+"/"+skt_n_name+".ino");    
             } else {
                 tof = new File(toDir+"/"+f.getName()); 
-            }
-              
-            
+            }                          
             Files.copy(f.toPath(),tof.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         }
         if(!skt.equals(skt_n_name)){
@@ -217,8 +216,8 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Examples
-        <small></small>
+        Example
+        <small><%=skt%></small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Panel</a></li>
@@ -256,6 +255,7 @@
                         <%
                         SWBDataSource ds = engine.getDataSource("Device");
                         DataObject query = new DataObject();
+                        query.addSubList("sortBy").add("name");
                         DataObject data = new DataObject();
                         query.put("data", data);
                         data.put("user", user.getId());
@@ -282,12 +282,15 @@
                         <%
                         }
                         %>
-                    </div><div class="col-md-3 pull-left">
+                    </div><div class="col-md-5 pull-left">
                 <%
                     String skt_mainFile = skt + ".ino";
                     if (onlyName.equals(skt_mainFile)) {
                 %>
-                <input type="button" value="Send" onclick="document.getElementById('consoleLog').value = 'Compiling...\n\r';getAsynchData('exampleDetail?k=<%=params.setDataValues("cp",(filename != null ? filename : ""),"skt",skt,"fn",filename)%>&dev=' + document.getElementById('type').value, myCodeMirror.getValue(), 'POST',function(data){document.getElementById('consoleLog').value = data;});" class="btn btn-primary" >
+                <input type="button" value="Send" onclick="document.getElementById('consoleLog').innerHTML = 'Compiling...\n\r';
+                    getAsynchData('exampleDetail?k=<%=params.setDataValues("cp",(filename != null ? filename : ""),"skt",skt,"fn",filename)%>&dev=' + document.getElementById('type').value, myCodeMirror.getValue(), 'POST',function(data){
+                        document.getElementById('consoleLog').innerHTML = data;
+                    });" class="btn btn-primary" >
                 <a class="btn btn-primary" data-target=".content-wrapper" data-load="ajax" href="exampleDetail?k=<%=params.setDataValues("clone",(filename != null ? filename : ""),"skt",skt,"fn",filename)%>">Clone to Sketchers</a>
                 <% 
                     }
@@ -298,7 +301,9 @@
                 <textarea name="code" id="code"><%=code%></textarea>   
                 <div class="form-group has-feedback">
                     <label>Console</label>
-                    <div><textarea id="consoleLog" name="consoleLog" class="col-md-12" rows="10"></textarea></div>
+                    <div class="callout callout-info">
+                        <div id="consoleLog"></div>
+                    </div>                    
                 </div>  
                 <script type="text/javascript">
 

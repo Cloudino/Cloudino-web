@@ -109,7 +109,7 @@ var loadContent = function(url, target, data, callback)
             $(target).html(
                     cdino_parse(data)
                     );
-            $.AdminLTE.tree($(target));
+            $(target).tree();
             if(callback)callback();
         });
     }else
@@ -118,7 +118,7 @@ var loadContent = function(url, target, data, callback)
             $(target).html(
                     cdino_parse(data)
                     );
-            $.AdminLTE.tree($(target));
+            $(target).tree();
             if(callback)callback();
         });
     }
@@ -205,9 +205,8 @@ var cdino_parse = function(html)
             $(targ).html(cdino_parse(data));
         });
         return false;
-    });
+    });    
     return root;
-
 };
 
 cdino_parse();

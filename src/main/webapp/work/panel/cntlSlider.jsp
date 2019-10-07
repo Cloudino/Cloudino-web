@@ -20,8 +20,8 @@
         {
             DataObject data = ctrl.getDataObject("data");
             topic = data.getString("topic");
-            min = data.getString("min");
-            max = data.getString("max");
+            min = data.getString("min",min);
+            max = data.getString("max",max);
         }
 
 %>
@@ -34,20 +34,19 @@
 <%
     }else{
         DataObject contrl=(DataObject)request.getAttribute("control");
+        Object value=request.getAttribute("value");
         if(contrl!=null)
         {
             //String ctrlid = contrl.getNumId();
             //String ctrtype = contrl.getString("type");
             DataObject doData = contrl.getDataObject("data");
             String topic = doData.getString("topic");
-            String min = doData.getString("min");
-            if(min==null)min="0";
-            String max = doData.getString("max");
-            if(max==null)max="255";
+            String min = doData.getString("min","0");
+            String max = doData.getString("max","255");
             String title = contrl.getString("title");
 %>
 <div class="cdino_control" style="padding-top: 3px;">
-    <input id="<%=contrl.getNumId()%>" type="text" class="knob" data-readonly="false" value="0" data-min="<%=min%>" data-max="<%=max%>" data-angleOffset="-125" data-angleArc="250" data-displayPrevious=true data-width="70" data-height="70" data-fgColor="#39CCCC"/>
+    <input id="<%=contrl.getNumId()%>" type="text" class="knob" data-readonly="false" value="<%=(value!=null)?value.toString():"0"%>" data-min="<%=min%>" data-max="<%=max%>" data-angleOffset="-125" data-angleArc="250" data-displayPrevious=true data-width="70" data-height="70" data-fgColor="#39CCCC"/>
     <p style="margin-top: -10px;"><%=title%></p>
 </div>
 <script type="text/javascript">   

@@ -24,6 +24,7 @@
 <%
     }else{
         DataObject contrl=(DataObject)request.getAttribute("control");
+        Object value=request.getAttribute("value");
         if(contrl!=null)
         {
             //String ctrlid = contrl.getNumId();
@@ -33,7 +34,7 @@
             String title = contrl.getString("title");
 %>
 <div class="cdino_control" style="padding-top: 22px;">
-    <span style="font-size: 28px; font-weight: bold;" id="<%=contrl.getNumId()%>"></span>
+    <span style="font-size: 28px; font-weight: bold;" id="<%=contrl.getNumId()%>"><%=(value!=null)?value.toString():""%></span>
     <p style="padding-top: 6px;"><%=title%></p>
     <script type="text/javascript">WS.onMessage("<%=topic%>",function(msg){$("#<%=contrl.getNumId()%>").html(msg);});</script>
 </div>

@@ -183,7 +183,7 @@
 
     <category id="catMath" name="Math">
         <block type="math_number"></block>
-        <block type="cdino_parse_number"></block>
+        <block type="parseint"></block>
         <block type="math_arithmetic"></block>
         <block type="math_single"></block>
         <block type="math_trig"></block>
@@ -355,7 +355,7 @@
             colour: '#ccc',
             snap: true
         },
-        media: '/plugins/blockly/media/',
+        media: '/static/plugins/blockly/media/',
         toolbox: document.getElementById('toolbox')
     });
   
@@ -363,7 +363,10 @@
     Blockly.Cloudino.loadXML('<%=xml%>');
 <%}%>
 
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+    var blockly_tab=$('a[data-toggle="tab"]');
+
+    blockly_tab.off("shown.bs.tab");
+    blockly_tab.on('shown.bs.tab', function(e) {
         //e.target // newly activated tab
         //e.relatedTarget // previous active tab
         //console.lo
@@ -371,4 +374,36 @@
         workspace.render();
         //console.log('shown.bs.tab', e);
     });
+    
+    var blockly_resize=function(){
+        Blockly.resize();
+        workspace.render(); 
+    };
+    
+    var blockly_animate_resize=function(){
+        for(var x=0;x<30;x++)
+        {
+            setTimeout(function(){
+                blockly_resize();            
+            },10*x);
+        }
+    };    
+    
+    $(window).off("resize.blockly");
+    $(window).on("resize.blockly",blockly_resize);
+    
+    
+    $(document).off("expanded.pushMenu");
+    $(document).on('expanded.pushMenu', blockly_animate_resize);
+    
+    $(document).off("collapsed.pushMenu");
+    $(document).on('collapsed.pushMenu', blockly_animate_resize);     
+    
+    var control_sidebar=$('[data-toggle="control-sidebar"]');
+    
+    control_sidebar.off("expanded.controlsidebar");
+    control_sidebar.on('expanded.controlsidebar', blockly_animate_resize);
+    
+    control_sidebar.off("collapsed.controlsidebar");
+    control_sidebar.on('collapsed.controlsidebar', blockly_animate_resize);      
 </script>

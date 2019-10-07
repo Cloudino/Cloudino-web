@@ -1,10 +1,9 @@
 <%-- 
-    Document   : addDataSet
+    Document   : addBlockJS
     Created on : 23/09/2015, 07:27:14 PM
     Author     : javier.solis
 --%>
 <%@page import="java.io.File"%>
-<%@page import="io.cloudino.utils.TokenGenerator"%>
 <%@page import="io.cloudino.compiler.ArdCompiler"%>
 <%@page import="org.semanticwb.datamanager.SWBDataSource"%>
 <%@page import="org.semanticwb.datamanager.DataMgr"%>
@@ -56,13 +55,15 @@
                     <h3 class="box-title">General Data</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
-                <form data-target=".content-wrapper" data-submit="ajax" action="addBlockJS" role="form">
+                <form class="form-horizontal" data-target=".content-wrapper" data-submit="ajax" action="addBlockJS" role="form">
                     <div class="box-body">
                         
                         <!-- text input -->
                         <div class="form-group has-feedback">
-                            <label>Name</label>
-                            <input name="name" value="" type="text" class="form-control" placeholder="Enter ..." required>
+                            <label class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                                <input name="name" value="" type="text" class="form-control" placeholder="Enter ..." required>
+                            </div>
                         </div>
 
                     </div><!-- /.box-body -->
@@ -74,15 +75,14 @@
             </div>
 
         </div>
-<!--
         <div class="col-md-4 callout callout-danger lead">
             <h4>Tip!</h4>
             <p>
-                If you go through the example pages and would like to copy a component, right-click on
-                the component and choose "inspect element" to get to the HTML quicker than scanning
-                the HTML page.
+                Create a new CloudinoJS Block..                
+            </p>
+            <p>
+                Use a short but descriptive name without special caracrters..           
             </p>
         </div>
--->
     </div>   <!-- /.row -->
 </section><!-- /.content -->

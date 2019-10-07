@@ -43,7 +43,7 @@
         </div>
 -->                
         <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu" data-widget="tree">
             <li class="header">THINGING</li>
             <li class="treeview<%=("dev".equals(act)?" active":"")%>">
                 <a href="#">
@@ -52,7 +52,7 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu devices">
-                    <jsp:include page="devices.jsp" />
+                    <jsp:include page="menuDevices.jsp" />
                 </ul>
             </li>
             <li class="treeview<%=("dg".equals(act)?" active":"")%>">
@@ -66,6 +66,7 @@
                     {
                         SWBDataSource ds = engine.getDataSource("DeviceGroup");
                         DataObject query = new DataObject();
+                        query.addSubList("sortBy").add("name");
                         DataObject data = new DataObject();
                         query.put("data", data);
                         data.put("user", user.getId());
@@ -96,6 +97,7 @@
                     {
                         SWBDataSource ds = engine.getDataSource("UserContext");
                         DataObject query = new DataObject();
+                        query.addSubList("sortBy").add("name");
                         DataObject data = new DataObject();
                         query.put("data", data);
                         data.put("user", user.getId());
@@ -129,6 +131,7 @@
                     {
                         SWBDataSource ds = engine.getDataSource("CloudRule");
                         DataObject query = new DataObject();
+                        query.addSubList("sortBy").add("name");
                         DataObject data = new DataObject();
                         query.put("data", data);
                         data.put("user", user.getId());
@@ -147,18 +150,19 @@
                     %>                
                     <li><a href="addCloudRule" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Cloud Rule</a></li>
                 </ul>
-            </li>
+            </li>            
             <li class="treeview<%=("ds".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-cubes"></i>
-                    <span>Data Sets</span>
+                    <span>DataStreams</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <%
                     {
-                        SWBDataSource ds = engine.getDataSource("DataSet");
+                        SWBDataSource ds = engine.getDataSource("DataStream");
                         DataObject query = new DataObject();
+                        query.addSubList("sortBy").add("name");
                         DataObject data = new DataObject();
                         query.put("data", data);
                         data.put("user", user.getId());
@@ -169,26 +173,81 @@
                             for (DataObject obj : list) {
                                 String id = obj.getNumId();
                                 %>
-                                <li><a href="datasetDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
+                                <li><a href="dataStreamDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
                                 <%
                             }
                         }
                     }
                     %>                
-                    <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
+                    <li><a href="addDataStream" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add DataStream</a></li>
                 </ul>
-            </li>
+            </li>         
             <li class="header">LINKING</li>
-            <li class="treeview<%=("ds".equals(act)?" active":"")%>">
+            <li class="treeview<%=("ocb".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-cubes"></i>
-                    <span>FIWARE ContextBroker</span>
+                    <span>FIWARE OCB</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="addOCBEntity" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Entity</a></li>
+                    <%
+                    {
+                        SWBDataSource ds = engine.getDataSource("DeviceLinks");
+                        DataObject query = new DataObject();
+                        query.addSubList("sortBy").add("name");
+                        DataObject data = new DataObject();
+                        query.put("data", data);
+                        data.put("user", user.getId());
+                        data.put("type", "OCB");
+                        DataObject ret = ds.fetch(query);
+                        //System.out.println(ret);
+                        DataList<DataObject> list = ret.getDataObject("response").getDataList("data");
+                        if (list != null) {
+                            for (DataObject obj : list) {
+                                String id = obj.getNumId();
+                                %>
+                                <li><a href="linkOCBDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
+                                <%
+                            }
+                        }
+                    }
+                    %>                       
+                    <li><a href="addLink?type=OCB" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Entity</a></li>
                 </ul>
             </li>
+            <li class="treeview<%=("azd".equals(act)?" active":"")%>">
+                <a href="#">
+                    <i class="fa fa-cubes"></i>
+                    <span>Azure IoT Hub</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <%
+                    {
+                        SWBDataSource ds = engine.getDataSource("DeviceLinks");
+                        DataObject query = new DataObject();
+                        query.addSubList("sortBy").add("name");
+                        DataObject data = new DataObject();
+                        query.put("data", data);
+                        data.put("user", user.getId());
+                        data.put("type", "AzureDevice");
+                        DataObject ret = ds.fetch(query);
+                        //System.out.println(ret);
+                        DataList<DataObject> list = ret.getDataObject("response").getDataList("data");
+                        if (list != null) {
+                            for (DataObject obj : list) {
+                                String id = obj.getNumId();
+                                %>
+                                <li><a href="linkAzureDeviceDetail?ID=<%=id%>" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-cube"></i><%=obj.getString("name")%></a></li>
+                                <%
+                            }
+                        }
+                    }
+                    %>                       
+                    <li><a href="addLink?type=AzureDevice" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Entity</a></li>
+                </ul>
+            </li>            
+<!--            
             <li class="treeview<%=("ds".equals(act)?" active":"")%>">
                 <a href="#">
                     <i class="fa fa-cubes"></i>
@@ -196,7 +255,7 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
+                    <li><a href="addDataStream" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
                 </ul>
             </li>
             <li class="treeview<%=("ds".equals(act)?" active":"")%>">
@@ -206,9 +265,9 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="addDataSet" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
+                    <li><a href="addDataStream" data-target=".content-wrapper" data-load="ajax"><i class="fa fa-gear"></i> Add Data Set</a></li>
                 </ul>
             </li>
-
+-->
         </ul>
     </section>

@@ -297,7 +297,7 @@
 <section class="content-header">
     <h1>
         Sketcher
-        <small>Code Editor</small>
+        <small><%=skt%></small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Panel</a></li>
@@ -316,7 +316,7 @@
 
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title"><%=skt%> - <%=name%></h3>
+                    <h3 class="box-title"><%=name%></h3>
                 </div>
                 <%
 
@@ -349,8 +349,8 @@
                     if (code != null) {
                 %>
                 <div class="form-group has-feedback">
-                    <div class="col-md-1" style="padding: 5px"><label>&nbsp;&nbsp;Board</label></div>                    
-                    <div class="col-md-6 pull-left" style="padding: 5px">
+                    <label class="pull-left control-label" style="padding: 10px">&nbsp;&nbsp;Board</label>                  
+                    <div class="pull-left" style="padding: 5px">
                         <select name="type" id="type" class="form-control">
                             <!--<option value="cloudino-standalone">Cloudino Standalone</option>-->
                             <%
@@ -364,7 +364,7 @@
                         </select>
                     </div>
                     <textarea name="code" id="code"><%=code%></textarea> 
-                    <div class="col-md-5 pull-left" style="padding: 5px">
+                    <div class="col-sm-12 pull-left" style="padding: 5px">
                         <input type="button" value="Save Sketch" onclick="document.getElementById('consoleLog').innerHTML = 'Saving File...\n\r';
                                 getAsynchData('sketcherDetail?k=<%=params.setDataValues("up", (filename != null ? URLEncoder.encode(filename) : ""), "skt", skt, "fn", filename)%>&dev='+document.getElementById('type').value, myCodeMirror.getValue(), 'POST', function(data) {
                                     document.getElementById('consoleLog').innerHTML = data;

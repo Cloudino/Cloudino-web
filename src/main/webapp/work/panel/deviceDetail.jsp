@@ -2,7 +2,8 @@
     Document   : deviceDetail
     Created on : 04-ago-2015, 0:03:07
     Author     : javiersolis
---%><%@page import="io.cloudino.utils.Utils"%>
+--%><%@page import="io.cloudino.links.DeviceLinkMgr"%>
+<%@page import="io.cloudino.utils.Utils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.net.URLEncoder"%><%@page import="java.io.*"%><%@page import="io.cloudino.compiler.*"%><%@page import="java.util.*"%><%@page import="io.cloudino.engine.*"%><%@page import="org.semanticwb.datamanager.*"%><%
     DataObject user = (DataObject) session.getAttribute("_USER_");
     SWBScriptEngine engine = DataMgr.getUserScriptEngine("/cloudino.js", user);
@@ -34,6 +35,7 @@
     if("remove".equals(act))
     {
         ds.removeObjById(data.getId());
+        DeviceLinkMgr.getInstance().clearCacheByDevice(id);
         out.println("<script type=\"text/javascript\">loadContent('/panel/menu?act=dev','.main-sidebar');</script>");
 %>
             <!-- Custom Tabs -->
@@ -52,10 +54,12 @@
     String name = request.getParameter("name");
     if (name != null) {
         String description = request.getParameter("description");
+        String spublic=request.getParameter("public")!=null?"true":"false";
         String type = request.getParameter("type");
         data.put("name", name);
         data.put("description", description);
         data.put("type", type);
+        data.put("public",Boolean.parseBoolean(spublic));
         DataObject ret = ds.updateObj(data);
         //System.out.println(ret);
         DataObject obj = ret.getDataObject("response").getDataObject("data");
@@ -72,6 +76,7 @@
     name = data.getString("name", "");
     String description = data.getString("description", "");
     String type = data.getString("type");
+    String spublic = data.getString("public", "false");
     String token = data.getString("authToken","");
 
     long connectedTime = 0;
@@ -124,8 +129,11 @@
                     msg=msg.replace("\n", "<br>\n");
 
                     File fino = new File(path);
-                    String fname = fino.getName().split("\\.")[0];
-                    String compiled = userBuildPath + "/" + fname + ".cpp.hex";
+                    String fname=fino.getName();
+                    int i=fname.lastIndexOf(".");
+                    if(i>-1)fname=fname.substring(0,i);
+                    fname=URLEncoder.encode(fname, "UTF-8");
+                    //String compiled = userBuildPath + "/" + fname + ".cpp.hex";
                     
                     if (device !=null && device.isConnected()) 
                     {
@@ -146,8 +154,12 @@
                             //System.out.println("dvc:"+dvc);
                             if(dvc!=null)speed=dvc.speed;
                         }                                                
-                        
-                        device.post("$CDINOUPDT2", speed+"|:"+request.getLocalPort()+"/arduinoDownload.jsp?fname="+fname+"&uid="+user.getNumId());
+                        int port=request.getLocalPort();
+                        if(port==443)port=80;               //TODO: Download file via ssl
+                        //System.out.println("$CDINOUPDT2"+":"+speed+"|:"+port+"/arduinoDownload.jsp?fname="+fname+"&uid="+user.getNumId());
+                        //device.post("$CDINOUPDT2", speed+"|:"+port+"/arduinoDownload.jsp?fname="+fname+"&uid="+user.getNumId());
+                        System.out.println("$CDINOUPDT2"+":"+speed+"|:"+port+"/api/getFirmware?act=arduino_down&fname="+fname+"&ID="+user.getNumId());
+                        device.post("$CDINOUPDT2", speed+"|:"+port+"/api/getFirmware?act=arduino_down&fname="+fname+"&ID="+user.getNumId());
                     }else {
                         msg = msg + "Device offline, could not be programmed."; 
                     }
@@ -216,9 +228,10 @@
 <%
     }
 %>                    
+                    <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false" ondblclick="loadContent('/work/panel/deviceControls.jsp?ID=<%=id%>','#tab_5')" onclick="this.onclick=undefined;this.ondblclick();">Controls</a></li>
+                    <li class=""><a href="#tab_8" data-toggle="tab" aria-expanded="false" ondblclick="loadContent('/work/panel/deviceData.jsp?ID=<%=id%>','#tab_8')" onclick="this.onclick=undefined;this.ondblclick();">Data</a></li>
                     <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Messages</a></li>
                     <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Console</a></li>
-                    <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">Controls</a></li>
              <!--               
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
@@ -242,62 +255,75 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
 
-                        <form data-target=".content-wrapper" data-submit="ajax" action="deviceDetail" role="form">
+                        <form class="form-horizontal" data-target=".content-wrapper" data-submit="ajax" action="deviceDetail" role="form">
                             <div class="box-body">
 
                                 <div class="form-group has-feedback">
-                                    <label>Id</label>
-                                    <div><%=id%></div>
+                                    <label class="col-sm-2 control-label">Id</label>
+                                    <div class="col-sm-10 control-text"><%=id%></div>
                                     <input type="hidden" name="ID" value="<%=id%>">
                                 </div>  
                                 
                                 <div class="form-group has-feedback">
-                                    <label>Authentication Token</label>
-                                    <div><%=token%></div>
+                                    <label class="col-sm-2 control-label">Auth Token</label>
+                                    <div class="col-sm-10 control-text"><%=token%></div>
                                 </div>                                
 
                                 <!-- text input -->
                                 <div class="form-group has-feedback">
-                                    <label>Name</label>
-                                    <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ..." required="true">
+                                    <label class="col-sm-2 control-label">Name</label>
+                                    <div class="col-sm-10">
+                                        <input name="name" value="<%=name%>" type="text" class="form-control" placeholder="Enter ..." required="true">
+                                    </div>
                                 </div>
 
                                 <!-- textarea -->
                                 <div class="form-group has-feedback">
-                                    <label>Description</label>
-                                    <textarea name="description" class="form-control" rows="3" placeholder="Enter ..."><%=description%></textarea>
+                                    <label class="col-sm-2 control-label">Description</label>
+                                    <div class="col-sm-10">
+                                        <textarea name="description" class="form-control" rows="3" placeholder="Enter ..."><%=description%></textarea>
+                                    </div>                                    
                                 </div>
 
                                 <!-- select -->
                                 <div class="form-group has-feedback">
-                                    <label>Type</label>
-                                    <select name="type" class="form-control">
-                                        <option value="cloudino-standalone">Cloudino Standalone</option>
-                                        <%
-                                            ArdCompiler cmp = ArdCompiler.getInstance();
-                                            Iterator<ArdDevice> it = cmp.listDevices();
-                                            while (it.hasNext()) {
-                                                io.cloudino.compiler.ArdDevice dev = it.next();
-                                                out.println("<option value=\"" + dev.key + "\" " + (dev.key.equals(type) ? "selected" : "") + ">" + dev.toString() + "</option>");
-                                            }
-                                        %>    
-                                    </select>
+                                    <label class="col-sm-2 control-label">Type</label>
+                                    <div class="col-sm-10">
+                                        <select name="type" class="form-control">
+                                            <option value="cloudino-standalone">Cloudino Standalone</option>
+                                            <%
+                                                ArdCompiler cmp = ArdCompiler.getInstance();
+                                                Iterator<ArdDevice> it = cmp.listDevices();
+                                                while (it.hasNext()) {
+                                                    io.cloudino.compiler.ArdDevice dev = it.next();
+                                                    out.println("<option value=\"" + dev.key + "\" " + (dev.key.equals(type) ? "selected" : "") + ">" + dev.toString() + "</option>");
+                                                }
+                                            %>    
+                                            <option value="wio.gsm">Wio Tracker GSM</option>
+                                        </select>                                        
+                                    </div>
                                 </div> 
-<%if(device!=null){%>
                                 <div class="form-group has-feedback">
-                                    <label>InetAddress</label>
-                                    <div><%=device.getInetAddress()%></div>
+                                    <label class="col-sm-2 control-label">Public</label><br>
+                                    <div class="col-sm-10 control-switch">
+                                        <input name="public" id="dev_public" type="checkbox" <%=spublic.equals("true")?"checked":""%> class="checkbox-inline">
+                                    </div>
+                                </div>                                            
+<%if(device!=null && device.isConnected()){%>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-2 control-label">InetAddress</label>
+                                    <div class="col-sm-10 control-text"><%=device.getInetAddress()%></div>
                                 </div> 
-<%}%>
                                 <div class="form-group has-feedback">
-                                    <label>Created Time</label>
-                                    <div><%=new Date(createdTime)%></div>
+                                    <label class="col-sm-2 control-label">Created Time</label>
+                                    <div class="col-sm-10 control-text"><%=new Date(createdTime)%></div>
                                 </div>     
 
                                 <div class="form-group has-feedback">
-                                    <label>Connected Time</label>
-                                    <div><%=new Date(connectedTime)%></div>
-                                </div>                                   
+                                    <label class="col-sm-2 control-label">Connected Time</label>
+                                    <div class="col-sm-10 control-text"><%=new Date(connectedTime)%></div>
+                                </div>    
+<%}%>                                
 
                             </div><!-- /.box-body -->
 
@@ -308,6 +334,7 @@
                         </form>     
                                 
                     <script type="text/javascript">
+                        $("#dev_public").bootstrapSwitch();  
                         function removeDevice(alink){
                                 if(confirm('Are you sure to remove this device?')){
                                     var urlRemove = 'deviceDetail?ID=<%=id%>&act=remove';
@@ -344,6 +371,7 @@
                                             }                                                 
                                             
                                             File[] listFiles = fblock.listFiles();
+                                            Arrays.sort(listFiles);
                                             for (File file : listFiles) {
                                                 if (file.isDirectory() && !file.isHidden()) {
                                                     String dirName = file.getName();
@@ -352,6 +380,7 @@
                                                     }
                                                     //System.out.println(dirName);
                                                     File[] list = file.listFiles();
+                                                    Arrays.sort(list);
                                                     for(File inoFile:list){
                                                         String fileName = inoFile.getName();
                                                         //System.out.println("Revisando..."+dirName+" con: "+fileName);
@@ -369,6 +398,7 @@
                                             }                                         
                                             
                                             File[] listFiles = fsketch.listFiles();
+                                            Arrays.sort(listFiles);
                                             for (File file : listFiles) {
                                                 if (file.isDirectory() && !file.isHidden()) {
                                                     String dirName = file.getName();
@@ -377,6 +407,7 @@
                                                     }
                                                     //System.out.println(dirName);
                                                     File[] list = file.listFiles();
+                                                    Arrays.sort(list);
                                                     for(File inoFile:list){
                                                         String fileName = inoFile.getName();
                                                         //System.out.println("Revisando..."+dirName+" con: "+fileName);
@@ -412,39 +443,77 @@
                                     </script>
                                     </div>
                                 </div> 
-                                <hr/>
-                                <div class="form-group has-feedback">
-                                    <div>
-                                        <label>Console</label>
-                                        <!--
-                                        <div><textarea name="consoleLog" id="consoleLog" class="col-md-12" rows="10"></textarea></div>
-                                        -->
-                                        <div class="callout callout-info">
-                                            <div id="ws_cmp"></div>
-                                        </div>
-                                        <div class="">
-                                            <input type="button" value="Clear" onclick="ws_cmp.innerHTML='';" class="btn btn-primary" >
-                                        </div> 
-                                    </div>
-                                </div>     
                             </div><!-- /.box-body -->
                         </form> 
+                        <form id="uploadFrm" action="javascript:uploadFirmware();" method="post" enctype = "multipart/form-data">
+                            <input type="hidden" name="ID" value="<%=id%>">
+                            <div class="box-body">
+                                <!-- select -->
+                                <div class="form-group has-feedback">
+                                    <div class_="col-md-1 pull-left">
+                                        <label>Upload Binary</label>
+                                    </div>
+                                    <div class="cloudino-button" style="float: left; margin-right: 10px;">
+                                        <input type="file" name="file" class="btn btn-primary btn-flat" style="padding: 9px;font-size: small;">
+                                    </div>
+                                    <div class="cloudino-button">
+                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                    </div>
+                                </div> 
+                            </div>
+                        </form> 
+                        <script type="text/javascript">
+                            function uploadFirmware() {
+                                var formData = new FormData($('#uploadFrm')[0]);
+
+                                $.ajax({
+                                    url: '/panel/deviceFlash',
+                                    type: 'POST',
+                                    data: formData,
+                                    async: false,
+                                    success: function (data) {
+                                        //alert('Uploaded..');
+                                    },
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false
+                                });
+
+                                return false;
+                            }
+                        </script>                            
+                        <div class="box-body">    
+                            <div class="form-group has-feedback">
+                                <div>
+                                    <label>Console</label>
+                                    <!--
+                                    <div><textarea name="consoleLog" id="consoleLog" class="col-md-12" rows="10"></textarea></div>
+                                    -->
+                                    <div class="callout callout-info">
+                                        <div id="ws_cmp"></div>
+                                    </div>
+                                    <div class="">
+                                        <input type="button" value="Clear" onclick="ws_cmp.innerHTML='';" class="btn btn-warning" >
+                                    </div> 
+                                </div>
+                            </div>     
+                        </div>
                     </div><!-- /.tab-pane -->
 <%
     }
 %>                    
                     <div class="tab-pane" id="tab_3">
-                        <jsp:include page="messages.jsp" />
+                        <jsp:include page="deviceMessages.jsp" />
                     </div><!-- /.tab-pane -->
 <%
     if(type.equals("cloudino-standalone"))
     {
 %>                    
                     <div class="tab-pane" id="tab_6">
-                        <jsp:include page="initialjs.jsp" />
+                        <jsp:include page="deviceInitialjs.jsp" />
                     </div><!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_7">
-                        <jsp:include page="jsterminal.jsp" />
+                        <jsp:include page="deviceJSTerminal.jsp" />
                     </div><!-- /.tab-pane --> 
 <%
     }
@@ -452,14 +521,19 @@
                     <div class="tab-pane" id="tab_4">
                         <label>Console</label>
                         <div class="callout callout-info">
-                            <div id="ws_log"></div>
+                            <div id="ws_log" style="white-space: pre-wrap;font-family: monospace;"></div>
                         </div>
                         <div class="">
-                            <input type="button" value="Clear" onclick="ws_log.innerHTML='';" class="btn btn-primary" >
+                            <input type="button" value="Clear" onclick="ws_log.innerHTML='';" class="btn btn-warning" >
                         </div>                            
                     </div><!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_8">
+                        Loading...
+                        <!--jsp:include page="deviceData.jsp" /-->
+                    </div><!-- /.tab-pane -->                        
                     <div class="tab-pane" id="tab_5">
-                        <jsp:include page="controls.jsp" />
+                        Loading...
+                        <!--jsp:include page="deviceControls.jsp" /-->
                     </div><!-- /.tab-pane -->                
                 </div><!-- /.tab-content -->
             </div><!-- nav-tabs-custom -->
@@ -467,3 +541,10 @@
     </div> <!-- /.row -->
     <!-- END CUSTOM TABS -->
 </section>
+<!--
+<script type="text/javascript">    
+    var content_wrapper=$('.content-wrapper');
+    content_wrapper.find('.nav-tabs').scrollingTabs('destroy');
+    content_wrapper.find('.nav-tabs').scrollingTabs(); 
+</script>    
+-->
